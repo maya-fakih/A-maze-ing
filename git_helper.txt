@@ -1,0 +1,300 @@
+📌 BASIC GIT COMMANDS
+1. See Where You Are
+bash
+# See current branch
+git branch          # List all branches, * marks current
+git status          # See what's changed/staged
+git log --oneline   # Recent commits
+2. Create & Switch Branches
+bash
+# Create AND switch to new branch
+git checkout -b branch-name
+
+# OR (newer syntax)
+git switch -c branch-name
+
+# Just create branch (don't switch)
+git branch branch-name
+
+# Switch to existing branch
+git checkout branch-name
+git switch branch-name
+
+# Switch back to previous branch
+git checkout -
+git switch -
+3. Working with Changes
+bash
+# Stage files
+git add file.py              # Add specific file
+git add .                    # Add ALL changes
+git add -A                   # Add ALL including deletions
+
+# Commit
+git commit -m "Your message"
+git commit -am "Message"     # Add and commit tracked files
+
+# See what you changed
+git diff                     # Unstaged changes
+git diff --staged            # Staged changes
+🔀 BRANCH WORKFLOW (You & Agnes)
+Scenario: Start new feature
+bash
+# 1. Make sure you're on main
+git checkout main
+git pull origin main         # Get latest
+
+# 2. Create feature branch
+git checkout -b agnes/maze-generator
+
+# 3. Do your work, add files
+echo "print('maze')" > maze.py
+git add maze.py
+git commit -m "Add maze generator"
+
+# 4. Push to GitHub
+git push origin agnes/maze-generator
+Scenario: Agnes starts her feature
+bash
+# 1. She gets latest main
+git checkout main
+git pull origin main
+
+# 2. Creates her branch
+git checkout -b agnes/solver
+
+# 3. Works and pushes
+git add solver.py
+git commit -m "Add solver"
+git push origin agnes/solver
+🔄 PULL REQUESTS & MERGING
+Create PR on GitHub:
+Push your branch: git push origin your-branch
+
+Go to GitHub → Pull Requests → New
+
+Select: your-branch → main
+
+Add title/description
+
+Wait for CI checks (green ✅)
+
+Merge if all good!
+
+Merge locally (if allowed):
+bash
+# 1. Get latest main
+git checkout main
+git pull origin main
+
+# 2. Merge your branch
+git merge your-branch
+
+# 3. Push to GitHub
+git push origin main
+📥 GETTING UPDATES
+Get Agnes's changes:
+bash
+# Method 1: Pull latest main
+git checkout main
+git pull origin main
+
+# Method 2: Fetch all branches (see what others did)
+git fetch --all
+
+# See all branches (local & remote)
+git branch -a
+
+# Pull specific branch (if collaborating)
+git checkout agnes/solver
+git pull origin agnes/solver
+🔥 COMMON SCENARIOS
+"I messed up, want fresh start"
+bash
+# Undo uncommitted changes
+git checkout -- file.py          # Discard changes to file
+git reset --hard HEAD           # Discard ALL uncommitted changes
+
+# Delete local branch
+git branch -D branch-name
+
+# Reset to remote (OVERRITES LOCAL!)
+git fetch origin
+git reset --hard origin/main
+"Need to update my branch with main"
+bash
+# While on your branch
+git checkout your-branch
+git pull origin main           # Merge main into your branch
+# OR
+git merge main                 # If you already pulled main
+"PR has conflicts"
+bash
+# 1. Update your branch with latest main
+git checkout your-branch
+git pull origin main
+
+# 2. Fix conflicts (Git will show <<<<<<<)
+# Edit the files, remove conflict markers
+
+# 3. Commit fixes
+git add .
+git commit -m "Resolve conflicts"
+
+# 4. Push updates
+git push origin your-branch
+# GitHub PR updates automatically!
+👥 COLLABORATION RULES
+Golden Rules:
+Never push directly to main (branch protection!)
+
+Always pull before starting work
+
+One feature = one branch
+
+Small commits > huge commits
+
+PR must pass CI before merge
+
+Branch Naming Convention:
+text
+yourname/feature-description
+agnes/maze-prim
+yourname/solver-astar
+agnes/bugfix-memory
+📊 VISUAL GIT COMMANDS
+text
+Your Local:
+┌─────────────────┐
+│  git status     │ ← See what's up
+│  git branch     │ ← See branches
+│  git log        │ ← See history
+└─────────────────┘
+        │
+        ▼
+Working Directory:
+┌─────────────────┐
+│  git add        │ ← Stage changes
+│  git commit     │ ← Save locally
+└─────────────────┘
+        │
+        ▼
+GitHub Remote:
+┌─────────────────┐
+│  git push       │ ← Send to GitHub
+│  git pull       │ ← Get from GitHub
+│  git fetch      │ ← See what's there
+└─────────────────┘
+🚨 EMERGENCY COMMANDS
+bash
+# Undo last commit (but keep changes)
+git reset --soft HEAD~1
+
+# Undo last commit (lose changes)
+git reset --hard HEAD~1
+
+# Revert a specific commit
+git revert COMMIT_HASH
+
+# Stash changes (save for later)
+git stash
+git stash pop
+
+# See who wrote what
+git blame file.py
+🎯 QUICK REFERENCE CARDS
+Card 1: Daily Workflow
+bash
+# Start of day:
+git checkout main
+git pull origin main
+git checkout -b yourname/feature
+
+# During work:
+git add .
+git commit -m "Message"
+
+# End of day:
+git push origin yourname/feature
+# Create PR on GitHub
+Card 2: Fixing Mistakes
+bash
+# Wrong branch?
+git stash                     # Save work
+git checkout correct-branch
+git stash pop                # Restore work
+
+# Wrong commit message?
+git commit --amend -m "New message"
+
+# Accidentally committed to main?
+git checkout -b fix-branch   # Move commit to new branch
+git checkout main
+git reset --hard HEAD~1      # Remove from main
+Card 3: Seeing What Happened
+bash
+# Pretty log
+git log --oneline --graph --all
+
+# What changed in a file?
+git diff HEAD~1 file.py
+
+# Who changed what?
+git log -- file.py
+
+# When was line 50 changed?
+git blame -L 50,50 file.py
+🛠️ USEFUL ALIASES (Add to ~/.gitconfig)
+bash
+# Quick aliases
+git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.ci commit
+git config --global alias.st status
+git config --global alias.lg "log --oneline --graph --all"
+
+# Then use:
+git co main      # Instead of git checkout main
+git br           # Instead of git branch
+git st           # Instead of git status
+📱 QUICK START FOR AGNES
+Send this to Agnes:
+
+bash
+# First time setup:
+git clone https://github.com/yourname/maze-project.git
+cd maze-project
+
+# Daily use:
+git checkout main
+git pull
+git checkout -b agnes/your-feature
+# ... work ...
+git add .
+git commit -m "Done"
+git push origin agnes/your-feature
+# Then create PR on GitHub
+🧪 TEST YOUR GIT KNOWLEDGE
+Try these in order:
+
+bash
+# 1. See where you are
+git status
+
+# 2. Create test branch
+git checkout -b test-playground
+
+# 3. Make a change
+echo "# Test" > test.txt
+
+# 4. Commit it
+git add test.txt
+git commit -m "Test commit"
+
+# 5. Push it
+git push origin test-playground
+
+# 6. Delete it (cleanup)
+git checkout main
+git branch -D test-playground
+git push origin --delete test-playground
