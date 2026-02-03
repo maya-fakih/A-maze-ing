@@ -8,4 +8,4 @@ def very_long_function_name_with_many_characters_that_exceeds_eighty_eight_chara
     y= x+5  # Bad spacing
     z = y*2# No space after comment
     return z
-EOF
+EO  F
