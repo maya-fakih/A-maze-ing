@@ -1,0 +1,8 @@
+WIDTH=20
+HEIGHT=15
+ENTRY=0,0
+EXIT=19,14
+OUTPUT_FILE=maze.txt
+PERFECT=True
+# This line is to be ignored
+# we can handle more optional keys: seed, algorithm, dispay mode, etc..
