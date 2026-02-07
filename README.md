@@ -1,2 +1,17 @@
-# A-maze-ing
-The 2nd group project of the 42 new cc. An algorithmic project focused on path planning and graph traversal. It uses command-line flags to deploy specific agents into various maze environments, comparing algorithm performance and shortest-path optimality.
+*This project has been created as part of the 42 curriculum by aabi-mou, mfakih*
+
+# Description
+
+# Instructions
+
+# Resources
+
+# Config file / additional features
+
+# Maze generation algorithm / reson of this choice
+
+# Reusable parts
+
+# Roles
+
+# Planning and future improvements
