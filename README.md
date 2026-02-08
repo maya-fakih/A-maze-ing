@@ -20,7 +20,7 @@ Perfect mazes: Produces exactly one unique path between any two cells.
 
 Obstacle handling: Naturally walks around pre‑placed walls.
 
-YouTube explanation: Wilson's Algorithm – Maze Generation by Computerphile
+YouTube explanation: [Wilson's Algorithm – Maze Generation by Computerphile](https://www.reddit.com/r/proceduralgeneration/comments/g2160z/processing_maze_generation_using_wilsons_algorithm/)
 
 ## 2. Randomized Prim's Algorithm (Non‑Perfect Mazes)
 Type: Greedy, tree‑growing algorithm with optional loops.
@@ -31,7 +31,7 @@ Perfect mazes: Only if extra passages are disabled (default: disabled when PERFE
 
 Texture: Branchy, organic, with natural‑looking dead‑ends and optional loops.
 
-YouTube explanation: Randomized Prim's Maze Generation – The Coding Train
+Blog explanation: [Randomized Prim's Maze Generation – The Coding Train](https://weblog.jamisbuck.org/2011/1/10/maze-generation-prim-s-algorithm)
 
 ## 3. CSP‑Based Backtracking (Constrained Mazes)
 Type: Constraint‑propagation with backtracking.
@@ -46,6 +46,10 @@ Time complexity: Exponential in worst case, but heuristics keep it manageable fo
 
 YouTube explanation: CSP Backtracking – Maze Generation (general CSP tutorials)
 
+## 4. Good reference for showing many different algs
+
+This is the best reference i could find for prims and the csp though the codes vary ours will include multiple optimizations to match the vision we discussed before but they show a good basis on how we will have our codes working together also checking each technique seperately will make it way easier to understand the combinations we will have espescially in the csp since it will be very complex to create shapes.. 
+Youtube link: [11 algorithms to generate mazes in python](https://www.youtube.com/watch?v=U3meEXvYFsc)
 
 # Reusable parts
 
