@@ -20,6 +20,9 @@ if __name__ == "__main__":
         settings_dict = helper.parse_settings(config_file)
         config_file.close()
         print(settings_dict)
+        # IMPORTANT NOTE FOR AGNESS!!!!
+        # we have to add a function that creates the correct maze class based on the flags
+        # so if perfect use the class PerfectGenerator....
         maze_generator = MazeGenerator(settings_dict)
         # maze_generator.generate()
         # maze_generator.write_to_file(settings_dict.get('output_file'))
