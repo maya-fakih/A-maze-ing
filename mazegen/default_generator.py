@@ -12,3 +12,4 @@ class BasicGenerator(MazeGenerator):
 
     def generate(self) -> Any:
         pass
+

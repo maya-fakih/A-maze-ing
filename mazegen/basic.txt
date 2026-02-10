@@ -54,3 +54,63 @@ FUNCTION generate_maze(width, height):
                 # cell from frontier, we need to know which wall to remove
     
     RETURN maze
+
+
+
+
+
+
+BETTER PLAN! 
+
+
+1. Initial Setup at Start of generate():
+Initialize self.maze as 2D grid with all walls (value 15)
+
+Initialize self.path as empty list
+
+Re-add logo cells to maze (since you reinitialized)
+
+2. Phase 1 Variables You'll Need:
+solution_path = list of cells from entry to exit
+
+visited = set of cells already processed (starts with entry + logo cells)
+
+Maybe current_cell to track position
+
+3. Phase 2 Variables:
+frontier = list/stack for LIFO expansion
+
+Continue using visited set
+
+4. Key Helper Functions to Think About:
+A. get_neighbors(cell) - returns list of (neighbor, direction) within bounds, not logo cells
+
+B. manhattan_distance(cell1, cell2) - for checking if moving toward exit
+
+C. get_valid_moves_from(cell) - returns moves that:
+
+Have a wall between cells
+
+Neighbor not visited
+
+Move toward exit (or at least not away)
+
+5. The "Last 3 Cells" Strategy:
+When stuck at position in Phase 1:
+
+Look at solution_path[-3:] (last 3 cells)
+
+For each, check get_valid_moves_from(cell)
+
+Pick one with moves available
+
+If none have moves, maybe expand to last 5?
+
+6. Adding to self.path:
+After each successful wall removal:
+
+self.path.append((new_cell, maze_value, is_solution_bool))
+
+is_solution_bool = True for Phase 1 cells
+
+is_solution_bool = False for Phase 2 cells
