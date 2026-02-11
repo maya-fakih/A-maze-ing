@@ -6,7 +6,7 @@ config = {
     "width": 20,
     "height": 20,
     "entry": (0, 0),
-    "exit": (15, 15),
+    "exit": (15, 19),
     "output_file": "test.txt",
     "perfect": "false",
     "wall_color": "white",

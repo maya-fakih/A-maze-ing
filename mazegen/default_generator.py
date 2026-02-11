@@ -56,11 +56,19 @@ class BasicGenerator(MazeGenerator):
                 fringe.append((nx, ny))
                 
                 if (nx, ny) == self.exit:
-                    self.maze[nx][ny] = 0
+                    print("exit reached")
                     reached_goal = True
+            
             else:
                 if not reached_goal:
                     for i in range(len(self.path)-1, -1, -1):
                         if self.path[i][0] == current and self.path[i][2] is True:
                             self.path[i] = (self.path[i][0], self.path[i][1], False)
                             break
+                for wall in ['N', 'S', 'E', 'W']:
+                    if self.has_wall(current, wall):
+                        self.remove_wall(current, wall)
+                        break
+                fringe.append(current)
+                    
+

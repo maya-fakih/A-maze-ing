@@ -61,24 +61,25 @@ class MazeGenerator(ABC):
                 
                 is_logo = (x,y) in self.logo_cells
 
-                # Top walls (north) - FIXED
-                if y == 0 or (cell & self.NORTH):  # Wall exists
+                if y == 0 or (cell & self.NORTH):
                     top_row += "+---"
-                else:  # No wall
+                else:
                     top_row += "+   "
                 
-                # Side walls (west) - FIXED
-                if( x == 0 or (cell & self.WEST)) and is_logo:
+                if (x,y) == self.entry:
+                    mid_row += "| S "
+                elif (x, y) == self.exit:
+                    mid_row += "  E "
+                elif( x == 0 or (cell & self.WEST)) and is_logo:
                     mid_row += "|###"
-                elif x == 0 or (cell & self.WEST):  # Wall exists
+                elif x == 0 or (cell & self.WEST):
                     mid_row += "|   "
-                else:  # No wall
+                else:
                     mid_row += "    "
             
             print(top_row + "+")
             print(mid_row + "|")
         
-        # Bottom border
         print("+---" * self.width + "+")
     
 
