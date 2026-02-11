@@ -1,4 +1,4 @@
-from typing import Any, List, Dict, Tuple
+from typing import Any
 from maze_generator import MazeGenerator
 from collections import deque
 import random
@@ -15,11 +15,8 @@ class BasicGenerator(MazeGenerator):
             for y in range(self.height):
                 if (x, y) not in self.logo_cells:
                     self.maze[x][y] = 15
-    
 
     def generate(self) -> Any:
         reached_goal = False
         self.path.extend(self.logo_cells)
         self.initialize_maze()
-        
-
