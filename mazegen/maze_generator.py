@@ -16,6 +16,8 @@ class MazeGenerator(ABC):
         'W': WEST
     }
 
+    WALLS = ['N', 'E', 'W', 'S']
+
     OPPOSITE = {
         NORTH: SOUTH,
         SOUTH: NORTH,
@@ -49,6 +51,37 @@ class MazeGenerator(ABC):
     def initialize_maze(self) -> None:
         pass
 
+    def display_ascii(self):
+        """Display maze as ASCII art"""
+        for y in range(self.height):
+            top_row = ""
+            mid_row = ""
+            for x in range(self.width):
+                cell = self.maze[x][y]
+                
+                is_logo = (x,y) in self.logo_cells
+
+                # Top walls (north) - FIXED
+                if y == 0 or (cell & self.NORTH):  # Wall exists
+                    top_row += "+---"
+                else:  # No wall
+                    top_row += "+   "
+                
+                # Side walls (west) - FIXED
+                if( x == 0 or (cell & self.WEST)) and is_logo:
+                    mid_row += "|###"
+                elif x == 0 or (cell & self.WEST):  # Wall exists
+                    mid_row += "|   "
+                else:  # No wall
+                    mid_row += "    "
+            
+            print(top_row + "+")
+            print(mid_row + "|")
+        
+        # Bottom border
+        print("+---" * self.width + "+")
+    
+
     def has_wall(self, location: Tuple, direction: str) -> bool:
         x, y = location
 
@@ -77,6 +110,7 @@ class MazeGenerator(ABC):
         mask = self.MASK[direction]
         return (cell_value & mask) != 0
 
+
     def remove_wall(self, cell: Tuple, direction: str) -> None:
         x, y = cell
 
@@ -95,6 +129,7 @@ class MazeGenerator(ABC):
         self.maze[x][y] &= ~mask
         self.maze[nx][ny] &= ~opposite_mask
 
+
     def get_neighbors(self, cell: Tuple) -> List[Tuple]:
         x, y = cell
         possible = [
@@ -110,10 +145,11 @@ class MazeGenerator(ABC):
                     neighbors.append((nx, ny, direction))
         return neighbors
 
+
     def _add_42_logo(self):
         """Create 42 logo pattern in the maze if dimensions allow it."""
         if self.width < 10 or self.height < 10:
-            sys.stderr("Could not draw 42 logo. (dimentions too small)")
+            sys.stderr.write("Could not draw 42 logo. (dimentions too small)")
             return
 
         start_x = self.width // 2 - 4
