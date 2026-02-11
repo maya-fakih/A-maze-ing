@@ -39,9 +39,10 @@ class MazeGenerator(ABC):
         self.maze = (
             [[0 for _ in range(self.height)] for _ in range(self.width)]
         )
-        self.path: List[Tuple[Tuple[int, int]], int, bool] = []
         self.logo_cells = set()
         self._add_42_logo()
+        self.solution = {}
+        self.visited = []
 
     @abstractmethod
     def generate(self) -> Any:
