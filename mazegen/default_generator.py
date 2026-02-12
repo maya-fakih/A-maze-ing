@@ -20,17 +20,15 @@ class BasicGenerator(MazeGenerator):
     def is_perfect(self, cell) -> bool:
         if self.perfect is True:
             return (cell in self.visited)
-        #else:
-        #    choice = random.randint(1, 4)
-        #    if choice == 1:
-        #        return (cell in self.solution)
-        #    if choice == 2:
-        #        return (cell in self.visited)
-        #    if choice == 3 or choice == 5:
-        #        return (False)
-        #    if choice == 4:
-        #        return (True)
-        return (cell in self.solution)
+        else:
+            choice = random.randint(1, 6)
+            if choice == 1:
+                return (cell in self.solution)
+            if choice == 2:
+                return (cell in self.visited)
+            if choice == 3:
+                return (True)
+        return (cell in self.visited)
 
     def generate(self) -> Any:
         start = self.entry
