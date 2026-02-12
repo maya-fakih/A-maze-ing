@@ -8,7 +8,7 @@ config = {
     "entry": (0, 0),
     "exit": (8, 8),
     "output_file": "test.txt",
-    "perfect": True,
+    "perfect": False,
     "wall_color": "white",
     "flag_color": "blue",
     "algorithm": "dfs",
