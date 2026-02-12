@@ -11,8 +11,9 @@ class ParsingError(Exception):
         return self.msg
 
 
-mandatory_keys = ["width", "height", "entry", "exit", "output_file", "perfect"]
-optional_keys = ["wall_color", "flag_color", "algorithm", "shape"]
+mandatory_keys = ["width", "height", "entry", "exit"]
+optional_keys = ["output_file", "perfect",
+                 "wall_color", "flag_color", "algorithm", "shape"]
 algorithms = ["dfs", "bfs", "a*", "ucs"]
 shapes = ["diamond", "star", "heart", "square"]
 
