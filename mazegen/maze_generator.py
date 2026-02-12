@@ -66,7 +66,7 @@ class MazeGenerator(ABC):
 
                 values = "   "
                 if (x, y) in {cell for cell, _, solution in self.path if solution is True}:
-                    values = " 🩵"
+                    values = " >>"
                 
                 if y == 0 or (cell & self.NORTH):
                     top_row += "+---"
