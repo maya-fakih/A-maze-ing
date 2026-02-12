@@ -1,6 +1,7 @@
 from typing import Any, List, Tuple
 from abc import ABC, abstractmethod
 import sys
+import random
 
 
 class MazeGenerator(ABC):
@@ -44,7 +45,7 @@ class MazeGenerator(ABC):
         self.solution = {}
         self.visited = set()
         self.path = []
-    
+
     @abstractmethod
     def generate(self) -> Any:
         pass
@@ -53,6 +54,23 @@ class MazeGenerator(ABC):
     def initialize_maze(self) -> None:
         pass
 
+    def create_loops(self) -> None:
+        solution_base = (
+            {cell for cell, _, solution in self.path if solution is True}
+        )
+        solution = list(solution_base)
+
+        for i in range(0, (len(solution)), 3):
+            current = solution[i]
+
+            neighbors = self.get_neighbors(current)
+            random.shuffle(neighbors)
+
+            for nx, ny, direction in neighbors:
+                if (nx, ny) not in solution_base:
+                    self.remove_wall(current, direction)
+                    break
+
     def display_ascii(self):
         """Display maze as ASCII art"""
         for y in range(self.height):
@@ -60,35 +78,33 @@ class MazeGenerator(ABC):
             mid_row = ""
             for x in range(self.width):
                 cell = self.maze[x][y]
-                
-                is_logo = (x,y) in self.logo_cells
 
+                is_logo = (x, y) in self.logo_cells
 
                 values = "   "
-                if (x, y) in {cell for cell, _, solution in self.path if solution is True}:
-                    values = " >>"
-                
+                if (x, y) in {c for c, _, sol in self.path if sol is True}:
+                    values = " 👻"
+
                 if y == 0 or (cell & self.NORTH):
                     top_row += "+---"
                 else:
                     top_row += "+   "
-                
-                if (x,y) == self.entry:
-                    mid_row += "| S "
+
+                left = "|" if (x == 0 or (cell & self.WEST)) else " "
+
+                if (x, y) == self.entry:
+                    mid_row += f"{left} S "
                 elif (x, y) == self.exit:
-                    mid_row += "  E "
-                elif( x == 0 or (cell & self.WEST)) and is_logo:
-                    mid_row += f"|###"
-                elif x == 0 or (cell & self.WEST):
-                    mid_row += f"|{values}"
+                    mid_row += f"{left} E "
+                elif is_logo:
+                    mid_row += f"{left}###"
                 else:
-                    mid_row += f" {values}"
-            
+                    mid_row += f"{left}{values}"
+
             print(top_row + "+")
             print(mid_row + "|")
-        
+
         print("+---" * self.width + "+")
-    
 
     def has_wall(self, location: Tuple, direction: str) -> bool:
         x, y = location
@@ -118,7 +134,6 @@ class MazeGenerator(ABC):
         mask = self.MASK[direction]
         return (cell_value & mask) != 0
 
-
     def remove_wall(self, cell: Tuple, direction: str) -> None:
         x, y = cell
 
@@ -137,7 +152,6 @@ class MazeGenerator(ABC):
         self.maze[x][y] &= ~mask
         self.maze[nx][ny] &= ~opposite_mask
 
-
     def get_neighbors(self, cell: Tuple) -> List[Tuple]:
         x, y = cell
         possible = [
@@ -153,7 +167,6 @@ class MazeGenerator(ABC):
                     neighbors.append((nx, ny, direction))
         return neighbors
 
-
     def _add_42_logo(self):
         """Create 42 logo pattern in the maze if dimensions allow it."""
         if self.width < 10 or self.height < 10:
@@ -162,30 +175,28 @@ class MazeGenerator(ABC):
 
         start_x = self.width // 2 - 4
         start_y = self.height // 2 - 2
-
-        self.logo_cells.add((start_x, start_y))
-        self.logo_cells.add((start_x, start_y + 1))
-        self.logo_cells.add((start_x, start_y + 2))
-
-        self.logo_cells.add((start_x + 1, start_y + 2))
-
-        self.logo_cells.add((start_x + 2, start_y + 2))
-        self.logo_cells.add((start_x + 2, start_y + 3))
-        self.logo_cells.add((start_x + 2, start_y + 4))
-
-        self.logo_cells.add((start_x + 4, start_y))
-        self.logo_cells.add((start_x + 4, start_y + 2))
-        self.logo_cells.add((start_x + 4, start_y + 3))
-        self.logo_cells.add((start_x + 4, start_y + 4))
-
-        self.logo_cells.add((start_x + 5, start_y))
-        self.logo_cells.add((start_x + 5, start_y + 2))
-        self.logo_cells.add((start_x + 5, start_y + 4))
-
-        self.logo_cells.add((start_x + 6, start_y))
-        self.logo_cells.add((start_x + 6, start_y + 1))
-        self.logo_cells.add((start_x + 6, start_y + 2))
-        self.logo_cells.add((start_x + 6, start_y + 4))
+        logos = [
+            (start_x, start_y),
+            (start_x, start_y + 1),
+            (start_x, start_y + 2),
+            (start_x + 1, start_y + 2),
+            (start_x + 2, start_y + 2),
+            (start_x + 2, start_y + 3),
+            (start_x + 2, start_y + 4),
+            (start_x + 4, start_y),
+            (start_x + 4, start_y + 2),
+            (start_x + 4, start_y + 3),
+            (start_x + 4, start_y + 4),
+            (start_x + 5, start_y),
+            (start_x + 5, start_y + 2),
+            (start_x + 5, start_y + 4),
+            (start_x + 6, start_y),
+            (start_x + 6, start_y + 1),
+            (start_x + 6, start_y + 2),
+            (start_x + 6, start_y + 4),
+        ]
+        for cell in logos:
+            self.logo_cells.add(cell)
 
         for x, y in self.logo_cells:
             if 0 <= x < self.width and 0 <= y < self.height:
