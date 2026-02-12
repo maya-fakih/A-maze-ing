@@ -63,6 +63,11 @@ class MazeGenerator(ABC):
                 
                 is_logo = (x,y) in self.logo_cells
 
+
+                values = "   "
+                if (x, y) in {cell for cell, _, solution in self.path if solution is True}:
+                    values = " >>"
+                
                 if y == 0 or (cell & self.NORTH):
                     top_row += "+---"
                 else:
@@ -73,11 +78,11 @@ class MazeGenerator(ABC):
                 elif (x, y) == self.exit:
                     mid_row += "  E "
                 elif( x == 0 or (cell & self.WEST)) and is_logo:
-                    mid_row += "|###"
+                    mid_row += f"|###"
                 elif x == 0 or (cell & self.WEST):
-                    mid_row += "|   "
+                    mid_row += f"|{values}"
                 else:
-                    mid_row += "    "
+                    mid_row += f" {values}"
             
             print(top_row + "+")
             print(mid_row + "|")
