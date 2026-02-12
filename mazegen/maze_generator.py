@@ -42,8 +42,9 @@ class MazeGenerator(ABC):
         self.logo_cells = set()
         self._add_42_logo()
         self.solution = {}
-        self.visited = []
-
+        self.visited = set()
+        self.path = []
+    
     @abstractmethod
     def generate(self) -> Any:
         pass

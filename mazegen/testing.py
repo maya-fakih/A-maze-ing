@@ -3,12 +3,12 @@ from default_generator import BasicGenerator
 
 
 config = {
-    "width": 20,
-    "height": 20,
+    "width": 9,
+    "height": 9,
     "entry": (0, 0),
-    "exit": (15, 19),
+    "exit": (8, 8),
     "output_file": "test.txt",
-    "perfect": "false",
+    "perfect": True,
     "wall_color": "white",
     "flag_color": "blue",
     "algorithm": "dfs",
@@ -25,9 +25,6 @@ def print_maze(self):
 
 generator = BasicGenerator(config)
 generator.generate()
-
-print(f"path length: {len(generator.path)}")
-
 generator.display_ascii()
-
+print(f" the generator is perfect flag is: {generator.perfect}")
 

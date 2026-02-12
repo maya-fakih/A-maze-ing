@@ -16,59 +16,72 @@ class BasicGenerator(MazeGenerator):
                 if (x, y) not in self.logo_cells:
                     self.maze[x][y] = 15
 
+
+    def is_perfect(self, cell) -> bool:
+        if self.perfect is True:
+            return (cell in self.visited or cell in self.solution)
+        #else:
+        #    choice = random.randint(1, 4)
+        #    if choice == 1:
+        #        return (cell in self.solution)
+        #    if choice == 2:
+        #        return (cell in self.visited)
+        #    if choice == 3 or choice == 5:
+        #        return (False)
+        #    if choice == 4:
+        #        return (True)
+        return (cell in self.solution)
+
     def generate(self) -> Any:
-        reached_goal = False
         start = self.entry
         fringe = []
 
         for cell in self.logo_cells:
             x, y = cell
             self.path.append((cell, self.maze[x][y], False))
+            self.visited.add(cell)
 
         self.initialize_maze()
 
-        fringe.append(start)
-        xi, yi = start
-        self.path.append((start, self.maze[xi][yi], True))
+        self.visited.add(start)
+        self.solution[start] = None
+        
+        for nx, ny, direction in self.get_neighbors(start):
+            if (nx, ny) not in self.visited:
+                fringe.append((nx, ny, direction, start))
 
         while fringe:
-            if not reached_goal:
-                current = fringe.pop()
-            else:
-                current = random.choice(fringe)
-                fringe.remove(current)
+            idx = random.randint(0, len(fringe) - 1)
+            nx, ny, direction, current = fringe.pop(idx)
             
-            visited = [cell for cell, _, _ in self.path]
+            if self.is_perfect((nx, ny)):
+                continue
             
-            possible_moves = []
-            for nx, ny, direction in self.get_neighbors(current):
-                if (self.has_wall(current, direction) and ((nx, ny) not in visited)):
-                    possible_moves.append((nx, ny, direction))
-                    fringe.append((nx, ny))
+            self.remove_wall(current, direction)
+            self.visited.add((nx, ny))
+            self.solution[(nx, ny)] = current
             
-            if possible_moves:
-                nx, ny, direction = random.choice(possible_moves)
-                self.remove_wall(current, direction)
-                
-                is_solution = not reached_goal
-                self.path.append(((nx, ny), self.maze[nx][ny], is_solution))
-                
-                fringe.append((nx, ny))
-                
-                if (nx, ny) == self.exit:
-                    print("exit reached")
-                    reached_goal = True
-            
-            else:
-                if not reached_goal:
-                    for i in range(len(self.path)-1, -1, -1):
-                        if self.path[i][0] == current and self.path[i][2] is True:
-                            self.path[i] = (self.path[i][0], self.path[i][1], False)
-                            break
-                for wall in ['N', 'S', 'E', 'W']:
-                    if self.has_wall(current, wall):
-                        self.remove_wall(current, wall)
-                        break
-                fringe.append(current)
-                    
+            for nnx, nny, new_direction in self.get_neighbors((nx, ny)):
+                if (nnx, nny) not in self.visited:
+                    fringe.append((nnx, nny, new_direction, (nx, ny)))
 
+        if self.exit in self.solution:
+            print("exit reached")
+            solution_cells = set()
+            current = self.exit
+            while current is not None:
+                solution_cells.add(current)
+                current = self.solution[current]
+
+            for cell in self.visited:
+                x, y = cell
+                if cell == start:
+                    self.path.append((cell, self.maze[x][y], True))
+                elif cell in solution_cells:
+                    self.path.append((cell, self.maze[x][y], True))
+                else:
+                    self.path.append((cell, self.maze[x][y], False))
+        else:
+            for cell in self.visited:
+                x, y = cell
+                self.path.append((cell, self.maze[x][y], False))
