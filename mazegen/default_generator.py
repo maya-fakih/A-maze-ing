@@ -19,7 +19,7 @@ class BasicGenerator(MazeGenerator):
 
     def is_perfect(self, cell) -> bool:
         if self.perfect is True:
-            return (cell in self.visited)
+            return (cell in self.visited or cell in self.solution)
         return (cell in self.solution)
 
     def generate(self) -> Any:
