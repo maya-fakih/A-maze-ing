@@ -15,11 +15,6 @@ class PrimGenerator(MazeGenerator):
                 if (x, y) not in self.logo_cells:
                     self.maze[x][y] = 15
 
-    def is_perfect(self, cell) -> bool:
-        if self.perfect is True:
-            return (cell in self.visited or cell in self.solution)
-        return (cell in self.solution)
-
     def generate(self) -> Any:
         start = self.entry
         fringe = []
@@ -42,7 +37,7 @@ class PrimGenerator(MazeGenerator):
             idx = random.randint(0, len(fringe) - 1)
             nx, ny, direction, current = fringe.pop(idx)
 
-            if self.is_perfect((nx, ny)):
+            if (nx, ny) in self.visited:
                 continue
 
             self.remove_wall(current, direction)
@@ -73,3 +68,6 @@ class PrimGenerator(MazeGenerator):
             for cell in self.visited:
                 x, y = cell
                 self.path.append((cell, self.maze[x][y], False))
+
+        if self.perfect is False:
+            self.create_loops()
