@@ -1,9 +1,5 @@
 from typing import Any
-<<<<<<< HEAD:mazegen/generators/dfs_generator.py
-from generators.maze_generator import MazeGenerator
-=======
 from .maze_generator import MazeGenerator
->>>>>>> 38968bf1d2cf3e26e96d636328756182912cff73:mazegen/dfs_generator.py
 import random
 
 

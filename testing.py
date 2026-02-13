@@ -1,6 +1,6 @@
-from generators.prim_generator import PrimGenerator
-from generators.dfs_generator import DFSGenerator
-from generators.bfs_generator import BFSGenerator
+from mazegen.generators.prim_generator import PrimGenerator
+from mazegen.generators.dfs_generator import DFSGenerator
+from mazegen.generators.bfs_generator import BFSGenerator
 
 
 config = {

@@ -1,9 +1,5 @@
 from typing import Any
-<<<<<<< HEAD:mazegen/generators/prim_generator.py
-from generators.maze_generator import MazeGenerator
-=======
 from .maze_generator import MazeGenerator
->>>>>>> 38968bf1d2cf3e26e96d636328756182912cff73:mazegen/prim_generator.py
 import random
 
 
@@ -19,28 +15,10 @@ class PrimGenerator(MazeGenerator):
                 if (x, y) not in self.logo_cells:
                     self.maze[x][y] = 15
 
-<<<<<<< HEAD:mazegen/generators/prim_generator.py
-    def create_loops(self) -> None:
-        solution_base = {c for c, _, s in self.path if s is True}
-
-        solution = list(solution_base)
-
-        for i in range(0, (len(solution)), 3):
-            current = solution[i]
-
-            neighbors = self.get_neighbors(current)
-            random.shuffle(neighbors)
-
-            for nx, ny, direction in neighbors:
-                if (nx, ny) not in solution_base:
-                    self.remove_wall(current, direction)
-                    break
-=======
     def is_perfect(self, cell) -> bool:
         if self.perfect is True:
             return (cell in self.visited or cell in self.solution)
         return (cell in self.solution)
->>>>>>> 38968bf1d2cf3e26e96d636328756182912cff73:mazegen/prim_generator.py
 
     def generate(self) -> Any:
         start = self.entry

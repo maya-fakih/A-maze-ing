@@ -1,15 +1,11 @@
 from ..shape_constraints.shape_generator import Shape
 from ..shape_constraints.diamond_shape import Diamond
-from ..shape_constraints.circle_shape import Circle
-from ..shape_constraints.heart_shape import Heart
-from ..shape_constraints.star_shape import Star
+#from ..shape_constraints.circle_shape import Circle
+#from ..shape_constraints.heart_shape import Heart
+#from ..shape_constraints.star_shape import Star
 from typing import Any, List, Tuple
 from abc import ABC, abstractmethod
-<<<<<<< HEAD:mazegen/generators/maze_generator.py
 import sys
-=======
->>>>>>> 38968bf1d2cf3e26e96d636328756182912cff73:mazegen/maze_generator.py
-
 
 class MazeGenerator(ABC):
     NORTH = 0b0001
@@ -51,6 +47,7 @@ class MazeGenerator(ABC):
             case "huntkill":
                 return HuntKillGenerator(settings)
 
+
     def __init__(self, settings_dict: dict):
         self.settings = settings_dict
         self.settings = settings_dict
@@ -72,6 +69,7 @@ class MazeGenerator(ABC):
             [[0 for _ in range(self.height)] for _ in range(self.width)]
         )
         self.logo_cells = set()
+        self._add_42_logo()
         self.solution = {}
         self.visited = set()
         self.path = []
@@ -145,7 +143,6 @@ class MazeGenerator(ABC):
                     neighbors.append((nx, ny, direction))
         return neighbors
 
-<<<<<<< HEAD:mazegen/generators/maze_generator.py
     def _add_42_logo(self):
         """Create 42 logo pattern in the maze if dimensions allow it."""
         if self.width < 10 or self.height < 10:
@@ -186,18 +183,51 @@ class MazeGenerator(ABC):
             if 0 <= x < self.width and 0 <= y < self.height:
                 self.maze[x][y] = 15
 
-    def add_shape_border(self) -> None:
-        if self.shape == "diamond":
-            shape = Diamond()
-        elif self.shape == "circle":
-            pass
-        elif self.shape == "star":
-            pass
-        elif self.shape == "heart":
-            pass
-        pass
+    #def add_shape_border(self) -> None:
+    #    if self.shape == "diamond":
+    #        shape = Diamond()
+    #    elif self.shape == "circle":
+    #        pass
+    #    elif self.shape == "star":
+    #        pass
+    #    elif self.shape == "heart":
+    #        pass
+    #    pass
 
-=======
->>>>>>> 38968bf1d2cf3e26e96d636328756182912cff73:mazegen/maze_generator.py
     def write_to_file(self) -> None:
         pass
+
+    def display_ascii(self):
+        """Display maze as ASCII art"""
+        for y in range(self.height):
+            top_row = ""
+            mid_row = ""
+            for x in range(self.width):
+                cell = self.maze[x][y]
+
+                is_logo = (x, y) in self.logo_cells
+
+                values = "   "
+                if (x, y) in {c for c, _, sol in self.path if sol is True}:
+                    values = " 👾"
+                if y == 0 or (cell & self.NORTH):
+                    top_row += "+---"
+                else:
+                    top_row += "+   "
+
+                left = "|" if (x == 0 or (cell & self.WEST)) else " "
+
+                if (x, y) == self.entry:
+                    mid_row += f"{left} S "
+                elif (x, y) == self.exit:
+                    mid_row += f"{left} E "
+                elif is_logo:
+                    mid_row += f"{left}###"
+                else:
+                    mid_row += f"{left}{values}"
+
+            print(top_row + "+")
+            print(mid_row + "|")
+
+        print("+---" * self.width + "+")
+

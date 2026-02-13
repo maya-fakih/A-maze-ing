@@ -1,5 +1,5 @@
 import math
-from shape_generator import Shape
+from .shape_generator import Shape
 
 class Diamond(Shape):
     def generate(self) -> list:
