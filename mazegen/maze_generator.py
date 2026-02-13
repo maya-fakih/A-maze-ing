@@ -24,8 +24,27 @@ class MazeGenerator(ABC):
         WEST: EAST
     }
 
+    # instantiate correct subclass based on settings -> factory method
+
+    @classmethod
+    def create_generator(cls, settings: dict):
+        from .prim_generator import PrimGenerator
+        from .dfs_generator import DFSGenerator
+        from .bfs_generator import BFSGenerator
+        from .huntkill_generator import HuntKillGenerator
+        match settings["generation_algorithm"]:
+            case "prim":
+                return PrimGenerator(settings)
+            case "dfs":
+                return DFSGenerator(settings)
+            case "bfs":
+                return BFSGenerator(settings)
+            case "huntkill":
+                return HuntKillGenerator(settings)
+
     def __init__(self, settings_dict: dict):
-        self.settings_dict = settings_dict
+        self.settings = settings_dict
+        self.settings = settings_dict
         self.width = settings_dict.get("width")
         self.height = settings_dict.get("height")
         self.entry = settings_dict.get("entry")
@@ -47,24 +66,6 @@ class MazeGenerator(ABC):
         self.solution = {}
         self.visited = set()
         self.path = []
-
-    # instantiate correct subclass based on settings -> factory method
-    def create(self):
-        # Local imports avoid circular dependencies with subclasses
-        # generation_algorithm
-        from .perfect_generator import PerfectGenerator
-        from .default_generator import BasicGenerator
-        from .shape_generator import ShapeGenerator
-        match self.generation_algorithm:
-            case "prim":
-                return BasicGenerator(self.settings_dict)
-            case "dfs":
-                #
-            case "bfs":
-                #
-            
-            case "huntkill":
-                #
 
     @abstractmethod
     def generate(self) -> Any:

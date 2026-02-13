@@ -30,8 +30,8 @@ def display_maze(maze_gen: MazeGenerator, solution: list[list]) -> None:
     try:
         print("Maze display options:\n")
         print("1 - Display using terminal ascii render")
-        print("2 - Display using MiniLibX library")
-        option = int(input("Please enter your choice (1-2):"))
+        print("2 - Display using MiniLibX library\n")
+        option = int(input("Please enter your choice (1-2): "))
         match option:
             case 1:
                 display_gen(maze_gen)
@@ -53,7 +53,7 @@ if __name__ == "__main__":
         # print(settings)
         # create the correct instance of the maze
         # generator class
-        maze_generator = MazeGenerator(settings).create()
+        maze_generator = MazeGenerator.create_generator(settings)
         # generate the maze
         maze_generator.generate()
         # solve the maze

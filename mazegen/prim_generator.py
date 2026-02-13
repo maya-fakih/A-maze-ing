@@ -3,7 +3,7 @@ from .maze_generator import MazeGenerator
 import random
 
 
-class BasicGenerator(MazeGenerator):
+class PrimGenerator(MazeGenerator):
     """Prim's algorithm"""
 
     def __init__(self, settings_dict):
