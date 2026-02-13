@@ -1,4 +1,4 @@
-from maze_generator import MazeGenerator
+from .maze_generator import MazeGenerator
 
 
 class PerfectGenerator(MazeGenerator):

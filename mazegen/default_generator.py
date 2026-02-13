@@ -1,6 +1,5 @@
 from typing import Any
-from maze_generator import MazeGenerator
-from collections import deque
+from .maze_generator import MazeGenerator
 import random
 
 
@@ -15,7 +14,6 @@ class BasicGenerator(MazeGenerator):
             for y in range(self.height):
                 if (x, y) not in self.logo_cells:
                     self.maze[x][y] = 15
-
 
     def is_perfect(self, cell) -> bool:
         if self.perfect is True:
@@ -35,7 +33,7 @@ class BasicGenerator(MazeGenerator):
 
         self.visited.add(start)
         self.solution[start] = None
-        
+
         for nx, ny, direction in self.get_neighbors(start):
             if (nx, ny) not in self.visited:
                 fringe.append((nx, ny, direction, start))
@@ -43,14 +41,14 @@ class BasicGenerator(MazeGenerator):
         while fringe:
             idx = random.randint(0, len(fringe) - 1)
             nx, ny, direction, current = fringe.pop(idx)
-            
+
             if self.is_perfect((nx, ny)):
                 continue
-            
+
             self.remove_wall(current, direction)
             self.visited.add((nx, ny))
             self.solution[(nx, ny)] = current
-            
+
             for nnx, nny, new_direction in self.get_neighbors((nx, ny)):
                 if (nnx, nny) not in self.visited:
                     fringe.append((nnx, nny, new_direction, (nx, ny)))

@@ -1,6 +1,5 @@
 from typing import Any, List, Tuple
 from abc import ABC, abstractmethod
-import sys
 
 
 class MazeGenerator(ABC):
@@ -26,6 +25,7 @@ class MazeGenerator(ABC):
     }
 
     def __init__(self, settings_dict: dict):
+        self.settings_dict = settings_dict
         self.width = settings_dict.get("width")
         self.height = settings_dict.get("height")
         self.entry = settings_dict.get("entry")
@@ -34,7 +34,11 @@ class MazeGenerator(ABC):
         self.perfect = settings_dict.get("perfect", "false")
         self.wall_color = settings_dict.get("wall_color", "white")
         self.flag_color = settings_dict.get("flag_color", "blue")
-        self.algorithm = settings_dict.get("algorithm", "dfs")
+        self.generation_algorithm = settings_dict.get(
+            "generation_algorithm", "dfs")
+        self.solver_algorithm = settings_dict.get(
+            "solver_algorithm", "dfs"
+        )
         self.shape = settings_dict.get("shape", "square")
         self.maze = (
             [[0 for _ in range(self.height)] for _ in range(self.width)]
@@ -44,6 +48,24 @@ class MazeGenerator(ABC):
         self.visited = set()
         self.path = []
 
+    # instantiate correct subclass based on settings -> factory method
+    def create(self):
+        # Local imports avoid circular dependencies with subclasses
+        # generation_algorithm
+        from .perfect_generator import PerfectGenerator
+        from .default_generator import BasicGenerator
+        from .shape_generator import ShapeGenerator
+        match self.generation_algorithm:
+            case "prim":
+                return BasicGenerator(self.settings_dict)
+            case "dfs":
+                #
+            case "bfs":
+                #
+            
+            case "huntkill":
+                #
+
     @abstractmethod
     def generate(self) -> Any:
         pass
@@ -51,93 +73,6 @@ class MazeGenerator(ABC):
     @abstractmethod
     def initialize_maze(self) -> None:
         pass
-
-    def display_maze(self):
-        H = self.height
-        W = self.width
-        maze = self.maze
-        SOUTH = 2
-        EAST = 4
-
-        # Map color names to ANSI codes
-        color_map = {
-            "black": 30,
-            "red": 31,
-            "green": 32,
-            "yellow": 33,
-            "blue": 34,
-            "magenta": 35,
-            "cyan": 36,
-            "white": 37,
-            "bright_black": 90,
-            "bright_red": 91,
-            "bright_green": 92,
-            "bright_yellow": 93,
-            "bright_blue": 94,
-            "bright_magenta": 95,
-            "bright_cyan": 96,
-            "bright_white": 97,
-
-            "grey": 90,
-            "gray": 90,
-            "light_red": 91,
-            "light_green": 92,
-            "light_yellow": 93,
-            "light_blue": 94,
-            "light_magenta": 95,
-            "light_cyan": 96,
-            "light_white": 97,
-        }
-
-        # default white
-        wall_code = f"\033[{color_map.get(self.wall_color, 37)}m"
-        reset_code = "\033[0m"
-
-        entry_r, entry_c = self.entry
-        exit_r, exit_c = self.exit
-
-        for r in range(2 * H + 1):
-            for c in range(2 * W + 1):
-                # Corners
-                if r % 2 == 0 and c % 2 == 0:
-                    print(wall_code + "+" + reset_code, end="")
-
-                # Horizontal walls
-                elif r % 2 == 0 and c % 2 == 1:
-                    if r == 0 or r == 2 * H:
-                        print(wall_code + "---" + reset_code, end="")
-                    else:
-                        cell_row = r // 2 - 1
-                        cell_col = c // 2
-                        if maze[cell_col][cell_row] & SOUTH:
-                            print(wall_code + "---" + reset_code, end="")
-                        else:
-                            print("   ", end="")
-
-                # Vertical walls
-                elif r % 2 == 1 and c % 2 == 0:
-                    if c == 0 or c == 2 * W:
-                        print(wall_code + "|" + reset_code, end="")
-                    else:
-                        cell_row = r // 2
-                        cell_col = c // 2 - 1
-                        if maze[cell_col][cell_row] & EAST:
-                            print(wall_code + "|" + reset_code, end="")
-                        else:
-                            print(" ", end="")
-
-                # Cell interior
-                else:
-                    cell_row = r // 2
-                    cell_col = c // 2
-                    if (cell_row, cell_col) == (entry_r, entry_c):
-                        print(" E ", end="")  # Entry
-                    elif (cell_row, cell_col) == (exit_r, exit_c):
-                        print(" X ", end="")  # Exit
-                    else:
-                        print("   ", end="")
-
-            print()
 
     def has_wall(self, location: Tuple, direction: str) -> bool:
         x, y = location
