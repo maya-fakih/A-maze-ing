@@ -1,6 +1,6 @@
-from prim_generator import PrimGenerator
-from dfs_generator import DFSGenerator
-from bfs_generator import BFSGenerator
+from generators.prim_generator import PrimGenerator
+from generators.dfs_generator import DFSGenerator
+from generators.bfs_generator import BFSGenerator
 
 
 config = {
@@ -25,11 +25,6 @@ def print_maze(self):
             row.append(f"{self.maze[x][y]:04b}")
         print(" ".join(row))
 
-print("DFS Generator")
-generator = DFSGenerator(config)
-generator.generate()
-generator.display_ascii()
-print(f" the generator is perfect flag is: {generator.perfect}")
 
 
 print("\n")
@@ -51,3 +46,8 @@ generator.generate()
 generator.display_ascii()
 print(f" the generator is perfect flag is: {generator.perfect}")
 
+print("DFS Generator")
+generator = DFSGenerator(config)
+generator.generate()
+generator.display_ascii()
+print(f" the generator is perfect flag is: {generator.perfect}")

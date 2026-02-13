@@ -1,5 +1,5 @@
 from typing import Any
-from maze_generator import MazeGenerator
+from generators.maze_generator import MazeGenerator
 import random
 
 class BFSGenerator(MazeGenerator):

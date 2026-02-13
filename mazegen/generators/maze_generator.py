@@ -1,7 +1,11 @@
+from ..shape_constraints.shape_generator import Shape
+from ..shape_constraints.diamond_shape import Diamond
+from ..shape_constraints.circle_shape import Circle
+from ..shape_constraints.heart_shape import Heart
+from ..shape_constraints.star_shape import Star
 from typing import Any, List, Tuple
 from abc import ABC, abstractmethod
 import sys
-import random
 
 
 class MazeGenerator(ABC):
@@ -195,7 +199,7 @@ class MazeGenerator(ABC):
 
     def add_shape_border(self) -> None:
         if self.shape == "diamond":
-            pass
+            shape = Diamond()
         elif self.shape == "circle":
             pass
         elif self.shape == "star":
