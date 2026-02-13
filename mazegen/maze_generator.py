@@ -53,23 +53,10 @@ class MazeGenerator(ABC):
     @abstractmethod
     def initialize_maze(self) -> None:
         pass
-
+    
+    @abstractmethod
     def create_loops(self) -> None:
-        solution_base = (
-            {cell for cell, _, solution in self.path if solution is True}
-        )
-        solution = list(solution_base)
-
-        for i in range(0, (len(solution)), 3):
-            current = solution[i]
-
-            neighbors = self.get_neighbors(current)
-            random.shuffle(neighbors)
-
-            for nx, ny, direction in neighbors:
-                if (nx, ny) not in solution_base:
-                    self.remove_wall(current, direction)
-                    break
+        pass
 
     def display_ascii(self):
         """Display maze as ASCII art"""
@@ -83,8 +70,7 @@ class MazeGenerator(ABC):
 
                 values = "   "
                 if (x, y) in {c for c, _, sol in self.path if sol is True}:
-                    values = " 👻"
-
+                    values = " 👾"
                 if y == 0 or (cell & self.NORTH):
                     top_row += "+---"
                 else:
@@ -198,9 +184,25 @@ class MazeGenerator(ABC):
         for cell in logos:
             self.logo_cells.add(cell)
 
+        #if self.shape is not None:
+        #            border = self.add_shape_border()
+        #            for cell in border:
+        #                self.logo_cells.add(cell)
+
         for x, y in self.logo_cells:
             if 0 <= x < self.width and 0 <= y < self.height:
                 self.maze[x][y] = 15
+
+    def add_shape_border(self) -> None:
+        if self.shape == "diamond":
+            pass
+        elif self.shape == "circle":
+            pass
+        elif self.shape == "star":
+            pass
+        elif self.shape == "heart":
+            pass
+        pass
 
     def write_to_file(self) -> None:
         pass

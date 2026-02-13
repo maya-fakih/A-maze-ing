@@ -1,4 +1,6 @@
-from default_generator import BasicGenerator
+from prim_generator import PrimGenerator
+from dfs_generator import DFSGenerator
+from bfs_generator import BFSGenerator
 
 
 config = {
@@ -7,7 +9,7 @@ config = {
     "entry": (0, 0),
     "exit": (18, 19),
     "output_file": "test.txt",
-    "perfect": False,
+    "perfect": True,
     "wall_color": "white",
     "flag_color": "blue",
     "algorithm": "dfs",
@@ -23,8 +25,29 @@ def print_maze(self):
             row.append(f"{self.maze[x][y]:04b}")
         print(" ".join(row))
 
-
-generator = BasicGenerator(config)
+print("DFS Generator")
+generator = DFSGenerator(config)
 generator.generate()
 generator.display_ascii()
 print(f" the generator is perfect flag is: {generator.perfect}")
+
+
+print("\n")
+
+print("Prims Generator")
+
+generator = PrimGenerator(config)
+generator.generate()
+generator.display_ascii()
+print(f" the generator is perfect flag is: {generator.perfect}")
+
+
+print("\n")
+
+print("BFS Generator")
+
+generator = BFSGenerator(config)
+generator.generate()
+generator.display_ascii()
+print(f" the generator is perfect flag is: {generator.perfect}")
+
