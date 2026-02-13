@@ -13,8 +13,10 @@ class ParsingError(Exception):
 
 mandatory_keys = ["width", "height", "entry", "exit"]
 optional_keys = ["output_file", "perfect",
-                 "wall_color", "flag_color", "algorithm", "shape"]
-algorithms = ["dfs", "bfs", "a*", "ucs"]
+                 "wall_color", "flag_color", "solver_algorithm",
+                 "shape", "generation_algorithm"]
+generation_algorithms = ["prim", "dfs", "bfs", "huntkill"]
+solver_algorithms = ["dfs", "bfs", "a*", "ucs"]
 shapes = ["diamond", "star", "heart", "square"]
 
 #   Validate color name and ensure it is not black
@@ -62,11 +64,16 @@ def validate_types(input_settings: dict) -> dict:
                 raise ParsingError("Invalid value for perfect setting\n"
                                    "Make sure the value is set to either "
                                    "true or false.")
-        elif key == "algorithm":
-            if value not in algorithms:
-                valid = ", ".join(algorithms)
+        elif key == "generation_algorithm":
+            if value not in generation_algorithms:
+                valid = ", ".join(generation_algorithms)
+                raise ParsingError(f"Invalid maze generation algorithm!\n"
+                                   f"Supported algorithms: {valid}.")
+        elif key == "solver_algorithm":
+            if value not in solver_algorithms:
+                valid = ", ".join(solver_algorithms)
                 raise ParsingError(f"Invalid maze solver algorithm!\n"
-                                   f"Suuported algorithms: {valid}.")
+                                   f"Supported algorithms: {valid}.")
         elif key == "shape":
             if value not in shapes:
                 valid = ", ".join(shapes)

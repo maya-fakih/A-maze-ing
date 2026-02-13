@@ -1,6 +1,5 @@
 from typing import Any, List, Tuple
 from abc import ABC, abstractmethod
-import sys
 
 
 class MazeGenerator(ABC):
@@ -25,7 +24,27 @@ class MazeGenerator(ABC):
         WEST: EAST
     }
 
+    # instantiate correct subclass based on settings -> factory method
+
+    @classmethod
+    def create_generator(cls, settings: dict):
+        from .prim_generator import PrimGenerator
+        from .dfs_generator import DFSGenerator
+        from .bfs_generator import BFSGenerator
+        from .huntkill_generator import HuntKillGenerator
+        match settings["generation_algorithm"]:
+            case "prim":
+                return PrimGenerator(settings)
+            case "dfs":
+                return DFSGenerator(settings)
+            case "bfs":
+                return BFSGenerator(settings)
+            case "huntkill":
+                return HuntKillGenerator(settings)
+
     def __init__(self, settings_dict: dict):
+        self.settings = settings_dict
+        self.settings = settings_dict
         self.width = settings_dict.get("width")
         self.height = settings_dict.get("height")
         self.entry = settings_dict.get("entry")
@@ -34,7 +53,11 @@ class MazeGenerator(ABC):
         self.perfect = settings_dict.get("perfect", "false")
         self.wall_color = settings_dict.get("wall_color", "white")
         self.flag_color = settings_dict.get("flag_color", "blue")
-        self.algorithm = settings_dict.get("algorithm", "dfs")
+        self.generation_algorithm = settings_dict.get(
+            "generation_algorithm", "dfs")
+        self.solver_algorithm = settings_dict.get(
+            "solver_algorithm", "dfs"
+        )
         self.shape = settings_dict.get("shape", "square")
         self.maze = (
             [[0 for _ in range(self.height)] for _ in range(self.width)]
@@ -52,9 +75,51 @@ class MazeGenerator(ABC):
     def initialize_maze(self) -> None:
         pass
 
-    @abstractmethod
-    def create_loops(self) -> None:
-        pass
+    def has_wall(self, location: Tuple, direction: str) -> bool:
+        x, y = location
+
+        if direction == 'W' and x == 0:
+            return False
+        if direction == 'E' and x == self.width-1:
+            return False
+        if direction == 'N' and y == 0:
+            return False
+        if direction == 'S' and y == self.height-1:
+            return False
+
+        if direction == 'N':
+            nx, ny = x, y-1
+        elif direction == 'S':
+            nx, ny = x, y+1
+        elif direction == 'E':
+            nx, ny = x+1, y
+        elif direction == 'W':
+            nx, ny = x-1, y
+
+        if (x, y) in self.logo_cells or (nx, ny) in self.logo_cells:
+            return False
+
+        cell_value = self.maze[x][y]
+        mask = self.MASK[direction]
+        return (cell_value & mask) != 0
+
+    def remove_wall(self, cell: Tuple, direction: str) -> None:
+        x, y = cell
+
+        if direction == 'N':
+            nx, ny = x, y-1
+        elif direction == 'S':
+            nx, ny = x, y+1
+        elif direction == 'E':
+            nx, ny = x+1, y
+        elif direction == 'W':
+            nx, ny = x-1, y
+
+        mask = self.MASK[direction]
+        opposite_mask = self.OPPOSITE[mask]
+
+        self.maze[x][y] &= ~mask
+        self.maze[nx][ny] &= ~opposite_mask
 
     def get_neighbors(self, cell: Tuple) -> List[Tuple]:
         x, y = cell
