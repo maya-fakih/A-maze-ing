@@ -1,6 +1,11 @@
 from typing import Any
+<<<<<<< HEAD:mazegen/generators/bfs_generator.py
 from generators.maze_generator import MazeGenerator
+=======
+from .maze_generator import MazeGenerator
+>>>>>>> 38968bf1d2cf3e26e96d636328756182912cff73:mazegen/bfs_generator.py
 import random
+
 
 class BFSGenerator(MazeGenerator):
     """Breadth First algorithm"""
@@ -16,19 +21,19 @@ class BFSGenerator(MazeGenerator):
 
     def create_loops(self) -> None:
         path_base = {c for c, _, s in self.path}
-        
+
         path = list(path_base)
         random.shuffle(path)
 
         for i in range(0, (len(path)), 2):
             current = path[i]
-            
+
             if current in self.logo_cells:
                 continue
 
             neighbors = self.get_neighbors(current)
             random.shuffle(neighbors)
-        
+
             for nx, ny, direction in neighbors:
                 if (nx, ny) in self.logo_cells:
                     continue
@@ -65,7 +70,7 @@ class BFSGenerator(MazeGenerator):
 
             if (nx, ny) in self.visited:
                 continue
-            
+
             self.remove_wall(current, direction)
             self.visited.add((nx, ny))
             self.solution[(nx, ny)] = current
@@ -77,7 +82,7 @@ class BFSGenerator(MazeGenerator):
                 possible_moves = []
                 if (nnx, nny) not in self.visited:
                     possible_moves.append((nnx, nny, new_direction, (nx, ny)))
-                
+
                 random.shuffle(possible_moves)
                 for move in possible_moves:
                     fringe.append(move)

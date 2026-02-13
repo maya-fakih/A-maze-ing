@@ -5,7 +5,10 @@ from ..shape_constraints.heart_shape import Heart
 from ..shape_constraints.star_shape import Star
 from typing import Any, List, Tuple
 from abc import ABC, abstractmethod
+<<<<<<< HEAD:mazegen/generators/maze_generator.py
 import sys
+=======
+>>>>>>> 38968bf1d2cf3e26e96d636328756182912cff73:mazegen/maze_generator.py
 
 
 class MazeGenerator(ABC):
@@ -30,22 +33,45 @@ class MazeGenerator(ABC):
         WEST: EAST
     }
 
+    # instantiate correct subclass based on settings -> factory method
+
+    @classmethod
+    def create_generator(cls, settings: dict):
+        from .prim_generator import PrimGenerator
+        from .dfs_generator import DFSGenerator
+        from .bfs_generator import BFSGenerator
+        from .huntkill_generator import HuntKillGenerator
+        match settings["generation_algorithm"]:
+            case "prim":
+                return PrimGenerator(settings)
+            case "dfs":
+                return DFSGenerator(settings)
+            case "bfs":
+                return BFSGenerator(settings)
+            case "huntkill":
+                return HuntKillGenerator(settings)
+
     def __init__(self, settings_dict: dict):
+        self.settings = settings_dict
+        self.settings = settings_dict
         self.width = settings_dict.get("width")
         self.height = settings_dict.get("height")
         self.entry = settings_dict.get("entry")
         self.exit = settings_dict.get("exit")
-        self.output_file = settings_dict.get("output_file")
-        self.perfect = settings_dict.get("perfect")
+        self.output_file = settings_dict.get("output_file", "output_maze.txt")
+        self.perfect = settings_dict.get("perfect", "false")
         self.wall_color = settings_dict.get("wall_color", "white")
         self.flag_color = settings_dict.get("flag_color", "blue")
-        self.algorithm = settings_dict.get("algorithm", "dfs")
+        self.generation_algorithm = settings_dict.get(
+            "generation_algorithm", "dfs")
+        self.solver_algorithm = settings_dict.get(
+            "solver_algorithm", "dfs"
+        )
         self.shape = settings_dict.get("shape", "square")
         self.maze = (
             [[0 for _ in range(self.height)] for _ in range(self.width)]
         )
         self.logo_cells = set()
-        self._add_42_logo()
         self.solution = {}
         self.visited = set()
         self.path = []
@@ -57,44 +83,6 @@ class MazeGenerator(ABC):
     @abstractmethod
     def initialize_maze(self) -> None:
         pass
-    
-    @abstractmethod
-    def create_loops(self) -> None:
-        pass
-
-    def display_ascii(self):
-        """Display maze as ASCII art"""
-        for y in range(self.height):
-            top_row = ""
-            mid_row = ""
-            for x in range(self.width):
-                cell = self.maze[x][y]
-
-                is_logo = (x, y) in self.logo_cells
-
-                values = "   "
-                if (x, y) in {c for c, _, sol in self.path if sol is True}:
-                    values = " 👾"
-                if y == 0 or (cell & self.NORTH):
-                    top_row += "+---"
-                else:
-                    top_row += "+   "
-
-                left = "|" if (x == 0 or (cell & self.WEST)) else " "
-
-                if (x, y) == self.entry:
-                    mid_row += f"{left} S "
-                elif (x, y) == self.exit:
-                    mid_row += f"{left} E "
-                elif is_logo:
-                    mid_row += f"{left}###"
-                else:
-                    mid_row += f"{left}{values}"
-
-            print(top_row + "+")
-            print(mid_row + "|")
-
-        print("+---" * self.width + "+")
 
     def has_wall(self, location: Tuple, direction: str) -> bool:
         x, y = location
@@ -157,6 +145,7 @@ class MazeGenerator(ABC):
                     neighbors.append((nx, ny, direction))
         return neighbors
 
+<<<<<<< HEAD:mazegen/generators/maze_generator.py
     def _add_42_logo(self):
         """Create 42 logo pattern in the maze if dimensions allow it."""
         if self.width < 10 or self.height < 10:
@@ -208,5 +197,7 @@ class MazeGenerator(ABC):
             pass
         pass
 
+=======
+>>>>>>> 38968bf1d2cf3e26e96d636328756182912cff73:mazegen/maze_generator.py
     def write_to_file(self) -> None:
         pass

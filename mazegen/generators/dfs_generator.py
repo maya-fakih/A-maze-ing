@@ -1,6 +1,11 @@
 from typing import Any
+<<<<<<< HEAD:mazegen/generators/dfs_generator.py
 from generators.maze_generator import MazeGenerator
+=======
+from .maze_generator import MazeGenerator
+>>>>>>> 38968bf1d2cf3e26e96d636328756182912cff73:mazegen/dfs_generator.py
 import random
+
 
 class DFSGenerator(MazeGenerator):
     """Depth First algorithm"""
@@ -16,7 +21,7 @@ class DFSGenerator(MazeGenerator):
 
     def create_loops(self) -> None:
         path_base = {c for c, _, s in self.path}
-        
+
         path = list(path_base)
         random.shuffle(path)
 
@@ -35,7 +40,6 @@ class DFSGenerator(MazeGenerator):
                 else:
                     self.remove_wall(current, direction)
                     break
-
 
     def generate(self) -> Any:
         start = self.entry
@@ -58,13 +62,12 @@ class DFSGenerator(MazeGenerator):
         random.shuffle(possible)
         fringe.extend(possible)
 
-
         while fringe:
             nx, ny, direction, current = fringe.pop()
 
             if (nx, ny) in self.visited:
                 continue
-            
+
             self.remove_wall(current, direction)
             self.visited.add((nx, ny))
             self.solution[(nx, ny)] = current
@@ -76,7 +79,7 @@ class DFSGenerator(MazeGenerator):
                 possible_moves = []
                 if (nnx, nny) not in self.visited:
                     possible_moves.append((nnx, nny, new_direction, (nx, ny)))
-                
+
                 random.shuffle(possible_moves)
                 for move in possible_moves:
                     fringe.append(move)
