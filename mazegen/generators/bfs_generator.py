@@ -15,27 +15,6 @@ class BFSGenerator(MazeGenerator):
                 if (x, y) not in self.logo_cells:
                     self.maze[x][y] = 15
 
-    def create_loops(self) -> None:
-        path_base = {c for c, _, s in self.path}
-
-        path = list(path_base)
-        random.shuffle(path)
-
-        for i in range(0, (len(path)), 2):
-            current = path[i]
-
-            if current in self.logo_cells:
-                continue
-
-            neighbors = self.get_neighbors(current)
-            random.shuffle(neighbors)
-
-            for nx, ny, direction in neighbors:
-                if (nx, ny) in self.logo_cells:
-                    continue
-                else:
-                    self.remove_wall(current, direction)
-                    break
 
     def generate(self) -> Any:
         self.visited = set(self.logo_cells)

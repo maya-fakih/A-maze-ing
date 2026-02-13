@@ -6,6 +6,7 @@ from ..shape_constraints.diamond_shape import Diamond
 from typing import Any, List, Tuple
 from abc import ABC, abstractmethod
 import sys
+import random
 
 class MazeGenerator(ABC):
     NORTH = 0b0001
@@ -56,7 +57,7 @@ class MazeGenerator(ABC):
         self.entry = settings_dict.get("entry")
         self.exit = settings_dict.get("exit")
         self.output_file = settings_dict.get("output_file", "output_maze.txt")
-        self.perfect = settings_dict.get("perfect", "false")
+        self.perfect = settings_dict.get("perfect", False)
         self.wall_color = settings_dict.get("wall_color", "white")
         self.flag_color = settings_dict.get("flag_color", "blue")
         self.generation_algorithm = settings_dict.get(
@@ -81,6 +82,28 @@ class MazeGenerator(ABC):
     @abstractmethod
     def initialize_maze(self) -> None:
         pass
+    
+    def create_loops(self) -> None:
+        path_base = {c for c, _, s in self.path}
+
+        path = list(path_base)
+        random.shuffle(path)
+
+        for i in range(0, (len(path)), 2):
+            current = path[i]
+
+            if current in self.logo_cells:
+                continue
+
+            neighbors = self.get_neighbors(current)
+            random.shuffle(neighbors)
+
+            for nx, ny, direction in neighbors:
+                if (nx, ny) in self.logo_cells:
+                    continue
+                else:
+                    self.remove_wall(current, direction)
+                    break
 
     def has_wall(self, location: Tuple, direction: str) -> bool:
         x, y = location
