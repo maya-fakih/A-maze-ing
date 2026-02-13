@@ -1,11 +1,9 @@
 from typing import Any
 from maze_generator import MazeGenerator
-from collections import deque
 import random
 
-
-class BasicGenerator(MazeGenerator):
-    """Prim's algorithm"""
+class DFSGenerator(MazeGenerator):
+    """Depth First algorithm"""
 
     def __init__(self, settings_dict):
         super().__init__(settings_dict)
@@ -16,11 +14,28 @@ class BasicGenerator(MazeGenerator):
                 if (x, y) not in self.logo_cells:
                     self.maze[x][y] = 15
 
+    def create_loops(self) -> None:
+        path_base = {c for c, _, s in self.path}
+        
+        path = list(path_base)
+        random.shuffle(path)
 
-    def is_perfect(self, cell) -> bool:
-        if self.perfect is True:
-            return (cell in self.visited or cell in self.solution)
-        return (cell in self.solution)
+        for i in range(0, (len(path)), 2):
+            current = path[i]
+
+            if current in self.logo_cells:
+                continue
+
+            neighbors = self.get_neighbors(current)
+            random.shuffle(neighbors)
+
+            for nx, ny, direction in neighbors:
+                if (nx, ny) in self.logo_cells:
+                    continue
+                else:
+                    self.remove_wall(current, direction)
+                    break
+
 
     def generate(self) -> Any:
         start = self.entry
@@ -35,25 +50,36 @@ class BasicGenerator(MazeGenerator):
 
         self.visited.add(start)
         self.solution[start] = None
-        
+
+        possible = []
         for nx, ny, direction in self.get_neighbors(start):
             if (nx, ny) not in self.visited:
-                fringe.append((nx, ny, direction, start))
+                possible.append((nx, ny, direction, start))
+        random.shuffle(possible)
+        fringe.extend(possible)
+
 
         while fringe:
-            idx = random.randint(0, len(fringe) - 1)
-            nx, ny, direction, current = fringe.pop(idx)
-            
-            if self.is_perfect((nx, ny)):
+            nx, ny, direction, current = fringe.pop()
+
+            if (nx, ny) in self.visited:
                 continue
             
             self.remove_wall(current, direction)
             self.visited.add((nx, ny))
             self.solution[(nx, ny)] = current
-            
-            for nnx, nny, new_direction in self.get_neighbors((nx, ny)):
+
+            neighbors = self.get_neighbors((nx, ny))
+            random.shuffle(neighbors)
+
+            for nnx, nny, new_direction in neighbors:
+                possible_moves = []
                 if (nnx, nny) not in self.visited:
-                    fringe.append((nnx, nny, new_direction, (nx, ny)))
+                    possible_moves.append((nnx, nny, new_direction, (nx, ny)))
+                
+                random.shuffle(possible_moves)
+                for move in possible_moves:
+                    fringe.append(move)
 
         if self.exit in self.solution:
             print("exit reached")
@@ -75,3 +101,6 @@ class BasicGenerator(MazeGenerator):
             for cell in self.visited:
                 x, y = cell
                 self.path.append((cell, self.maze[x][y], False))
+
+        if self.perfect is False:
+            self.create_loops()
