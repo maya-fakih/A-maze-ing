@@ -18,6 +18,7 @@ class DFSGenerator(MazeGenerator):
         path_base = {c for c, _, s in self.path}
         
         path = list(path_base)
+        random.shuffle(path)
 
         for i in range(0, (len(path)), 2):
             current = path[i]
@@ -57,7 +58,7 @@ class DFSGenerator(MazeGenerator):
         random.shuffle(possible)
         fringe.extend(possible)
 
-        
+
         while fringe:
             nx, ny, direction, current = fringe.pop()
 
@@ -68,7 +69,10 @@ class DFSGenerator(MazeGenerator):
             self.visited.add((nx, ny))
             self.solution[(nx, ny)] = current
 
-            for nnx, nny, new_direction in self.get_neighbors((nx, ny)):
+            neighbors = self.get_neighbors((nx, ny))
+            random.shuffle(neighbors)
+
+            for nnx, nny, new_direction in neighbors:
                 possible_moves = []
                 if (nnx, nny) not in self.visited:
                     possible_moves.append((nnx, nny, new_direction, (nx, ny)))
