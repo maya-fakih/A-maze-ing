@@ -1,16 +1,14 @@
-from mazegen.generators.prim_generator import PrimGenerator
-from mazegen.generators.dfs_generator import DFSGenerator
-from mazegen.generators.bfs_generator import BFSGenerator
-from mazegen.generators.huntkill_generator import HuntKillGenerator
+from mazegen.generators import BFSGenerator, DFSGenerator
+from mazegen.generators import PrimGenerator, HuntKillGenerator
 
 
 config = {
-    "width": 5,
-    "height": 5,
-    "entry": (0, 0),
+    "width": 30,
+    "height": 30,
+    "entry": (8, 8),
     "exit": (18, 19),
     "output_file": "test.txt",
-    "perfect": False,
+    "perfect": True,
     "wall_color": "white",
     "flag_color": "blue",
     "algorithm": "dfs",
