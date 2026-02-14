@@ -1,19 +1,18 @@
-from mazegen.generators.prim_generator import PrimGenerator
-from mazegen.generators.dfs_generator import DFSGenerator
-from mazegen.generators.bfs_generator import BFSGenerator
+from mazegen.generators import BFSGenerator, DFSGenerator
+from mazegen.generators import PrimGenerator, HuntKillGenerator
 
 
 config = {
-    "width": 25,
-    "height": 20,
-    "entry": (0, 0),
+    "width": 30,
+    "height": 30,
+    "entry": (8, 8),
     "exit": (18, 19),
     "output_file": "test.txt",
-    "perfect": False,
+    "perfect": True,
     "wall_color": "white",
     "flag_color": "blue",
     "algorithm": "dfs",
-    "shape": "square"
+    "shape": "star"
 }
 
 
@@ -47,6 +46,13 @@ print(f" the generator is perfect flag is: {generator.perfect}")
 
 print("DFS Generator")
 generator = DFSGenerator(config)
+generator.generate()
+generator.display_ascii()
+print(f" the generator is perfect flag is: {generator.perfect}")
+
+
+print("Hunt and Kill Generator")
+generator = HuntKillGenerator(config)
 generator.generate()
 generator.display_ascii()
 print(f" the generator is perfect flag is: {generator.perfect}")

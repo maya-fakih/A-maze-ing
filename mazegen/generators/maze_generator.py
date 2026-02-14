@@ -1,12 +1,11 @@
-# from ..shape_constraints.shape_generator import Shape
-# from ..shape_constraints.diamond_shape import Diamond
-# from ..shape_constraints.circle_shape import Circle
-# from ..shape_constraints.heart_shape import Heart
-# from ..shape_constraints.star_shape import Star
+from ..shapes import Flower, Heart, Star
+# from ..errors import InitializationError, ShapeError
+
 from typing import Any, List, Tuple
 from abc import ABC, abstractmethod
 import sys
 import random
+
 
 
 class MazeGenerator(ABC):
@@ -82,6 +81,7 @@ class MazeGenerator(ABC):
     @abstractmethod
     def initialize_maze(self) -> None:
         pass
+
 
     def create_loops(self) -> None:
         path_base = {c for c, _, s in self.path}
@@ -197,25 +197,23 @@ class MazeGenerator(ABC):
         for cell in logos:
             self.logo_cells.add(cell)
 
-        # if self.shape is not None:
-        #            border = self.add_shape_border()
-        #            for cell in border:
-        #                self.logo_cells.add(cell)
+        if self.shape is not None:
+            border = self.add_shape_border()
+            for cell in border:
+                self.logo_cells.add(cell)
 
         for x, y in self.logo_cells:
             if 0 <= x < self.width and 0 <= y < self.height:
                 self.maze[x][y] = 15
 
-    # def add_shape_border(self) -> None:
-    #    if self.shape == "diamond":
-    #        shape = Diamond()
-    #    elif self.shape == "circle":
-    #        pass
-    #    elif self.shape == "star":
-    #        pass
-    #    elif self.shape == "heart":
-    #        pass
-    #    pass
+    def add_shape_border(self) -> list:
+        if self.shape == "star":
+            shape = Star(self.width, self.height)
+        elif self.shape == "heart":
+            shape = Heart(self.width, self.height)
+        elif self.shape == "flower":
+            shape = Flower(self.width, self.height)
+        return (shape.generate())
 
     def write_to_file(self) -> None:
         pass
