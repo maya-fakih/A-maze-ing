@@ -11,9 +11,9 @@ for i in range(width):
         j1 = width // 2 - i
         j2 = width // 2 + 1 + i
     else:
-        j1 = width // 2 + i
-        j2 = width // 2 - i
-        i += 1
+        j1 = width // 2 + j
+        j2 = width // 2 - j
+        j += 1
     if j1 < 0:
         forward = False
         j = 0

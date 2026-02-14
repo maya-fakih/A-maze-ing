@@ -1,10 +1,7 @@
 from project.parsing import parsing as helper
 import sys
 from mazegen.maze_generator import MazeGenerator
-from project.maze_displayer.ascii_display import (
-    display_gen,
-    display_sol
-)
+from project.maze_displayer.ascii_display import display_gen
 
 
 def parse_input(argv: list[str]) -> dict:
@@ -35,7 +32,7 @@ def display_maze(maze_gen: MazeGenerator, solution: list[list]) -> None:
         match option:
             case 1:
                 display_gen(maze_gen)
-                display_sol(maze_gen, solution)
+                # display_sol(maze_gen, solution)
             case 2:
                 print("MiniLibX render")
             case _:
