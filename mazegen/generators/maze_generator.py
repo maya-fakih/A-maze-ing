@@ -7,6 +7,7 @@ import sys
 import random
 
 
+
 class MazeGenerator(ABC):
     NORTH = 0b0001
     EAST = 0b0010
@@ -80,6 +81,7 @@ class MazeGenerator(ABC):
     @abstractmethod
     def initialize_maze(self) -> None:
         pass
+
 
     def create_loops(self) -> None:
         path_base = {c for c, _, s in self.path}
