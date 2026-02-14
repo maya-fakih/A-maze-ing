@@ -1,6 +1,7 @@
 from mazegen.generators.prim_generator import PrimGenerator
 from mazegen.generators.dfs_generator import DFSGenerator
 from mazegen.generators.bfs_generator import BFSGenerator
+from mazegen.generators.huntkill_generator import HuntKillGenerator
 
 
 config = {
@@ -48,6 +49,13 @@ print(f" the generator is perfect flag is: {generator.perfect}")
 
 print("DFS Generator")
 generator = DFSGenerator(config)
+generator.generate()
+generator.display_ascii()
+print(f" the generator is perfect flag is: {generator.perfect}")
+
+
+print("Hunt and Kill Generator")
+generator = HuntKillGenerator(config)
 generator.generate()
 generator.display_ascii()
 print(f" the generator is perfect flag is: {generator.perfect}")
