@@ -27,7 +27,6 @@ def print_maze(self):
         print(" ".join(row))
 
 
-
 print("\n")
 
 print("Prims Generator")

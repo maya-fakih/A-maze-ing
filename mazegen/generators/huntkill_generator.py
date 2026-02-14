@@ -50,7 +50,7 @@ class HuntKillGenerator(MazeGenerator):
         fringe.extend(possible)
 
         while fringe:
-            if hunt == True:
+            if hunt is True:
                 target = self.hunt(fringe)
                 fringe.remove(target)
                 nx, ny, direction, current = target
