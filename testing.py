@@ -5,8 +5,8 @@ from mazegen.generators.huntkill_generator import HuntKillGenerator
 
 
 config = {
-    "width": 25,
-    "height": 20,
+    "width": 5,
+    "height": 5,
     "entry": (0, 0),
     "exit": (18, 19),
     "output_file": "test.txt",
@@ -14,7 +14,7 @@ config = {
     "wall_color": "white",
     "flag_color": "blue",
     "algorithm": "dfs",
-    "shape": "square"
+    "shape": "star"
 }
 
 

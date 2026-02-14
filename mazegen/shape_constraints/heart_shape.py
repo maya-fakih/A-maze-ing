@@ -4,7 +4,7 @@ from .shape_generator import Shape
 class Heart(Shape):
     def generate(self) -> list:
         coords = []
-        scale = min(self.width, self.height) / 30
+        _ = min(self.width, self.height) / 30
         
         for y in range(self.height):
             for x in range(self.width):
