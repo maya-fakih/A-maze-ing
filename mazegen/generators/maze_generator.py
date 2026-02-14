@@ -1,5 +1,12 @@
+# from ..shape_constraints.shape_generator import Shape
+# from ..shape_constraints.diamond_shape import Diamond
+# from ..shape_constraints.circle_shape import Circle
+# from ..shape_constraints.heart_shape import Heart
+# from ..shape_constraints.star_shape import Star
 from typing import Any, List, Tuple
 from abc import ABC, abstractmethod
+import sys
+import random
 
 
 class MazeGenerator(ABC):
@@ -50,7 +57,7 @@ class MazeGenerator(ABC):
         self.entry = settings_dict.get("entry")
         self.exit = settings_dict.get("exit")
         self.output_file = settings_dict.get("output_file", "output_maze.txt")
-        self.perfect = settings_dict.get("perfect", "false")
+        self.perfect = settings_dict.get("perfect", False)
         self.wall_color = settings_dict.get("wall_color", "white")
         self.flag_color = settings_dict.get("flag_color", "blue")
         self.generation_algorithm = settings_dict.get(
@@ -63,6 +70,7 @@ class MazeGenerator(ABC):
             [[0 for _ in range(self.height)] for _ in range(self.width)]
         )
         self.logo_cells = set()
+        self._add_42_logo()
         self.solution = {}
         self.visited = set()
         self.path = []
@@ -74,6 +82,28 @@ class MazeGenerator(ABC):
     @abstractmethod
     def initialize_maze(self) -> None:
         pass
+
+    def create_loops(self) -> None:
+        path_base = {c for c, _, s in self.path}
+
+        path = list(path_base)
+        random.shuffle(path)
+
+        for i in range(0, (len(path)), 2):
+            current = path[i]
+
+            if current in self.logo_cells:
+                continue
+
+            neighbors = self.get_neighbors(current)
+            random.shuffle(neighbors)
+
+            for nx, ny, direction in neighbors:
+                if (nx, ny) in self.logo_cells:
+                    continue
+                else:
+                    self.remove_wall(current, direction)
+                    break
 
     def has_wall(self, location: Tuple, direction: str) -> bool:
         x, y = location
@@ -136,5 +166,90 @@ class MazeGenerator(ABC):
                     neighbors.append((nx, ny, direction))
         return neighbors
 
+    def _add_42_logo(self):
+        """Create 42 logo pattern in the maze if dimensions allow it."""
+        if self.width < 10 or self.height < 10:
+            sys.stderr.write("Could not draw 42 logo. (dimentions too small)")
+            return
+
+        start_x = self.width // 2 - 4
+        start_y = self.height // 2 - 2
+        logos = [
+            (start_x, start_y),
+            (start_x, start_y + 1),
+            (start_x, start_y + 2),
+            (start_x + 1, start_y + 2),
+            (start_x + 2, start_y + 2),
+            (start_x + 2, start_y + 3),
+            (start_x + 2, start_y + 4),
+            (start_x + 4, start_y),
+            (start_x + 4, start_y + 2),
+            (start_x + 4, start_y + 3),
+            (start_x + 4, start_y + 4),
+            (start_x + 5, start_y),
+            (start_x + 5, start_y + 2),
+            (start_x + 5, start_y + 4),
+            (start_x + 6, start_y),
+            (start_x + 6, start_y + 1),
+            (start_x + 6, start_y + 2),
+            (start_x + 6, start_y + 4),
+        ]
+        for cell in logos:
+            self.logo_cells.add(cell)
+
+        # if self.shape is not None:
+        #            border = self.add_shape_border()
+        #            for cell in border:
+        #                self.logo_cells.add(cell)
+
+        for x, y in self.logo_cells:
+            if 0 <= x < self.width and 0 <= y < self.height:
+                self.maze[x][y] = 15
+
+    # def add_shape_border(self) -> None:
+    #    if self.shape == "diamond":
+    #        shape = Diamond()
+    #    elif self.shape == "circle":
+    #        pass
+    #    elif self.shape == "star":
+    #        pass
+    #    elif self.shape == "heart":
+    #        pass
+    #    pass
+
     def write_to_file(self) -> None:
         pass
+
+    def display_ascii(self):
+        """Display maze as ASCII art"""
+        for y in range(self.height):
+            top_row = ""
+            mid_row = ""
+            for x in range(self.width):
+                cell = self.maze[x][y]
+
+                is_logo = (x, y) in self.logo_cells
+
+                values = "   "
+                if (x, y) in {c for c, _, sol in self.path if sol is True}:
+                    values = " 👾"
+                if y == 0 or (cell & self.NORTH):
+                    top_row += "+---"
+                else:
+                    top_row += "+   "
+
+                left = "|" if (x == 0 or (cell & self.WEST)) else " "
+
+                if (x, y) == self.entry:
+                    mid_row += f"{left} S "
+                elif (x, y) == self.exit:
+                    mid_row += f"{left} E "
+                elif is_logo:
+                    mid_row += f"{left}###"
+                else:
+                    mid_row += f"{left}{values}"
+
+            print(top_row + "+")
+            print(mid_row + "|")
+
+        print("+---" * self.width + "+")

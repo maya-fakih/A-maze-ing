@@ -1,6 +1,6 @@
 from project.parsing import parsing as helper
 import sys
-from mazegen.maze_generator import MazeGenerator
+from mazegen.generators.maze_generator import MazeGenerator
 from project.maze_displayer.ascii_display import display_gen
 
 

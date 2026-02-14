@@ -1,4 +1,4 @@
-﻿from mazegen.maze_generator import MazeGenerator
+﻿from mazegen.generators.maze_generator import MazeGenerator
 
 color_map = {
     "black": 30,
@@ -89,22 +89,10 @@ def _print_cell_interior(
         print("   ", end="")
 
 
-def display_gen(maze: MazeGenerator):
-    H = maze.height
-    W = maze.width
-    EAST = 2
-    SOUTH = 4
-    grid = maze.maze
-
-    # default white
-    wall_code = f"\033[{color_map.get(maze.wall_color, 37)}m"
-    flag_code = f"\033[{color_map.get(maze.flag_color, 34)}m"
-    reset_code = "\033[0m"
-
-    # Create 42 flag pattern if maze is large enough
+def _add_42_logo(width: int, height: int) -> set:
     flag_cells = set()
-    if H >= 20 and W >= 20:
 
+    if height >= 20 and width >= 20:
         pattern = [
             "   ##       #####  ",
             "  # #      ##   ## ",
@@ -118,16 +106,34 @@ def display_gen(maze: MazeGenerator):
         pattern_width = max(len(row) for row in pattern)
 
         # Center the pattern
-        start_y = H // 2 - pattern_height // 2
-        start_x = W // 2 - pattern_width // 2
+        start_y = height // 2 - pattern_height // 2
+        start_x = width // 2 - pattern_width // 2
 
         for dy, row in enumerate(pattern):
             for dx, ch in enumerate(row):
                 if ch == "#":
                     y = start_y + dy
                     x = start_x + dx
-                    if 0 <= x < W and 0 <= y < H:
+                    if 0 <= x < width and 0 <= y < height:
                         flag_cells.add((x, y))
+
+    return flag_cells
+
+
+def display_gen(maze: MazeGenerator):
+    H = maze.height
+    W = maze.width
+    EAST = 2
+    SOUTH = 4
+    grid = maze.maze
+
+    # default white
+    wall_code = f"\033[{color_map.get(maze.wall_color, 37)}m"
+    flag_code = f"\033[{color_map.get(maze.flag_color, 34)}m"
+    reset_code = "\033[0m"
+
+    # Create 42 flag pattern if maze is large enough
+    flag_cells = _add_42_logo(W, H)
 
     for r in range(2 * H + 1):
         for c in range(2 * W + 1):
