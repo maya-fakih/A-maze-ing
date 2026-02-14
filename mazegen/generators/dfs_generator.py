@@ -15,7 +15,6 @@ class DFSGenerator(MazeGenerator):
                 if (x, y) not in self.logo_cells:
                     self.maze[x][y] = 15
 
-
     def generate(self) -> Any:
         start = self.entry
         fringe = []

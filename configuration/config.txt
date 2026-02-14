@@ -5,8 +5,8 @@ EXIT=30,19
 OUTPUT_FILE=maze.txt
 PERFECT=True
 SHAPE=square
-WALL_COLOR=grey
-FLAG_COLOR=blue
+WALL_COLOR=yellow
+FLAG_COLOR=red
 GENERATION_ALGORITHM=prim
 SOLVER_ALGORITHM=a*
 # This line is to be ignored

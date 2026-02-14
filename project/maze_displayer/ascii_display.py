@@ -77,47 +77,16 @@ def _print_vertical_wall(
 def _print_cell_interior(
     r: int,
     c: int,
-    flag_cells: set,
+    logo_cells: set,
     flag_code: str,
     reset_code: str,
 ):
     cell_row = r // 2
     cell_col = c // 2
-    if (cell_col, cell_row) in flag_cells:
-        print(flag_code + "###" + reset_code, end="")
+    if (cell_col, cell_row) in logo_cells:
+        print(flag_code + " # " + reset_code, end="")
     else:
         print("   ", end="")
-
-
-def _add_42_logo(width: int, height: int) -> set:
-    flag_cells = set()
-
-    if height >= 20 and width >= 20:
-        pattern = [
-            "   ##       #####  ",
-            "  # #      ##   ## ",
-            " #  #           ## ",
-            "#   #        ####  ",
-            "#####       ##     ",
-            "    #       ####### ",
-        ]
-
-        pattern_height = len(pattern)
-        pattern_width = max(len(row) for row in pattern)
-
-        # Center the pattern
-        start_y = height // 2 - pattern_height // 2
-        start_x = width // 2 - pattern_width // 2
-
-        for dy, row in enumerate(pattern):
-            for dx, ch in enumerate(row):
-                if ch == "#":
-                    y = start_y + dy
-                    x = start_x + dx
-                    if 0 <= x < width and 0 <= y < height:
-                        flag_cells.add((x, y))
-
-    return flag_cells
 
 
 def display_gen(maze: MazeGenerator):
@@ -126,14 +95,12 @@ def display_gen(maze: MazeGenerator):
     EAST = 2
     SOUTH = 4
     grid = maze.maze
+    logo_cells = maze.logo_cells
 
     # default white
     wall_code = f"\033[{color_map.get(maze.wall_color, 37)}m"
     flag_code = f"\033[{color_map.get(maze.flag_color, 34)}m"
     reset_code = "\033[0m"
-
-    # Create 42 flag pattern if maze is large enough
-    flag_cells = _add_42_logo(W, H)
 
     for r in range(2 * H + 1):
         for c in range(2 * W + 1):
@@ -150,8 +117,6 @@ def display_gen(maze: MazeGenerator):
                     r, c, W, grid, wall_code, reset_code, EAST)
             # Cell interior
             else:
-                _print_cell_interior(
-                    r, c,
-                    flag_cells, flag_code, reset_code)
+                _print_cell_interior(r, c, logo_cells, flag_code, reset_code)
 
         print()

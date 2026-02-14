@@ -15,7 +15,6 @@ class BFSGenerator(MazeGenerator):
                 if (x, y) not in self.logo_cells:
                     self.maze[x][y] = 15
 
-
     def generate(self) -> Any:
         self.visited = set(self.logo_cells)
         self.solution.clear()
