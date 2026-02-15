@@ -1,5 +1,6 @@
 from project.parsing import parsing as helper
 import sys
+import os
 from mazegen.generators.maze_generator import MazeGenerator
 from project.maze_displayer.ascii_display import display_gen
 
@@ -23,6 +24,11 @@ def parse_input(argv: list[str]) -> dict:
     return settings_dict
 
 
+def clear_terminal() -> None:
+    """Clear the terminal screen in a cross-platform way."""
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+
 def display_maze(maze_gen: MazeGenerator, solution: list[list]) -> None:
     try:
         print("Maze display options:\n")
@@ -31,6 +37,7 @@ def display_maze(maze_gen: MazeGenerator, solution: list[list]) -> None:
         option = int(input("Please enter your choice (1-2): "))
         match option:
             case 1:
+                clear_terminal()
                 display_gen(maze_gen)
                 # display_sol(maze_gen, solution)
             case 2:

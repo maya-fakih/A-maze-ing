@@ -7,7 +7,6 @@ import sys
 import random
 
 
-
 class MazeGenerator(ABC):
     NORTH = 0b0001
     EAST = 0b0010
@@ -81,7 +80,6 @@ class MazeGenerator(ABC):
     @abstractmethod
     def initialize_maze(self) -> None:
         pass
-
 
     def create_loops(self) -> None:
         path_base = {c for c, _, s in self.path}
@@ -217,37 +215,3 @@ class MazeGenerator(ABC):
 
     def write_to_file(self) -> None:
         pass
-
-    def display_ascii(self):
-        """Display maze as ASCII art"""
-        for y in range(self.height):
-            top_row = ""
-            mid_row = ""
-            for x in range(self.width):
-                cell = self.maze[x][y]
-
-                is_logo = (x, y) in self.logo_cells
-
-                values = "   "
-                if (x, y) in {c for c, _, sol in self.path if sol is True}:
-                    values = " 👾"
-                if y == 0 or (cell & self.NORTH):
-                    top_row += "+---"
-                else:
-                    top_row += "+   "
-
-                left = "|" if (x == 0 or (cell & self.WEST)) else " "
-
-                if (x, y) == self.entry:
-                    mid_row += f"{left} S "
-                elif (x, y) == self.exit:
-                    mid_row += f"{left} E "
-                elif is_logo:
-                    mid_row += f"{left}###"
-                else:
-                    mid_row += f"{left}{values}"
-
-            print(top_row + "+")
-            print(mid_row + "|")
-
-        print("+---" * self.width + "+")

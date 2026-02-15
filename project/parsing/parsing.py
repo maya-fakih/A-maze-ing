@@ -17,7 +17,7 @@ optional_keys = ["output_file", "perfect",
                  "shape", "generation_algorithm"]
 generation_algorithms = ["prim", "dfs", "bfs", "huntkill"]
 solver_algorithms = ["dfs", "bfs", "a*", "ucs"]
-shapes = ["diamond", "star", "heart", "square"]
+shapes = ["star", "heart", "square", "flower"]
 
 #   Validate color name and ensure it is not black
 
