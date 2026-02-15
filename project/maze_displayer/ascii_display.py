@@ -125,6 +125,7 @@ def display_gen(maze: MazeGenerator):
                     r, c, W, grid, wall_code, reset_code, EAST)
             # Cell interior
             else:
-                _print_cell_interior(r, c, logo_cells, flag_code, reset_code, entry, exit)
+                _print_cell_interior(r, c, logo_cells, flag_code, reset_code,
+                                     entry, exit)
 
         print()

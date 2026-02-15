@@ -7,7 +7,6 @@ import sys
 import random
 
 
-
 class MazeGenerator(ABC):
     NORTH = 0b0001
     EAST = 0b0010
