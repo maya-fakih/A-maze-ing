@@ -198,7 +198,7 @@ class MazeGenerator(ABC):
         for cell in logos:
             self.logo_cells.add(cell)
 
-        if self.shape is not None:
+        if self.shape != "square":
             border = self.add_shape_border()
             for cell in border:
                 self.logo_cells.add(cell)
