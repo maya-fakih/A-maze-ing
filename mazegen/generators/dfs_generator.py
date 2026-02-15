@@ -9,12 +9,6 @@ class DFSGenerator(MazeGenerator):
     def __init__(self, settings_dict):
         super().__init__(settings_dict)
 
-    def initialize_maze(self) -> None:
-        for x in range(self.width):
-            for y in range(self.height):
-                if (x, y) not in self.logo_cells:
-                    self.maze[x][y] = 15
-
     def generate(self) -> Any:
         start = self.entry
         fringe = []
