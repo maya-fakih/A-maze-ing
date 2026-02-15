@@ -84,7 +84,7 @@ def _print_cell_interior(
     cell_row = r // 2
     cell_col = c // 2
     if (cell_col, cell_row) in logo_cells:
-        print(flag_code + " # " + reset_code, end="")
+        print(flag_code + "███" + reset_code, end="")
     else:
         print("   ", end="")
 
@@ -96,6 +96,8 @@ def display_gen(maze: MazeGenerator):
     SOUTH = 4
     grid = maze.maze
     logo_cells = maze.logo_cells
+    entry = maze.entry
+    exit = maze.exit
 
     # default white
     wall_code = f"\033[{color_map.get(maze.wall_color, 37)}m"
