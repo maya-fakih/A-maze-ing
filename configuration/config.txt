@@ -4,9 +4,9 @@ ENTRY=10, 10
 EXIT=20,19
 OUTPUT_FILE=maze.txt
 PERFECT=True
-SHAPE= star
+SHAPE= flower
 WALL_COLOR=cyan
-FLAG_COLOR=yellow
+FLAG_COLOR=magenta
 GENERATION_ALGORITHM=bfs
 SOLVER_ALGORITHM=A*
 # This line is to be ignored
