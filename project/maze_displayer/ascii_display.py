@@ -1,4 +1,7 @@
 ﻿from mazegen.generators.maze_generator import MazeGenerator
+from project.parsing import parsing as helper
+import sys
+import os
 
 color_map = {
     "black": 30,
@@ -27,6 +30,10 @@ color_map = {
     "light_cyan": 96,
     "light_white": 97,
 }
+
+
+def clear_terminal() -> None:
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 
 def _print_corner(wall_code: str, reset_code: str):
@@ -79,52 +86,97 @@ def _print_cell_interior(
     c: int,
     logo_cells: set,
     solution_cells: set,
+    path: bool,
     flag_code: str,
-    solution_code: str,
     reset_code: str,
     entry: tuple,
     exit: tuple,
 ):
     cell_row = r // 2
     cell_col = c // 2
-    if (cell_col, cell_row) in logo_cells:
+    if (path is True) and ((cell_col, cell_row) in solution_cells):
+        print(" ★ ", end="")
+    elif (cell_col, cell_row) in logo_cells:
         print(flag_code + "███" + reset_code, end="")
     elif (cell_col, cell_row) == entry:
-        print(flag_code + " S " + reset_code, end="")
-    elif (cell_col, cell_row) == exit:
         print(flag_code + " E " + reset_code, end="")
+    elif (cell_col, cell_row) == exit:
+        print(flag_code + " X " + reset_code, end="")
     else:
         print("   ", end="")
 
 
-def show_options() -> None:
-    print("\n=== A-MAZE-ING ===")
-    print("1. Re-generate a new maze")
-    print("2. Show/Hide path from entry to exit")
-    print("3. Rotate maze colors")
-    print("4. Quit")
-    choice = int(input("Choice? (1-4): "))
+def show_options(maze_gen: MazeGenerator, path: bool) -> None:
+    try:
+        print("\n=== A-MAZE-ING ===")
+        print("1. Re-generate a new maze")
+        print("2. Show/Hide path from entry to exit")
+        print("3. Rotate maze colors")
+        print("4. Rotate flag color")
+        print("5. Quit")
+        choice = int(input("Choice? (1-5): "))
+        match choice:
+            case 1:
+                # code that re-generates the maze
+                maze_gen.generate()
+                maze_gen.output_to_file()
+                clear_terminal()
+                display_terminal(maze_gen, path)
+            case 2:
+                # code that shows/hides path from entry to exit
+                # initially it is hidden, then we make it visible
+                if path is True:
+                    clear_terminal()
+                    display_terminal(maze_gen, False)
+                else:
+                    clear_terminal()
+                    display_terminal(maze_gen, True)
+            case 3:
+                # rotate colors
+                # ask user for new wall color
+                color = "hi"
+                while (not helper.validate_color_name(color)):
+                    color = input("Enter a valid wall color: ")
+                else:
+                    clear_terminal()
+                    maze_gen.wall_color = color
+                    display_terminal(maze_gen, path)
+            case 4:
+                # change flag color
+                color = "hi"
+                while (not helper.validate_color_name(color)):
+                    color = input("Enter a valid flag color: ")
+                else:
+                    clear_terminal()
+                    maze_gen.flag_color = color
+                    display_terminal(maze_gen, path)
+            case 5:
+                sys.exit()
+    except ValueError:
+        print("Error! Invalid choice.")
+        sys.exit()
 
 
-def display_terminal(maze: MazeGenerator):
-    H = maze.height
-    W = maze.width
+def display_terminal(maze_gen: MazeGenerator, path: bool):
+    # if path is true show emoji on self.path values
+    H = maze_gen.height
+    W = maze_gen.width
     EAST = 2
     SOUTH = 4
-    grid = maze.maze
-    logo_cells = maze.logo_cells
-    entry = maze.entry
-    exit = maze.exit
+    grid = maze_gen.maze
+    logo_cells = maze_gen.logo_cells
+    entry = maze_gen.entry
+    exit = maze_gen.exit
 
     # Extract solution cells from path
     solution_cells = {cell for cell, _,
-                      is_solution in maze.path if is_solution}
+                      is_solution in maze_gen.path if is_solution}
 
     # default white
-    wall_code = f"\033[{color_map.get(maze.wall_color, 37)}m"
-    flag_code = f"\033[{color_map.get(maze.flag_color, 34)}m"
-    solution_code = f"\033[{color_map.get(
-        getattr(maze, 'solution_color', 'white'), 32)}m"
+    wall_code = f"\033[{color_map.get(maze_gen.wall_color, 37)}m"
+    flag_code = f"\033[{color_map.get(maze_gen.flag_color, 34)}m"
+    # solution_code = f"\033[{color_map.get(
+    #     getattr(maze_gen, 'solution_color', 'white'), 32)}m"
     reset_code = "\033[0m"
 
     for r in range(2 * H + 1):
@@ -138,8 +190,9 @@ def display_terminal(maze: MazeGenerator):
                 _print_vertical_wall(
                     r, c, W, grid, wall_code, reset_code, EAST)
             else:
-                _print_cell_interior(r, c, logo_cells, flag_code, reset_code,
+                _print_cell_interior(r, c, logo_cells, solution_cells,
+                                     path, flag_code, reset_code,
                                      entry, exit)
 
         print()
-    show_options()
+    show_options(maze_gen, path)

@@ -38,7 +38,7 @@ def display_maze(maze_gen: MazeGenerator) -> None:
         match option:
             case 1:
                 clear_terminal()
-                display_terminal(maze_gen)
+                display_terminal(maze_gen, False)
             case 2:
                 clear_terminal()
                 # Run compiled C MiniLibX program

@@ -4,10 +4,10 @@ ENTRY=0,0
 EXIT=10,9
 OUTPUT_FILE=maze.txt
 PERFECT=True
-SHAPE=star
+SHAPE=square
 WALL_COLOR=grey
 FLAG_COLOR=magenta
-GENERATION_ALGORITHM=prim
+GENERATION_ALGORITHM=bfs
 SOLVER_ALGORITHM=a*
 # This line is to be ignored
 # we can handle more optional keys: seed, algorithm, dispay mode, etc..
