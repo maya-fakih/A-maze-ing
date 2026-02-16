@@ -9,5 +9,6 @@ WALL_COLOR=grey
 FLAG_COLOR=magenta
 GENERATION_ALGORITHM=bfs
 SOLVER_ALGORITHM=a*
+# DISPLAY_MODE = terminal/minilibx
 # This line is to be ignored
-# we can handle more optional keys: seed, algorithm, dispay mode, etc..
+# we can handle more optional keys: seed, algorithm, display mode, etc..

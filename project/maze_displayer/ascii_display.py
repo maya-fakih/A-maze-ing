@@ -88,13 +88,14 @@ def _print_cell_interior(
     path: bool,
     flag_code: str,
     reset_code: str,
+    path_code: str,
     entry: tuple,
     exit: tuple,
 ):
     cell_row = r // 2
     cell_col = c // 2
     if (path is True) and ((cell_col, cell_row) in solution_cells):
-        print(" ★ ", end="")
+        print(path_code + " ★ " + reset_code, end="")
     elif (cell_col, cell_row) in logo_cells:
         print(flag_code + "███" + reset_code, end="")
     elif (cell_col, cell_row) == entry:
@@ -136,6 +137,7 @@ def show_options(maze_gen: MazeGenerator, path: bool) -> None:
                 color = "hi"
                 while (color not in color_map.keys()):
                     color = input("Enter a valid wall color: ")
+                # update config.txt
                 else:
                     clear_terminal()
                     maze_gen.wall_color = color
@@ -145,6 +147,7 @@ def show_options(maze_gen: MazeGenerator, path: bool) -> None:
                 color = "hi"
                 while (color not in color_map.keys()):
                     color = input("Enter a valid flag color: ")
+                # update config.txt
                 else:
                     clear_terminal()
                     maze_gen.flag_color = color
@@ -157,7 +160,6 @@ def show_options(maze_gen: MazeGenerator, path: bool) -> None:
 
 
 def display_terminal(maze_gen: MazeGenerator, path: bool):
-    # if path is true show emoji on self.path values
     H = maze_gen.height
     W = maze_gen.width
     EAST = 2
@@ -171,8 +173,17 @@ def display_terminal(maze_gen: MazeGenerator, path: bool):
     solution_cells = {cell for cell, _,
                       is_solution in maze_gen.path if is_solution}
 
-    # default white
-    wall_code = f"\033[{color_map.get(maze_gen.wall_color, 37)}m"
+    # Get numeric ANSI wall value (default = white 37)
+    wall_value = color_map.get(maze_gen.wall_color, 37)
+    # Normalize to base color index (0–7)
+    base_index = wall_value % 10
+    # Compute opposite index (halfway around 8-color wheel)
+    opposite_index = (base_index + 4) % 8
+    # Preserve brightness (30–37 or 90–97)
+    path_value = (90 if wall_value >= 90 else 30) + opposite_index
+    # Build ANSI escape sequences
+    wall_code = f"\033[{wall_value}m"
+    path_code = f"\033[{path_value}m"
     flag_code = f"\033[{color_map.get(maze_gen.flag_color, 34)}m"
     # solution_code = f"\033[{color_map.get(
     #     getattr(maze_gen, 'solution_color', 'white'), 32)}m"
@@ -190,7 +201,7 @@ def display_terminal(maze_gen: MazeGenerator, path: bool):
                     r, c, W, grid, wall_code, reset_code, EAST)
             else:
                 _print_cell_interior(r, c, logo_cells, solution_cells,
-                                     path, flag_code, reset_code,
+                                     path, flag_code, reset_code, path_code,
                                      entry, exit)
 
         print()
