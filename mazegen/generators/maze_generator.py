@@ -80,6 +80,9 @@ class MazeGenerator(ABC):
         pass
 
     def initialize_maze(self) -> None:
+        self.path.clear()
+        self.visited.clear()
+        self.solution.clear()
         for x in range(self.width):
             for y in range(self.height):
                 if (x, y) not in self.logo_cells:
