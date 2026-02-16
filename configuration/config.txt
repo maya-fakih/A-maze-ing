@@ -1,14 +1,14 @@
-WIDTH=30
-HEIGHT=30
-ENTRY=10,10
-EXIT=17,25
+WIDTH=20
+HEIGHT=20
+ENTRY=7,7
+EXIT=12,11
 OUTPUT_FILE=maze.txt
 PERFECT=True
-SHAPE=star
-WALL_COLOR=grey
-FLAG_COLOR=magenta
+SHAPE=flower
+WALL_COLOR=white
+flag_color=red
 GENERATION_ALGORITHM=prim
 SOLVER_ALGORITHM=a*
-# DISPLAY_MODE = terminal/minilibx
+DISPLAY_MODE=minilibx
 # This line is to be ignored
-# we can handle more optional keys: seed, algorithm, dispay mode, etc..
+# we can handle more optional keys: seed, algorithm, dispay mode, etc..1

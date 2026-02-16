@@ -25,29 +25,22 @@ def parse_input(argv: list[str]) -> dict:
     return settings_dict
 
 
-def clear_terminal() -> None:
-    os.system('cls' if os.name == 'nt' else 'clear')
+# def clear_terminal() -> None:
+#     os.system('cls' if os.name == 'nt' else 'clear')
 
 
 def display_maze(maze_gen: MazeGenerator) -> None:
-    try:
-        print("Maze display options:\n")
-        print("1 - Display using terminal ascii render")
-        print("2 - Display using MiniLibX library\n")
-        option = int(input("Please enter your choice (1-2): "))
-        match option:
-            case 1:
-                clear_terminal()
-                display_terminal(maze_gen, False)
-            case 2:
-                clear_terminal()
-                # Run compiled C MiniLibX program
-                subprocess.run(["./mlx_display", f"{sys.argv[1]}",
+    match maze_gen.display_mode:
+        case "ascii":
+            display_terminal(maze_gen, False)
+        case "minilibx":
+            # Run compiled C MiniLibX program
+            try:
+                subprocess.run(["project/maze_displayer/mlx_display.exe",
+                                f"{sys.argv[1]}",
                                 f"{maze_gen.output_file}"])
-            case _:
-                raise helper.ParsingError("Invalid choice!")
-    except helper.ParsingError:
-        print("Invalid choice!")
+            except FileNotFoundError:
+                print("Error! Minilibx program not found.")
 
 
 if __name__ == "__main__":

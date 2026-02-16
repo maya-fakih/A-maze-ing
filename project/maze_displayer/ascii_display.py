@@ -35,6 +35,27 @@ def clear_terminal() -> None:
     os.system('cls' if os.name == 'nt' else 'clear')
 
 
+# update the value of a setting
+def update_after_string(file_path: str, search_string: str, new_value: str) -> None:
+    search_lower = search_string.lower()
+
+    with open(file_path, "r+") as file:
+        lines = file.readlines()
+        file.seek(0)
+        file.truncate()
+
+        for line in lines:
+            line_lower = line.lower()
+
+            if search_lower in line_lower:
+                index = line_lower.index(search_lower)
+                before = line[: index + len(search_string)]
+                updated_line = f"{before}{new_value}\n"
+                file.write(updated_line)
+            else:
+                file.write(line)
+
+
 def _print_corner(wall_code: str, reset_code: str):
     print(wall_code + "█" + reset_code, end="")
 
@@ -138,20 +159,22 @@ def show_options(maze_gen: MazeGenerator, path: bool) -> None:
                 while (color not in color_map.keys()):
                     color = input("Enter a valid wall color: ")
                 # update config.txt
-                else:
-                    clear_terminal()
-                    maze_gen.wall_color = color
-                    display_terminal(maze_gen, path)
+                update_after_string("configuration/config.txt",
+                                    "wall_color=", f"{color}")
+                clear_terminal()
+                maze_gen.wall_color = color
+                display_terminal(maze_gen, path)
             case 4:
                 # change flag color
                 color = "hi"
                 while (color not in color_map.keys()):
                     color = input("Enter a valid flag color: ")
                 # update config.txt
-                else:
-                    clear_terminal()
-                    maze_gen.flag_color = color
-                    display_terminal(maze_gen, path)
+                update_after_string("configuration/config.txt",
+                                    "flag_color=", f"{color}")
+                clear_terminal()
+                maze_gen.flag_color = color
+                display_terminal(maze_gen, path)
             case 5:
                 sys.exit()
     except ValueError:

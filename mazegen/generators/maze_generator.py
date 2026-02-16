@@ -60,6 +60,9 @@ class MazeGenerator(ABC):
         self.solver_algorithm = settings_dict.get(
             "solver_algorithm", "dfs"
         )
+        self.display_mode = settings_dict.get(
+            "display_mode", "ascii"
+        )
         self.shape = settings_dict.get("shape", "square")
         self.maze = (
             [[0 for _ in range(self.height)] for _ in range(self.width)]
