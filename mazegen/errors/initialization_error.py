@@ -13,5 +13,5 @@ class InitializationError(GenerationError):
         if self.invalid_params:
             params_str = ", ".join(
                 f"{k}: {v}" for k, v in self.invalid_params.items())
-            return f"{base}\n  Invalid parameters: {params_str}"
+            return f"{base}\n  Invalid entry and exit: {params_str}"
         return base
