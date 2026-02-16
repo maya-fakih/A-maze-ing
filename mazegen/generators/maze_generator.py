@@ -1,4 +1,5 @@
 from ..shapes import Star, Heart, Flower
+from ..errors import InitializationError
 from typing import Any, List, Tuple
 from abc import ABC, abstractmethod
 import sys
@@ -66,6 +67,7 @@ class MazeGenerator(ABC):
         )
         self.logo_cells = set()
         self._add_42_logo()
+        self.validate_entry_exit()
         self.solution = {}
         self.visited = set()
         self.path = []
@@ -73,6 +75,33 @@ class MazeGenerator(ABC):
     @abstractmethod
     def generate(self) -> Any:
         pass
+
+    def validate_entry_exit(self) -> None:
+        if self.entry in self.logo_cells:
+            raise InitializationError("Entry point cannot be on the logo.")
+        if self.exit in self.logo_cells:
+            raise InitializationError("Exit point cannot be on the logo.")
+        self.flood_fill_shape(self.entry)
+        self.flood_fill_shape(self.exit)
+
+    def flood_fill_shape(self, start: Tuple) -> None:
+        h = self.height
+        w = self.width
+        to_process = [start]
+        processed = set([start])
+
+        while to_process:
+            current_x, current_y = to_process.pop(0)
+            neighbors = self.get_neighbors((current_x, current_y))
+
+            for nx, ny, _ in neighbors:
+                if nx == 0 or nx == w - 1 or ny == 0 or ny == h - 1:
+                    s = "Shape border cannot be on the edge of the maze."
+                    raise InitializationError(s)
+                neighbor = (nx, ny)
+                if neighbor not in processed:
+                    processed.add(neighbor)
+                    to_process.append(neighbor)
 
     def initialize_maze(self) -> None:
         self.path.clear()
@@ -84,30 +113,23 @@ class MazeGenerator(ABC):
                     self.maze[x][y] = 15
 
         if self.shape != "square":
-            start = (0, 0)
+            self.remove_walls_outside_shape()
 
-            # Use a queue for BFS flood fill
-            to_process = [start]
-            processed = set([start])
+    def remove_walls_outside_shape(self) -> None:
+        start = (0, 0)
+        to_process = [start]
+        processed = set([start])
 
-            while to_process:
-                current_x, current_y = to_process.pop(0)
+        while to_process:
+            current_x, current_y = to_process.pop(0)
+            neighbors = self.get_neighbors((current_x, current_y))
 
-                # Get all neighbors (logo_cells already filtered out by
-                # get_neighbors)
-                neighbors = self.get_neighbors((current_x, current_y))
-
-                for nx, ny, direction in neighbors:
-                    neighbor = (nx, ny)
-
-                    # Remove the wall between current cell and this neighbor
-                    self.remove_wall((current_x, current_y), direction)
-
-                    # If we haven't processed this neighbor yet, add it to the
-                    # queue
-                    if neighbor not in processed:
-                        processed.add(neighbor)
-                        to_process.append(neighbor)
+            for nx, ny, direction in neighbors:
+                neighbor = (nx, ny)
+                self.remove_wall((current_x, current_y), direction)
+                if neighbor not in processed:
+                    processed.add(neighbor)
+                    to_process.append(neighbor)
 
     def create_loops(self) -> None:
         path_base = {c for c, _, s in self.path}
