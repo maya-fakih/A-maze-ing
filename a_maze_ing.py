@@ -42,7 +42,8 @@ def display_maze(maze_gen: MazeGenerator) -> None:
             case 2:
                 clear_terminal()
                 # Run compiled C MiniLibX program
-                subprocess.run(["./mlx_display", f"{maze_gen.output_file}"])
+                subprocess.run(["./mlx_display", f"{sys.argv[1]}",
+                                f"{maze_gen.output_file}"])
             case _:
                 raise helper.ParsingError("Invalid choice!")
     except helper.ParsingError:

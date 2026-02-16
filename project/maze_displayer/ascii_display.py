@@ -1,5 +1,4 @@
 ﻿from mazegen.generators.maze_generator import MazeGenerator
-from project.parsing import parsing as helper
 import sys
 import os
 
@@ -135,7 +134,7 @@ def show_options(maze_gen: MazeGenerator, path: bool) -> None:
                 # rotate colors
                 # ask user for new wall color
                 color = "hi"
-                while (not helper.validate_color_name(color)):
+                while (color not in color_map.keys()):
                     color = input("Enter a valid wall color: ")
                 else:
                     clear_terminal()
@@ -144,7 +143,7 @@ def show_options(maze_gen: MazeGenerator, path: bool) -> None:
             case 4:
                 # change flag color
                 color = "hi"
-                while (not helper.validate_color_name(color)):
+                while (color not in color_map.keys()):
                     color = input("Enter a valid flag color: ")
                 else:
                     clear_terminal()
