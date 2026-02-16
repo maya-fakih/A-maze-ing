@@ -79,9 +79,15 @@ class MazeGenerator(ABC):
     def generate(self) -> Any:
         pass
 
-    @abstractmethod
     def initialize_maze(self) -> None:
+<<<<<<< HEAD
         pass
+=======
+        for x in range(self.width):
+            for y in range(self.height):
+                if (x, y) not in self.logo_cells:
+                    self.maze[x][y] = 15
+>>>>>>> a2ba74349884fea49893f4daa2a4dd30e6cacbfc
 
     def create_loops(self) -> None:
         path_base = {c for c, _, s in self.path}
@@ -197,10 +203,10 @@ class MazeGenerator(ABC):
         for cell in logos:
             self.logo_cells.add(cell)
 
-        # if self.shape is not None:
-        #            border = self.add_shape_border()
-        #            for cell in border:
-        #                self.logo_cells.add(cell)
+        if self.shape != "square":
+            border = self.add_shape_border()
+            for cell in border:
+                self.logo_cells.add(cell)
 
         for x, y in self.logo_cells:
             if 0 <= x < self.width and 0 <= y < self.height:

@@ -30,7 +30,7 @@ color_map = {
 
 
 def _print_corner(wall_code: str, reset_code: str):
-    print(wall_code + "+" + reset_code, end="")
+    print(wall_code + "█" + reset_code, end="")
 
 
 def _print_horizontal_wall(
@@ -44,12 +44,12 @@ def _print_horizontal_wall(
     SOUTH: int,
 ):
     if r == 0 or r == 2 * H:
-        print(wall_code + "---" + reset_code, end="")
+        print(wall_code + "███" + reset_code, end="")
     else:
         cell_row = r // 2 - 1
         cell_col = c // 2
         if grid[cell_col][cell_row] & SOUTH:
-            print(wall_code + "---" + reset_code, end="")
+            print(wall_code + "███" + reset_code, end="")
         else:
             print("   ", end="")
 
@@ -64,12 +64,12 @@ def _print_vertical_wall(
     EAST: int,
 ):
     if c == 0 or c == 2 * W:
-        print(wall_code + "|" + reset_code, end="")
+        print(wall_code + "█" + reset_code, end="")
     else:
         cell_row = r // 2
         cell_col = c // 2 - 1
         if grid[cell_col][cell_row] & EAST:
-            print(wall_code + "|" + reset_code, end="")
+            print(wall_code + "█" + reset_code, end="")
         else:
             print(" ", end="")
 
@@ -82,13 +82,17 @@ def _print_cell_interior(
     flag_code: str,
     solution_code: str,
     reset_code: str,
+    entry: tuple,
+    exit: tuple,
 ):
     cell_row = r // 2
     cell_col = c // 2
     if (cell_col, cell_row) in logo_cells:
-        print(flag_code + " # " + reset_code, end="")
-    elif (cell_col, cell_row) in solution_cells:
-        print(solution_code + " 👾" + reset_code, end="")
+        print(flag_code + "███" + reset_code, end="")
+    elif (cell_col, cell_row) == entry:
+        print(flag_code + " S " + reset_code, end="")
+    elif (cell_col, cell_row) == exit:
+        print(flag_code + " E " + reset_code, end="")
     else:
         print("   ", end="")
 
@@ -109,6 +113,8 @@ def display_terminal(maze: MazeGenerator):
     SOUTH = 4
     grid = maze.maze
     logo_cells = maze.logo_cells
+    entry = maze.entry
+    exit = maze.exit
 
     # Extract solution cells from path
     solution_cells = {cell for cell, _,
@@ -132,8 +138,8 @@ def display_terminal(maze: MazeGenerator):
                 _print_vertical_wall(
                     r, c, W, grid, wall_code, reset_code, EAST)
             else:
-                _print_cell_interior(
-                    r, c, logo_cells, solution_cells, flag_code,
-                    solution_code, reset_code)
+                _print_cell_interior(r, c, logo_cells, flag_code, reset_code,
+                                     entry, exit)
+
         print()
     show_options()
