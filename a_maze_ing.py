@@ -2,7 +2,8 @@ from project.parsing import parsing as helper
 import sys
 import os
 from mazegen.generators.maze_generator import MazeGenerator
-from project.maze_displayer.ascii_display import display_gen
+from project.maze_displayer.ascii_display import display_terminal
+import subprocess
 
 
 def parse_input(argv: list[str]) -> dict:
@@ -25,11 +26,10 @@ def parse_input(argv: list[str]) -> dict:
 
 
 def clear_terminal() -> None:
-    """Clear the terminal screen in a cross-platform way."""
     os.system('cls' if os.name == 'nt' else 'clear')
 
 
-def display_maze(maze_gen: MazeGenerator, solution: list[list]) -> None:
+def display_maze(maze_gen: MazeGenerator) -> None:
     try:
         print("Maze display options:\n")
         print("1 - Display using terminal ascii render")
@@ -38,13 +38,14 @@ def display_maze(maze_gen: MazeGenerator, solution: list[list]) -> None:
         match option:
             case 1:
                 clear_terminal()
-                display_gen(maze_gen)
-                # display_sol(maze_gen, solution)
+                display_terminal(maze_gen)
             case 2:
-                print("MiniLibX render")
+                clear_terminal()
+                # Run compiled C MiniLibX program
+                subprocess.run(["./mlx_display", f"{maze_gen.output_file}"])
             case _:
-                raise Exception("Invalid choice!")
-    except Exception:
+                raise helper.ParsingError("Invalid choice!")
+    except helper.ParsingError:
         print("Invalid choice!")
 
 
@@ -60,11 +61,10 @@ if __name__ == "__main__":
         maze_generator = MazeGenerator.create_generator(settings)
         # generate the maze
         maze_generator.generate()
+        maze_generator.output_to_file()
         # solve the maze
-        # temporary input
-        solution: list[list] = []
         # display options function
-        display_maze(maze_generator, solution)
+        display_maze(maze_generator)
     except helper.ParsingError as e:
         print(e)
     except FileNotFoundError:

@@ -78,18 +78,31 @@ def _print_cell_interior(
     r: int,
     c: int,
     logo_cells: set,
+    solution_cells: set,
     flag_code: str,
+    solution_code: str,
     reset_code: str,
 ):
     cell_row = r // 2
     cell_col = c // 2
     if (cell_col, cell_row) in logo_cells:
         print(flag_code + " # " + reset_code, end="")
+    elif (cell_col, cell_row) in solution_cells:
+        print(solution_code + " 👾" + reset_code, end="")
     else:
         print("   ", end="")
 
 
-def display_gen(maze: MazeGenerator):
+def show_options() -> None:
+    print("\n=== A-MAZE-ING ===")
+    print("1. Re-generate a new maze")
+    print("2. Show/Hide path from entry to exit")
+    print("3. Rotate maze colors")
+    print("4. Quit")
+    choice = int(input("Choice? (1-4): "))
+
+
+def display_terminal(maze: MazeGenerator):
     H = maze.height
     W = maze.width
     EAST = 2
@@ -97,26 +110,30 @@ def display_gen(maze: MazeGenerator):
     grid = maze.maze
     logo_cells = maze.logo_cells
 
+    # Extract solution cells from path
+    solution_cells = {cell for cell, _,
+                      is_solution in maze.path if is_solution}
+
     # default white
     wall_code = f"\033[{color_map.get(maze.wall_color, 37)}m"
     flag_code = f"\033[{color_map.get(maze.flag_color, 34)}m"
+    solution_code = f"\033[{color_map.get(
+        getattr(maze, 'solution_color', 'white'), 32)}m"
     reset_code = "\033[0m"
 
     for r in range(2 * H + 1):
         for c in range(2 * W + 1):
-            # Corners
             if r % 2 == 0 and c % 2 == 0:
                 _print_corner(wall_code, reset_code)
-            # Horizontal walls
             elif r % 2 == 0 and c % 2 == 1:
                 _print_horizontal_wall(
                     r, c, H, W, grid, wall_code, reset_code, SOUTH)
-            # Vertical walls
             elif r % 2 == 1 and c % 2 == 0:
                 _print_vertical_wall(
                     r, c, W, grid, wall_code, reset_code, EAST)
-            # Cell interior
             else:
-                _print_cell_interior(r, c, logo_cells, flag_code, reset_code)
-
+                _print_cell_interior(
+                    r, c, logo_cells, solution_cells, flag_code,
+                    solution_code, reset_code)
         print()
+    show_options()
