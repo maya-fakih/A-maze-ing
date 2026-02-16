@@ -85,18 +85,27 @@ class MazeGenerator(ABC):
 
         if self.shape != "square":
             start = (0, 0)
-            remove = []
-            remove.append(start)
-            neighbors = self.get_neighbors(start)
-            for neighbor in neighbors:
-                remove.append((neighbor[0], neighbor[1]))
-            while remove:
-                nx, ny, direction, current = remove.pop()
-                self.remove_wall(current, direction)
-                for nnx, nny, new_direction in self.get_neighbors((nx, ny)):
-                    if (nnx, nny) not in self.logo_cells:
-                        remove.append((nnx, nny, new_direction, (nx, ny)))
-
+            
+            # Use a queue for BFS flood fill
+            to_process = [start]
+            processed = set([start])
+            
+            while to_process:
+                current_x, current_y = to_process.pop(0)
+                
+                # Get all neighbors (logo_cells already filtered out by get_neighbors)
+                neighbors = self.get_neighbors((current_x, current_y))
+                
+                for nx, ny, direction in neighbors:
+                    neighbor = (nx, ny)
+                    
+                    # Remove the wall between current cell and this neighbor
+                    self.remove_wall((current_x, current_y), direction)
+                    
+                    # If we haven't processed this neighbor yet, add it to the queue
+                    if neighbor not in processed:
+                        processed.add(neighbor)
+                        to_process.append(neighbor)
 
     def create_loops(self) -> None:
         path_base = {c for c, _, s in self.path}
