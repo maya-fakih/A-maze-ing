@@ -114,10 +114,29 @@ class MazeGenerator(ABC):
 
         if self.shape != "square":
             self.remove_walls_outside_shape()
+    
+    def find_solution_path(self) -> None:
+        solution_cells = set()
+        current = self.exit
+        while current is not None:
+            solution_cells.add(current)
+            current = self.solution[current]
+
+        for cell in self.visited:
+            x, y = cell
+            if cell == self.entry:
+                self.path.append((cell, self.maze[x][y], True))
+            elif cell in solution_cells:
+                self.path.append((cell, self.maze[x][y], True))
+            else:
+                self.path.append((cell, self.maze[x][y], False))
 
     def remove_walls_outside_shape(self) -> None:
         start = (0, 0)
-        to_process = [start]
+        end = (self.width - 1, self.height - 1)
+        corner = (self.width - 1, 0)
+        corner2 = (0, self.height - 1)
+        to_process = [start, end, corner, corner2]
         processed = set([start])
 
         while to_process:

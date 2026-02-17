@@ -42,26 +42,8 @@ class PrimGenerator(MazeGenerator):
                 if (nnx, nny) not in self.visited:
                     fringe.append((nnx, nny, new_direction, (nx, ny)))
 
-        if self.exit in self.solution:
-            print("exit reached")
-            solution_cells = set()
-            current = self.exit
-            while current is not None:
-                solution_cells.add(current)
-                current = self.solution[current]
-
-            for cell in self.visited:
-                x, y = cell
-                if cell == start:
-                    self.path.append((cell, self.maze[x][y], True))
-                elif cell in solution_cells:
-                    self.path.append((cell, self.maze[x][y], True))
-                else:
-                    self.path.append((cell, self.maze[x][y], False))
-        else:
-            for cell in self.visited:
-                x, y = cell
-                self.path.append((cell, self.maze[x][y], False))
+        self.find_solution_path()
 
         if self.perfect is False:
             self.create_loops()
+
