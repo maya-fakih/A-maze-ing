@@ -5,10 +5,10 @@ EXIT=12,11
 OUTPUT_FILE=maze.txt
 PERFECT=True
 SHAPE=flower
-WALL_COLOR=white
-flag_color=red
+WALL_COLOR=blue
+flag_color=white
 GENERATION_ALGORITHM=prim
 SOLVER_ALGORITHM=a*
-DISPLAY_MODE=minilibx
+DISPLAY_MODE=ascii
 # This line is to be ignored
-# we can handle more optional keys: seed, algorithm, dispay mode, etc..1
+# we can handle more optional keys: seed, algorithm, dispay mode, etc..

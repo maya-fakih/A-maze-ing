@@ -32,9 +32,11 @@ def parse_input(argv: list[str]) -> dict:
 def display_maze(maze_gen: MazeGenerator) -> None:
     match maze_gen.display_mode:
         case "ascii":
+            print("=== A-MAZE-ING ===\n")
             display_terminal(maze_gen, False)
         case "minilibx":
             # Run compiled C MiniLibX program
+            # give it the config and output file
             try:
                 subprocess.run(["project/maze_displayer/mlx_display.exe",
                                 f"{sys.argv[1]}",
@@ -45,7 +47,6 @@ def display_maze(maze_gen: MazeGenerator) -> None:
 
 if __name__ == "__main__":
     try:
-        print("=== A-MAZE-ING ===\n")
         # parse configuration file, error message / dict
         # contaning key=settings and values
         settings = parse_input(sys.argv)
@@ -55,8 +56,8 @@ if __name__ == "__main__":
         maze_generator = MazeGenerator.create_generator(settings)
         # generate the maze
         maze_generator.generate()
-        maze_generator.output_to_file()
         # solve the maze
+        maze_generator.output_to_file()
         # display options function
         display_maze(maze_generator)
     except helper.ParsingError as e:
