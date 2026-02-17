@@ -11,4 +11,4 @@ GENERATION_ALGORITHM=prim
 SOLVER_ALGORITHM=a*
 DISPLAY_MODE=ascii
 # This line is to be ignored
-# we can handle more optional keys: seed, algorithm, dispay mode, etc..
+# we can handle more optional keys: seed, algorithm, display mode, etc..

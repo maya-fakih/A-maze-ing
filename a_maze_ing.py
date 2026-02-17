@@ -1,4 +1,5 @@
 from project.parsing import parsing as helper
+from mazegen.errors import InitializationError
 import sys
 import os
 from mazegen.generators.maze_generator import MazeGenerator
@@ -68,5 +69,7 @@ if __name__ == "__main__":
     except ValueError:
         print("Error in settings value type!\n"
               "Make sure value of your settings are valid.")
+    except InitializationError as e:
+        print(e)
     except Exception as e:
         print(e)
