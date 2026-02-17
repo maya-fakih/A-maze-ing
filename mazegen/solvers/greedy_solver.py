@@ -16,7 +16,7 @@ class GreedySolver(MazeSolver):
         self.path.append((start, True))
 
         visited = set()
-        fringe = [(self.priority(start), (start, [start], []))]
+        fringe = [(0, (start, [start], []))]
         while fringe:
             _, (current_cell, path, dir) = heapq.heappop(fringe)
 
@@ -30,9 +30,9 @@ class GreedySolver(MazeSolver):
                 self.solution_cells = path
                 for cell, sol in self.path:
                     if cell in self.solution_cells:
-                        self.solution.append((cell, True))
+                        self.path.append((cell, True))
                     else:
-                        self.solution.append((cell, False))
+                        self.path.append((cell, False))
                 return dir
 
             for nx, ny, d in self.reachable_neighbors(current_cell):

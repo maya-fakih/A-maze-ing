@@ -25,9 +25,9 @@ class DFSolver(MazeSolver):
                 self.solution_cells = path
                 for cell, sol in self.path:
                     if cell in self.solution_cells:
-                        self.solution.append((cell, True))
+                        self.path.append((cell, True))
                     else:
-                        self.solution.append((cell, False))
+                        self.path.append((cell, False))
                 return dir
 
             for nx, ny, d in self.reachable_neighbors(current_cell):
