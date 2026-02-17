@@ -1,6 +1,5 @@
 from ..shapes import Star, Heart, Flower
 from ..errors import InitializationError
-from ..solvers import BFSSolver
 from typing import Any, List, Tuple
 from abc import ABC, abstractmethod
 import sys
@@ -69,7 +68,7 @@ class MazeGenerator(ABC):
         self.logo_cells = set()
         self._add_42_logo()
         self.validate_entry_exit()
-        self.solution = []
+        self.solution = [] #this is what we need to have in the output file
         self.visited = set()
         self.path = []
 
@@ -118,9 +117,9 @@ class MazeGenerator(ABC):
 
 
     def find_solution_path(self) -> None:
-        solver = BFSSolver(self)
+        from ..solvers import BFSolver
+        solver = BFSolver(self)
         self.solution = solver.solve()
-        print(f"solution: {self.solution}")
 
         for cell in self.visited:
             x, y = cell

@@ -1,5 +1,5 @@
-WIDTH=25
-HEIGHT=25
+WIDTH=20
+HEIGHT=20
 ENTRY=7,7
 EXIT=9, 9
 OUTPUT_FILE=maze.txt
@@ -7,7 +7,7 @@ PERFECT=True
 SHAPE=flower
 WALL_COLOR=grey
 FLAG_COLOR=magenta
-GENERATION_ALGORITHM=dfs
+GENERATION_ALGORITHM=prim
 SOLVER_ALGORITHM=a*
 # This line is to be ignored
 # we can handle more optional keys: seed, algorithm, dispay mode, etc..1

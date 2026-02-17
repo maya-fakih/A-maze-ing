@@ -1,12 +1,12 @@
 from .maze_solver import MazeSolver
+from ..generators.maze_generator import MazeGenerator
 
-class BFSSolver(MazeSolver):
+class BFSolver(MazeSolver):
     """Breadth-First Search Agent"""
 
-    from ..generators import MazeGenerator
-    def solve(self, maze: MazeGenerator) -> list:
-        start = maze.entry
-        goal = maze.exit
+    def solve(self) -> list:
+        start = self.maze.entry
+        goal = self.maze.exit
 
         visited = set()
         fringe = [(start, [start], [])]

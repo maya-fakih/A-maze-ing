@@ -76,5 +76,5 @@ if __name__ == "__main__":
               "Make sure value of your settings are valid.")
     except InitializationError as e:
         print(e)
-    except Exception as e:
-        print(e)
+    # except Exception as e:
+    #     print(e)
