@@ -1,8 +1,13 @@
 from .maze_solver import MazeSolver
+import heapq
 
 
-class DFSolver(MazeSolver):
-    """Depth-First Search Agent"""
+class GreedySolver(MazeSolver):
+    """Greedy Search Agent"""
+
+    def priority(self, cell: tuple) -> int:
+        """Priority function for Greedy Search (heuristic only)"""
+        return self.huristic(cell)
 
     def solve(self) -> list:
         start = self.maze.entry
@@ -11,9 +16,9 @@ class DFSolver(MazeSolver):
         self.path.append((start, True))
 
         visited = set()
-        fringe = [(start, [start], [])]
+        fringe = [(self.priority(start), (start, [start], []))]
         while fringe:
-            current_cell, path, dir = fringe.pop()
+            _, (current_cell, path, dir) = heapq.heappop(fringe)
 
             if current_cell in visited:
                 continue
@@ -31,7 +36,8 @@ class DFSolver(MazeSolver):
                 return dir
 
             for nx, ny, d in self.reachable_neighbors(current_cell):
-                neighbor = (nx, ny)
-                if neighbor not in visited:
-                    fringe.append((neighbor, path + [neighbor], dir + [d]))
+                n = (nx, ny)
+                if n not in visited:
+                    item = (self.priority(n), (n, path + [n], dir + [d]))
+                    heapq.heappush(fringe, item)
         return []

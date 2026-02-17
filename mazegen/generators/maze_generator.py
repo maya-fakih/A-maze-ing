@@ -68,7 +68,7 @@ class MazeGenerator(ABC):
         self.logo_cells = set()
         self._add_42_logo()
         self.validate_entry_exit()
-        self.solution = [] #this is what we need to have in the output file
+        self.solution = []  # this is what we need to have in the output file
         self.visited = set()
         self.path = []
 
@@ -115,7 +115,6 @@ class MazeGenerator(ABC):
         if self.shape != "square":
             self.remove_walls_outside_shape()
 
-
     def find_solution_path(self) -> None:
         from ..solvers import BFSolver
         solver = BFSolver(self)
@@ -129,7 +128,6 @@ class MazeGenerator(ABC):
                 self.path.append((cell, self.maze[x][y], True))
             else:
                 self.path.append((cell, self.maze[x][y], False))
-
 
     def remove_walls_outside_shape(self) -> None:
         start = (0, 0)
