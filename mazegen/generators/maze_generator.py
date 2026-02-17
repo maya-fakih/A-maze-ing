@@ -114,7 +114,7 @@ class MazeGenerator(ABC):
 
         if self.shape != "square":
             self.remove_walls_outside_shape()
-    
+
     def find_solution_path(self) -> None:
         solution_cells = set()
         current = self.exit
