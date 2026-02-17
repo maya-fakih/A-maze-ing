@@ -44,4 +44,3 @@ class PrimGenerator(MazeGenerator):
 
         if self.perfect is False:
             self.create_loops()
-
