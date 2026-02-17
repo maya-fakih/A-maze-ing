@@ -7,8 +7,8 @@ PERFECT=True
 SHAPE=flower
 WALL_COLOR=blue
 flag_color=white
-GENERATION_ALGORITHM=prim
-SOLVER_ALGORITHM=a*
+GENERATION_ALGORITHM=bfs
+SOLVER_ALGORITHM=bfs
 DISPLAY_MODE=ascii
 # This line is to be ignored
 # we can handle more optional keys: seed, algorithm, display mode, etc..
