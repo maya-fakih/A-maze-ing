@@ -2,31 +2,32 @@
 #include<stdlib.h>
 #include<string.h>
 
-// we need from config.txt: shape, wall_color, flag_color
-// we will look for them and put them in variables when we find them,
-// i will use a structure called config
-struct t_config
-{
-    char    *shape;
-    char    *wall_color;
-    char    *flag_color;
-    int     width;
-    int     height;
-} s_config;
-
-struct t_point
+// we use it here for coordinates
+typedef struct s_point
 {
     int x;
     int y;
 } t_point;
+
+// we need from config.txt: shape, wall_color, flag_color
+// we will look for them and put them in variables when we find them,
+// i will use a structure called config
+typedef struct s_config
+{
+    char    *shape;
+    char    *wall_color;
+    char    *flag_color;
+} t_config;
+
 
 // we need from maze.txt the 2D array -> maze
 // entry, exit point and the path -> we need to read
 // all the lines and put them in variables
 struct t_maze
 {
-    char **grid; // 2D array containing hex values -> each cell
-    int *entry
+    char    **grid; // 2D array containing hex values -> each cell
+    t_point entry;
+    t_point exit;
 } s_maze;
 
 void error(char *s)

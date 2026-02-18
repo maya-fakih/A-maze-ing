@@ -21,7 +21,6 @@ class PrimGenerator(MazeGenerator):
         self.initialize_maze()
 
         self.visited.add(start)
-        self.solution[start] = None
 
         for nx, ny, direction in self.get_neighbors(start):
             if (nx, ny) not in self.visited:
@@ -36,7 +35,6 @@ class PrimGenerator(MazeGenerator):
 
             self.remove_wall(current, direction)
             self.visited.add((nx, ny))
-            self.solution[(nx, ny)] = current
 
             for nnx, nny, new_direction in self.get_neighbors((nx, ny)):
                 if (nnx, nny) not in self.visited:

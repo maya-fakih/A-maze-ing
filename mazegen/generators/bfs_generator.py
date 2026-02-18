@@ -24,7 +24,6 @@ class BFSGenerator(MazeGenerator):
         self.initialize_maze()
 
         self.visited.add(start)
-        self.solution[start] = None
 
         possible = []
         for nx, ny, direction in self.get_neighbors(start):
@@ -41,7 +40,6 @@ class BFSGenerator(MazeGenerator):
 
             self.remove_wall(current, direction)
             self.visited.add((nx, ny))
-            self.solution[(nx, ny)] = current
 
             neighbors = self.get_neighbors((nx, ny))
             random.shuffle(neighbors)
