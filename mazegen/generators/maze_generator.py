@@ -71,7 +71,7 @@ class MazeGenerator(ABC):
         self.logo_cells = set()
         self._add_42_logo()
         self.validate_entry_exit()
-        self.solution = []
+        self.solution = []  # this is what we need to have in the output file
         self.visited = set()
         self.path = []
 
