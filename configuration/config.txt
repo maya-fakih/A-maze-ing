@@ -5,10 +5,9 @@ EXIT=12,11
 OUTPUT_FILE=maze.txt
 PERFECT=True
 SHAPE=heart
-WALL_COLOR=blue
-flag_color=white
 GENERATION_ALGORITHM=bfs
 SOLVER_ALGORITHM=bfs
-DISPLAY_MODE=ascii
+DISPLAY_MODE=minilibx
+# WALL_COLOR=red
 # This line is to be ignored
 # we can handle more optional keys: seed, algorithm, display mode, etc..

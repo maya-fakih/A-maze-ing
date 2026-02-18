@@ -39,8 +39,10 @@ def display_maze(maze_gen: MazeGenerator) -> None:
             # Run compiled C MiniLibX program
             # give it the config and output file
             try:
+                maze_gen.write_path("configuration/gen_path.txt")
                 subprocess.run(["project/maze_displayer/mlx_display.exe",
                                 f"{sys.argv[1]}",
+                                "gen_path.txt",
                                 f"{maze_gen.output_file}"])
             except FileNotFoundError:
                 print("Error! Minilibx program not found.")
