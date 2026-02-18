@@ -8,7 +8,7 @@ class MazeSolver(ABC):
     def __init__(self, maze: MazeGenerator) -> None:
         self.maze = maze
         self.solution_cells = []
-        self.path = []
+        self.animation_path = []
 
     def reachable_neighbors(self, cell: tuple) -> list:
         """Returns a list from the neighbors of a cell"""

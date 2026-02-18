@@ -119,6 +119,7 @@ class MazeGenerator(ABC):
         from ..solvers import BFSolver
         solver = BFSolver(self)
         self.solution = solver.solve()
+        print(f"solution path: {self.solution}")
 
         for cell in self.visited:
             x, y = cell
