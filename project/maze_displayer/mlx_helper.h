@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <mlx.h>
 
 // we need this for the coordinates
 typedef struct s_point
@@ -10,6 +11,16 @@ typedef struct s_point
     int     x;
     int     y;
 } t_point;
+
+// Image buffer structure for MLX
+typedef struct s_img
+{
+    void        *img;
+    char        *addr;
+    int         bpp;
+    int         line_len;
+    int         endian;
+} t_img;
 
 typedef struct s_cell
 {
@@ -56,34 +67,16 @@ typedef struct s_app
 {
     t_config    config;
     t_maze      maze;
-
     // ===== MiniLibX pointers =====
     void        *mlx;
     void        *win;
-    void        *img;
-
-    char        *addr;           // image buffer address
-    int         bpp;             // bits per pixel
-    int         line_len;        // size of one image line in bytes
-    int         endian;
-
+    t_img       img;
     int         window_width;    // derived from maze.width * cell_size
     int         window_height;   // derived from maze.height * cell_size
-
-    // ===== Generation animation state =====
-    int         gen_current_step;  // current generation animation index
-    int         generation_done;   // 1 when generation animation finished
-
-    // ===== Solving animation state =====
-    int         solve_current_step; // current solving step index
-    t_point     current_pos;        // current position while solving
-    int         solving_done;       // 1 when solving animation finished
-
-    // ===== Frame control =====
-    int         frame_counter;      // used to slow down animation
-    int         animation_running;  // 1 if animating, 0 otherwise
-    int         mode;               // 0 = generation, 1 = solving
-
+    // ===== Animation state =====
+    int         phase;           // 0 = generation, 1 = solution, 2 = done
+    int         anim_index;      // current animation step
+    int         frame;           // frame counter for speed control
 } t_app;
 
 void        error(const char *s);
@@ -100,3 +93,11 @@ t_cell      *parse_path(FILE* f, int *count);
 char        **fill_grid(FILE *f, int w, int h);
 t_point     parse_coordinates(const char *line);
 t_maze      *parse_output(FILE* f, t_cell *path, int steps, int width, int height);
+void        put_pixel(t_img *img, int x, int y, int color);
+void        draw_square(t_app *app, int gx, int gy, int color);
+void        draw_static_maze(t_app *app);
+void        animate_generation(t_app *app);
+void        animate_solution(t_app *app);
+int         update(void *param);
+int         close_window(t_app *app);
+void        init_graphics(t_app *app);

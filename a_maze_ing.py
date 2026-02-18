@@ -40,7 +40,7 @@ def display_maze(maze_gen: MazeGenerator) -> None:
             # give it the config and output file
             try:
                 maze_gen.write_path("configuration/gen_path.txt")
-                subprocess.run(["project/maze_displayer/mlx_display.exe",
+                subprocess.run(["project/maze_displayer/main.exe",
                                 f"{sys.argv[1]}",
                                 "gen_path.txt",
                                 f"{maze_gen.output_file}"])

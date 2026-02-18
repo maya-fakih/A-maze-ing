@@ -6,17 +6,17 @@ MLX_DIR = minilibx-linux
 MLX_LIB = $(MLX_DIR)/libmlx.a
 
 # Source files
-C_SRCS = project/maze_displayer/mlx_display.c \
+C_SRCS = project/maze_displayer/main.c \
 		 project/maze_displayer/mlx_helper_1.c \
 		 project/maze_displayer/mlx_helper_2.c \
 		 project/maze_displayer/mlx_parser.c \
-		 project/maze_displayer/mlx.c
+		 project/maze_displayer/mlx_display.c
 
-C_OBJS = project/maze_displayer/mlx_display.o \
+C_OBJS = project/maze_displayer/main.o \
 		 project/maze_displayer/mlx_helper_1.o \
 		 project/maze_displayer/mlx_helper_2.o \
 		 project/maze_displayer/mlx_parser.o \
-		 project/maze_displayer/mlx.o
+		 project/maze_displayer/mlx_display.o
 
 # Compiler
 CC = gcc
@@ -24,7 +24,7 @@ CFLAGS = -Wall -Wextra -Werror -I./$(MLX_DIR) -I./project/maze_displayer
 LDFLAGS = -L./$(MLX_DIR) -lmlx -lX11 -lXext -lm
 
 # Target executable
-TARGET = project/maze_displayer/mlx_display.exe
+TARGET = project/maze_displayer/main.exe
 
 # Default target
 all: build_mlx $(TARGET)
@@ -40,7 +40,7 @@ project/maze_displayer/%.o: project/maze_displayer/%.c
 # Link executable
 $(TARGET): $(MLX_LIB) $(C_OBJS)
 	$(CC) $(CFLAGS) $(C_OBJS) $(LDFLAGS) -o $@
-	@echo "✓ Compiled mlx_display.exe"
+	@echo "✓ Compiled main.exe"
 
 # Build everything (minilibx + C program)
 build_mlx: $(TARGET)
