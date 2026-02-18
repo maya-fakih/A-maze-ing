@@ -3,7 +3,7 @@ from mazegen.errors import InitializationError
 import sys
 import os
 from mazegen.generators.maze_generator import MazeGenerator
-from project.maze_displayer.ascii_display import display_terminal
+from project.maze_displayer.ascii_display.ascii_display import display_terminal
 import subprocess
 
 

@@ -6,7 +6,7 @@ MLX_DIR = minilibx-linux
 MLX_LIB = $(MLX_DIR)/libmlx.a
 
 # Source files
-C_SRCS = project/maze_displayer/main.c \
+C_SRCS = project/maze_displayer/minilibx_display/main.c \
 		 project/maze_displayer/mlx_helper_1.c \
 		 project/maze_displayer/mlx_helper_2.c \
 		 project/maze_displayer/mlx_parser.c \
