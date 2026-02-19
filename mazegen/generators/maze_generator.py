@@ -61,6 +61,9 @@ class MazeGenerator(ABC):
         self.solver_algorithm = settings_dict.get(
             "solver_algorithm", "dfs"
         )
+        self.display_mode = settings_dict.get(
+            "display_mode", "ascii"
+        )
         self.shape = settings_dict.get("shape", "square")
         self.maze = (
             [[0 for _ in range(self.height)] for _ in range(self.width)]
@@ -68,7 +71,7 @@ class MazeGenerator(ABC):
         self.logo_cells = set()
         self._add_42_logo()
         self.validate_entry_exit()
-        self.solution = []  # this is what we need to have in the output file
+        self.solution = []
         self.visited = set()
         self.path = []
 
@@ -296,3 +299,17 @@ class MazeGenerator(ABC):
         f.write(f"{self.entry[0]},{self.entry[1]}")
         f.write("\n")
         f.write(f"{self.exit[0]},{self.exit[1]}")
+        f.write("\n")
+        f.write(f"{"".join(self.solution)}")
+        f.close()
+
+    def write_path(self, path: str) -> None:
+        # write self.path in a structured way, to be given
+        # to the minilibx program
+        f = open(path, "w")
+        for cell in self.path:
+            for x in cell[0]:
+                f.write(f"{x} ")
+            f.write(f"{cell[1]} ")
+            f.write(f"{cell[2]}\n")
+        f.close()

@@ -26,33 +26,30 @@ def parse_input(argv: list[str]) -> dict:
     return settings_dict
 
 
-def clear_terminal() -> None:
-    os.system('cls' if os.name == 'nt' else 'clear')
+# def clear_terminal() -> None:
+#     os.system('cls' if os.name == 'nt' else 'clear')
 
 
 def display_maze(maze_gen: MazeGenerator) -> None:
-    try:
-        print("Maze display options:\n")
-        print("1 - Display using terminal ascii render")
-        print("2 - Display using MiniLibX library\n")
-        option = int(input("Please enter your choice (1-2): "))
-        match option:
-            case 1:
-                clear_terminal()
-                display_terminal(maze_gen, False)
-            case 2:
-                clear_terminal()
-                # Run compiled C MiniLibX program
-                subprocess.run(["./mlx_display", f"{maze_gen.output_file}"])
-            case _:
-                raise helper.ParsingError("Invalid choice!")
-    except helper.ParsingError:
-        print("Invalid choice!")
+    match maze_gen.display_mode:
+        case "ascii":
+            print("=== A-MAZE-ING ===\n")
+            display_terminal(maze_gen, False)
+        case "minilibx":
+            # Run compiled C MiniLibX program
+            # give it the config and output file
+            try:
+                maze_gen.write_path("configuration/gen_path.txt")
+                subprocess.run(["project/maze_displayer/mlx_display.exe",
+                                f"{sys.argv[1]}",
+                                "gen_path.txt",
+                                f"{maze_gen.output_file}"])
+            except FileNotFoundError:
+                print("Error! Minilibx program not found.")
 
 
 if __name__ == "__main__":
     try:
-        print("=== A-MAZE-ING ===\n")
         # parse configuration file, error message / dict
         # contaning key=settings and values
         settings = parse_input(sys.argv)
@@ -62,8 +59,8 @@ if __name__ == "__main__":
         maze_generator = MazeGenerator.create_generator(settings)
         # generate the maze
         maze_generator.generate()
-        maze_generator.output_to_file()
         # solve the maze
+        maze_generator.output_to_file()
         # display options function
         display_maze(maze_generator)
     except helper.ParsingError as e:

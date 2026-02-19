@@ -14,10 +14,11 @@ class ParsingError(Exception):
 mandatory_keys = ["width", "height", "entry", "exit"]
 optional_keys = ["output_file", "perfect",
                  "wall_color", "flag_color", "solver_algorithm",
-                 "shape", "generation_algorithm"]
+                 "shape", "generation_algorithm", "display_mode"]
 generation_algorithms = ["prim", "dfs", "bfs", "huntkill"]
 solver_algorithms = ["dfs", "bfs", "a*", "ucs"]
 shapes = ["flower", "star", "heart", "square"]
+display_modes = ["ascii", "minilibx"]
 
 #   Validate color name and ensure it is not black
 
@@ -83,6 +84,10 @@ def validate_types(input_settings: dict) -> dict:
             if (not validate_color_name(value)):
                 raise ParsingError("Invalid color name!\n"
                                    "Enter an existing color name.")
+        elif key == "display_mode":
+            if value not in display_modes:
+                raise ParsingError("Error! No such display mode!\n"
+                                   "Available modes: ascii, minilibx")
         elif key == "output_file":
             if not value.endswith(".txt"):
                 raise ParsingError("Error in output file format!\n"

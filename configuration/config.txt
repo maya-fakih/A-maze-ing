@@ -10,4 +10,4 @@ FLAG_COLOR=magenta
 GENERATION_ALGORITHM=prim
 SOLVER_ALGORITHM=a*
 # This line is to be ignored
-# we can handle more optional keys: seed, algorithm, dispay mode, etc..1
+# we can handle more optional keys: seed, algorithm, display mode, etc..

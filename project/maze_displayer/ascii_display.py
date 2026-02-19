@@ -1,5 +1,4 @@
 ﻿from mazegen.generators.maze_generator import MazeGenerator
-from project.parsing import parsing as helper
 import sys
 import os
 
@@ -34,6 +33,27 @@ color_map = {
 
 def clear_terminal() -> None:
     os.system('cls' if os.name == 'nt' else 'clear')
+
+
+# update the value of a setting
+def update_after_string(file_path: str, search_string: str, new_value: str) -> None:
+    search_lower = search_string.lower()
+
+    with open(file_path, "r+") as file:
+        lines = file.readlines()
+        file.seek(0)
+        file.truncate()
+
+        for line in lines:
+            line_lower = line.lower()
+
+            if search_lower in line_lower:
+                index = line_lower.index(search_lower)
+                before = line[: index + len(search_string)]
+                updated_line = f"{before}{new_value}\n"
+                file.write(updated_line)
+            else:
+                file.write(line)
 
 
 def _print_corner(wall_code: str, reset_code: str):
@@ -89,13 +109,14 @@ def _print_cell_interior(
     path: bool,
     flag_code: str,
     reset_code: str,
+    path_code: str,
     entry: tuple,
     exit: tuple,
 ):
     cell_row = r // 2
     cell_col = c // 2
     if (path is True) and ((cell_col, cell_row) in solution_cells):
-        print(" ★ ", end="")
+        print(path_code + " ★ " + reset_code, end="")
     elif (cell_col, cell_row) in logo_cells:
         print(flag_code + "███" + reset_code, end="")
     elif (cell_col, cell_row) == entry:
@@ -135,21 +156,25 @@ def show_options(maze_gen: MazeGenerator, path: bool) -> None:
                 # rotate colors
                 # ask user for new wall color
                 color = "hi"
-                while (not helper.validate_color_name(color)):
+                while (color not in color_map.keys()):
                     color = input("Enter a valid wall color: ")
-                else:
-                    clear_terminal()
-                    maze_gen.wall_color = color
-                    display_terminal(maze_gen, path)
+                # update config.txt
+                update_after_string("configuration/config.txt",
+                                    "wall_color=", f"{color}")
+                clear_terminal()
+                maze_gen.wall_color = color
+                display_terminal(maze_gen, path)
             case 4:
                 # change flag color
                 color = "hi"
-                while (not helper.validate_color_name(color)):
+                while (color not in color_map.keys()):
                     color = input("Enter a valid flag color: ")
-                else:
-                    clear_terminal()
-                    maze_gen.flag_color = color
-                    display_terminal(maze_gen, path)
+                # update config.txt
+                update_after_string("configuration/config.txt",
+                                    "flag_color=", f"{color}")
+                clear_terminal()
+                maze_gen.flag_color = color
+                display_terminal(maze_gen, path)
             case 5:
                 sys.exit()
     except ValueError:
@@ -158,7 +183,6 @@ def show_options(maze_gen: MazeGenerator, path: bool) -> None:
 
 
 def display_terminal(maze_gen: MazeGenerator, path: bool):
-    # if path is true show emoji on self.path values
     H = maze_gen.height
     W = maze_gen.width
     EAST = 2
@@ -172,8 +196,17 @@ def display_terminal(maze_gen: MazeGenerator, path: bool):
     solution_cells = {cell for cell, _,
                       is_solution in maze_gen.path if is_solution}
 
-    # default white
-    wall_code = f"\033[{color_map.get(maze_gen.wall_color, 37)}m"
+    # Get numeric ANSI wall value (default = white 37)
+    wall_value = color_map.get(maze_gen.wall_color, 37)
+    # Normalize to base color index (0–7)
+    base_index = wall_value % 10
+    # Compute opposite index (halfway around 8-color wheel)
+    opposite_index = (base_index + 4) % 8
+    # Preserve brightness (30–37 or 90–97)
+    path_value = (90 if wall_value >= 90 else 30) + opposite_index
+    # Build ANSI escape sequences
+    wall_code = f"\033[{wall_value}m"
+    path_code = f"\033[{path_value}m"
     flag_code = f"\033[{color_map.get(maze_gen.flag_color, 34)}m"
     # solution_code = f"\033[{color_map.get(
     #     getattr(maze_gen, 'solution_color', 'white'), 32)}m"
@@ -191,7 +224,7 @@ def display_terminal(maze_gen: MazeGenerator, path: bool):
                     r, c, W, grid, wall_code, reset_code, EAST)
             else:
                 _print_cell_interior(r, c, logo_cells, solution_cells,
-                                     path, flag_code, reset_code,
+                                     path, flag_code, reset_code, path_code,
                                      entry, exit)
 
         print()
