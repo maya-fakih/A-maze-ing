@@ -12,8 +12,8 @@ class GreedySolver(MazeSolver):
     def solve(self) -> list:
         start = self.maze.entry
         goal = self.maze.exit
-        self.path = []
-        self.path.append((start, True))
+        self.animation_path = []
+        self.animation_path.append((start, True))
 
         visited = set()
         fringe = [(0, (start, [start], []))]
@@ -24,15 +24,14 @@ class GreedySolver(MazeSolver):
                 continue
 
             visited.add(current_cell)
-            self.path.append((current_cell, False))
+            self.animation_path.append((current_cell, False))
 
             if current_cell == goal:
                 self.solution_cells = path
-                for cell, sol in self.path:
+                for i in range(len(self.animation_path)):
+                    cell, _ = self.animation_path[i]
                     if cell in self.solution_cells:
-                        self.path.append((cell, True))
-                    else:
-                        self.path.append((cell, False))
+                        self.animation_path[i] = (cell, True)
                 return dir
 
             for nx, ny, d in self.reachable_neighbors(current_cell):
