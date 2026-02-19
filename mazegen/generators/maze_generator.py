@@ -81,8 +81,9 @@ class MazeGenerator(ABC):
             raise InitializationError("Entry point cannot be on the logo.")
         if self.exit in self.logo_cells:
             raise InitializationError("Exit point cannot be on the logo.")
-        self.flood_fill_shape(self.entry)
-        self.flood_fill_shape(self.exit)
+        if self.shape != "square":
+            self.flood_fill_shape(self.entry)
+            self.flood_fill_shape(self.exit)
 
     def flood_fill_shape(self, start: Tuple) -> None:
         h = self.height
