@@ -7,6 +7,7 @@ from project.maze_displayer.ascii_display.ascii_display import display_terminal
 
 
 def parse_input(argv: list[str]) -> dict:
+    """Parse input."""
     if len(argv) != 2:
         raise helper.ParsingError("Invalid arguments "
                                   "given to program!\n"
@@ -23,6 +24,7 @@ def parse_input(argv: list[str]) -> dict:
 
 
 def display_maze(maze_gen: MazeGenerator) -> None:
+    """Display maze."""
     match maze_gen.display_mode:
         case "ascii":
             print("=== A-MAZE-ING ===\n")

@@ -6,10 +6,15 @@ import random
 class HuntKillGenerator(MazeGenerator):
     """Hunt and Kill algorithm"""
 
-    def __init__(self, settings_dict):
+    def __init__(self, settings_dict: dict[str, Any]) -> None:
+        """Initialize a HuntKillGenerator instance."""
         super().__init__(settings_dict)
 
-    def hunt(self, fringe) -> tuple:
+    def hunt(
+        self,
+        fringe: list[tuple[int, int, str, tuple[int, int]]],
+    ) -> tuple[int, int, str, tuple[int, int]] | None:
+        """Handle hunt."""
         hunt_cell = None
         min_dist = float('inf')
         start_x, start_y = self.entry
@@ -22,6 +27,7 @@ class HuntKillGenerator(MazeGenerator):
         return hunt_cell
 
     def generate(self) -> Any:
+        """Generate the value."""
         start = self.entry
         fringe = []
         hunt = False

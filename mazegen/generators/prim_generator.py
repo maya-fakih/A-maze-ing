@@ -6,10 +6,12 @@ import random
 class PrimGenerator(MazeGenerator):
     """Prim's algorithm"""
 
-    def __init__(self, settings_dict):
+    def __init__(self, settings_dict: dict[str, Any]) -> None:
+        """Initialize a PrimGenerator instance."""
         super().__init__(settings_dict)
 
     def generate(self) -> Any:
+        """Generate the value."""
         start = self.entry
         fringe = []
 

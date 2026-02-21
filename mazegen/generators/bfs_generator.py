@@ -6,10 +6,12 @@ import random
 class BFSGenerator(MazeGenerator):
     """Breadth First algorithm"""
 
-    def __init__(self, settings_dict):
+    def __init__(self, settings_dict: dict[str, Any]) -> None:
+        """Initialize a BFSGenerator instance."""
         super().__init__(settings_dict)
 
     def generate(self) -> Any:
+        """Generate the value."""
         self.visited = set(self.logo_cells)
         self.solution.clear()
         self.path.clear()
@@ -41,8 +43,6 @@ class BFSGenerator(MazeGenerator):
             self.remove_wall(current, direction)
             self.visited.add((nx, ny))
             self.generation_path.append(((nx, ny), self.maze[nx][ny], False))
-
-
             neighbors = self.get_neighbors((nx, ny))
             random.shuffle(neighbors)
 

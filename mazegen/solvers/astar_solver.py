@@ -5,11 +5,12 @@ import heapq
 class AStarSolver(MazeSolver):
     """A* Search Agent"""
 
-    def priority(self, path: list, current_cell) -> int:
-        """Priority function for A* Search (heuristic + path length)"""
+    def priority(self, path: list[str], current_cell: tuple[int, int]) -> int:
+        """Handle priority."""
         return len(path) + self.huristic(current_cell)
 
     def solve(self) -> list:
+        """Solve the value."""
         start = self.maze.entry
         goal = self.maze.exit
         self.animation_path = []

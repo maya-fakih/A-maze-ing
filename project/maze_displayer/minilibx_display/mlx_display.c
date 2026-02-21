@@ -44,6 +44,7 @@ static const char	*g_button_labels[] = {"Regenerate maze",
 static const int	g_button_colors[] = {0x5E2CA5, 0x5E2CA5, 0x5E2CA5,
 	0x5E2CA5, 0x5E2CA5, 0x5E2CA5, 0x5E2CA5, 0x5E2CA5};
 
+/* Execute index_of_value. */
 static int	index_of_value(const char *value, const char **options, int count)
 {
 	int	i;
@@ -66,6 +67,7 @@ static const char	*next_value(const char *current, const char **options, int cou
 	return (options[(idx + 1) % count]);
 }
 
+/* Execute build_buttons. */
 static void	build_buttons(t_app *app, t_button *btns)
 {
 	int	i;
@@ -89,6 +91,7 @@ static void	build_buttons(t_app *app, t_button *btns)
 	}
 }
 
+/* Execute color_from_name. */
 int	color_from_name(const char *name, int fallback)
 {
 	if (!name)
@@ -160,6 +163,7 @@ static const char	*next_distinct_color(const char *current, const char **options
 	return (options[idx]);
 }
 
+/* Execute set_config_color. */
 static void	set_config_color(char **field, const char *value)
 {
 	char	*copy;
@@ -173,6 +177,7 @@ static void	set_config_color(char **field, const char *value)
 	*field = copy;
 }
 
+/* Execute safe_flag_color. */
 static int	safe_flag_color(t_app *app, int wall_color)
 {
 	int	flag_color;
@@ -185,6 +190,7 @@ static int	safe_flag_color(t_app *app, int wall_color)
 	return (color_from_name("yellow", ENTRY_EXIT_FALLBACK));
 }
 
+/* Execute put_pixel. */
 void	put_pixel(t_img *img, int x, int y, int color)
 {
 	char	*dst;
@@ -195,6 +201,7 @@ void	put_pixel(t_img *img, int x, int y, int color)
 	*(unsigned int *)dst = color;
 }
 
+/* Execute fill_rect. */
 static void	fill_rect(t_app *app, int x, int y, int w, int h, int color)
 {
 	int	px;
@@ -213,6 +220,7 @@ static void	fill_rect(t_app *app, int x, int y, int w, int h, int color)
 	}
 }
 
+/* Execute draw_square. */
 void	draw_square(t_app *app, int gx, int gy, int color)
 {
 	int	px;
@@ -238,6 +246,7 @@ void	draw_square(t_app *app, int gx, int gy, int color)
 /* Draw a small star-shaped marker centered in the cell. This draws directly
    into the image buffer so it persists when the image is blitted to the
    window. The marker scales with cell_size. */
+/* Execute draw_star_marker. */
 static void	draw_star_marker(t_app *app, int gx, int gy, int color)
 {
 	int	cx;
@@ -264,6 +273,7 @@ static void	draw_star_marker(t_app *app, int gx, int gy, int color)
 	}
 }
 
+/* Execute wall_thickness. */
 static int	wall_thickness(t_app *app)
 {
 	int	thickness;
@@ -274,6 +284,7 @@ static int	wall_thickness(t_app *app)
 	return (thickness);
 }
 
+/* Execute draw_cell_by_bits. */
 static void	draw_cell_by_bits(t_app *app, int gx, int gy, int bits, int wall_color)
 {
 	int	px;
@@ -296,6 +307,7 @@ static void	draw_cell_by_bits(t_app *app, int gx, int gy, int bits, int wall_col
 		fill_rect(app, px, py, t, size, wall_color);
 }
 
+/* Execute draw_static_maze. */
 void	draw_static_maze(t_app *app)
 {
 	int	x;
@@ -364,6 +376,7 @@ void	draw_static_maze(t_app *app)
 	}
 }
 
+/* Execute draw_solution_until. */
 static void	draw_solution_until(t_app *app, int steps)
 {
 	int	i;
@@ -393,6 +406,7 @@ static void	draw_solution_until(t_app *app, int steps)
 	draw_star_marker(app, x, y, path_color);
 }
 
+/* Execute redraw_base_scene. */
 void	redraw_base_scene(t_app *app)
 {
 	draw_static_maze(app);
@@ -400,6 +414,7 @@ void	redraw_base_scene(t_app *app)
 		draw_solution_until(app, app->maze.solution_len);
 }
 
+/* Execute animate_generation. */
 void	animate_generation(t_app *app)
 {
 	t_cell	cell;
@@ -415,6 +430,7 @@ void	animate_generation(t_app *app)
 	app->anim_index++;
 }
 
+/* Execute animate_solution. */
 void	animate_solution(t_app *app)
 {
 	if (app->anim_index >= app->maze.solution_len)
@@ -427,6 +443,7 @@ void	animate_solution(t_app *app)
 	app->anim_index++;
 }
 
+/* Execute update. */
 int	update(void *param)
 {
 	t_app	*app;
@@ -437,6 +454,7 @@ int	update(void *param)
 	return (0);
 }
 
+/* Execute free_maze. */
 static void	free_maze(t_app *app)
 {
 	int	y;
@@ -459,6 +477,7 @@ static void	free_maze(t_app *app)
 	app->maze.logo_count = 0;
 }
 
+/* Execute reload_from_files. */
 void	reload_from_files(t_app *app)
 {
 	FILE		*config_file;
@@ -561,6 +580,7 @@ static const char	*cfg_basename(const char *path)
 	return (base + 1);
 }
 
+/* Execute regenerate_maze. */
 static void	regenerate_maze(t_app *app)
 {
 	char	command[512];
@@ -635,12 +655,14 @@ int	update_config_value(const char *config_path, const char *key,
 	return (0);
 }
 
+/* Execute clicked_button. */
 static int	clicked_button(t_button *btn, int x, int y)
 {
 	return (x >= btn->x && x <= btn->x + btn->w
 		&& y >= btn->y && y <= btn->y + btn->h);
 }
 
+/* Execute on_button_click. */
 static void	on_button_click(t_app *app, int btn_index)
 {
 	const char	*next;
@@ -696,6 +718,7 @@ static void	on_button_click(t_app *app, int btn_index)
 	}
 }
 
+/* Execute mouse_hook. */
 int	mouse_hook(int button, int x, int y, void *param)
 {
 	t_app		*app;
@@ -721,6 +744,7 @@ int	mouse_hook(int button, int x, int y, void *param)
 	return (0);
 }
 
+/* Execute draw_button_panel. */
 void	draw_button_panel(t_app *app)
 {
 	t_button	btns[BTN_COUNT];
@@ -760,12 +784,14 @@ void	draw_button_panel(t_app *app)
 		(char *)"Click buttons to cycle list options");
 }
 
+/* Execute close_window. */
 int	close_window(t_app *app)
 {
 	mlx_destroy_window(app->mlx, app->win);
 	exit(0);
 }
 
+/* Execute center_window. */
 static void	center_window(t_app *app)
 {
 	t_mlx_xvar	*xvar;
@@ -788,6 +814,7 @@ static void	center_window(t_app *app)
 	XFlush(xvar->display);
 }
 
+/* Execute init_graphics. */
 void	init_graphics(t_app *app)
 {
 	app->maze_px_w = app->maze.width * app->config.cell_size;

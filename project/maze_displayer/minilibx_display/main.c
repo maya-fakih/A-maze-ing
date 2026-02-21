@@ -12,6 +12,7 @@
 
 #include <mlx_helper.h>
 
+/* Execute copy_runtime_paths. */
 static void	copy_runtime_paths(t_app *app, char **argv)
 {
 	snprintf(app->config_file, sizeof(app->config_file), "configuration/%s",
@@ -65,6 +66,7 @@ t_app	*init_app(FILE *config_file, FILE *path_file, FILE *output_file,
 	return (app);
 }
 
+/* Execute draw_maze. */
 void	draw_maze(t_app *app)
 {
 	init_graphics(app);
@@ -77,6 +79,7 @@ void	draw_maze(t_app *app)
 	mlx_loop(app->mlx);
 }
 
+/* Execute main. */
 int	main(int argc, char **argv)
 {
 	FILE	*config_file;

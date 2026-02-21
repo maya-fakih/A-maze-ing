@@ -5,6 +5,7 @@ class BFSolver(MazeSolver):
     """Breadth-First Search Agent"""
 
     def solve(self) -> list:
+        """Solve the value."""
         start = self.maze.entry
         goal = self.maze.exit
         self.animation_path = []
