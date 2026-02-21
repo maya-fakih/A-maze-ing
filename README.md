@@ -43,6 +43,7 @@ source .venv/bin/activate
 Install Python dependency:
 
 ```bash
+git clone https://github.com/42paris/minilibx-linux.git
 pip install webcolors
 ```
 
