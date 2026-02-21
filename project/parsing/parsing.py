@@ -32,6 +32,7 @@ ascii_extra_colors = {
 #  Validate color name and ensure it is not black
 # without ue of webcolors
 
+
 def validate_color_name(name: str) -> bool:
     if name in ascii_extra_colors:
         return True

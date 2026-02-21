@@ -1,5 +1,4 @@
 import sys
-import os
 import subprocess
 from project.parsing import parsing as helper
 from mazegen.errors import InitializationError
@@ -30,7 +29,8 @@ def display_maze(maze_gen: MazeGenerator) -> None:
             display_terminal(maze_gen, False)
         case "minilibx":
             try:
-                subprocess.run(["project/maze_displayer/minilibx_display/main.exe",
+                subprocess.run(["project/maze_displayer"
+                                "/minilibx_display/main.exe",
                                 f"{sys.argv[1]}",
                                 "gen_path.txt",
                                 f"{maze_gen.output_file}",
@@ -59,4 +59,3 @@ if __name__ == "__main__":
               "Remember to add config.txt file for maze generation settings.")
     except InitializationError as e:
         print(e)
- 

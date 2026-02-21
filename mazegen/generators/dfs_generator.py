@@ -16,7 +16,8 @@ class DFSGenerator(MazeGenerator):
         self.initialize_maze()
 
         self.visited.add(start)
-        self.generation_path.append((start, self.maze[start[0]][start[1]], False))
+        self.generation_path.append((start,
+                                     self.maze[start[0]][start[1]], False))
 
         possible = []
         for nx, ny, direction in self.get_neighbors(start):

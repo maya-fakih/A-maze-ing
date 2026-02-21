@@ -90,7 +90,8 @@ def _prompt_color(prompt: str, forbidden: str | None = None) -> str:
         return color
 
 
-def _write_runtime_setting(maze_gen: MazeGenerator, key: str, value: str) -> None:
+def _write_runtime_setting(maze_gen: MazeGenerator, key: str,
+                           value: str) -> None:
     maze_gen.settings[key] = value
     setattr(maze_gen, key, value)
     update_config_value(_config_path(), key, value)
@@ -102,7 +103,8 @@ def _regenerate(maze_gen: MazeGenerator) -> None:
     maze_gen.write_path("configuration/gen_path.txt")
 
 
-def _rebuild_generator(maze_gen: MazeGenerator, updates: dict[str, str]) -> MazeGenerator:
+def _rebuild_generator(maze_gen: MazeGenerator,
+                       updates: dict[str, str]) -> MazeGenerator:
     settings = dict(maze_gen.settings)
     settings.update(updates)
     new_generator = MazeGenerator.create_generator(settings)
@@ -253,7 +255,8 @@ def show_options(maze_gen: MazeGenerator, path: bool) -> None:
                     f"({', '.join(helper.solver_algorithms)}): ",
                     helper.solver_algorithms,
                 )
-                _write_runtime_setting(maze_gen, "solver_algorithm", solver_algorithm)
+                _write_runtime_setting(
+                    maze_gen, "solver_algorithm", solver_algorithm)
                 maze_gen.find_solution_path()
                 maze_gen.output_to_file()
                 maze_gen.write_path("configuration/gen_path.txt")
