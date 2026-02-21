@@ -3,12 +3,13 @@ import io
 import os
 
 
-# customized exception class for parsing errors
 class ParsingError(Exception):
-    def __init__(self, msg: str):
+    def __init__(self, msg: str) -> None:
+        """Initialize a ParsingError instance."""
         self.msg = msg
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Return a string representation of the instance."""
         return self.msg
 
 
@@ -29,15 +30,13 @@ ascii_extra_colors = {
     "light_magenta", "light_cyan", "light_white",
 }
 
-#  Validate color name and ensure it is not black
-# without ue of webcolors
-
 
 def validate_color_name(name: str) -> bool:
+    """Validate color name."""
     if name in ascii_extra_colors:
         return True
     try:
-        # Normalizes input and checks against CSS3 defined names
+
         webcolors.name_to_hex(name.lower())
         if (name == "black"):
             return False
@@ -45,11 +44,10 @@ def validate_color_name(name: str) -> bool:
     except ValueError:
         return False
 
-# checks that all mandatory flags are present
 
+def mandatory_flags_check(input_settings: dict) -> None:
 
-def mandatory_flags_check(input_settings: dict):
-    # determine which required keys are missing from the parsed settings
+    """Handle mandatory flags check."""
     missing = [k for k in mandatory_keys if k not in input_settings]
     if missing:
         valid = ", ".join(mandatory_keys)
@@ -61,10 +59,9 @@ def mandatory_flags_check(input_settings: dict):
             f"Optional settings: {extra}."
         )
 
-# validate values and convert to needed type
-
 
 def validate_types(input_settings: dict) -> dict:
+    """Validate types."""
     for key, value in input_settings.items():
         if key == "height" or key == "width":
             d = {key: int(value)}
@@ -122,8 +119,8 @@ def validate_types(input_settings: dict) -> dict:
     return (input_settings)
 
 
-# check that all keys are valid
 def parse_settings(file: io.TextIOWrapper) -> dict:
+    """Parse settings."""
     input_settings: dict = {}
     for line in file:
         line = line.strip().lower()
@@ -151,7 +148,7 @@ def parse_settings(file: io.TextIOWrapper) -> dict:
             )
         d = {key: val}
         input_settings.update(d)
-    # check that all madatory keys exists in input_settings keys
+
     mandatory_flags_check(input_settings)
     settings_dict = validate_types(input_settings)
     wall_color = settings_dict.get("wall_color")

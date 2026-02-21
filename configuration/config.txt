@@ -5,13 +5,13 @@ EXIT=29,16
 OUTPUT_FILE=maze.txt
 PERFECT=True
 SHAPE=square
-GENERATION_ALGORITHM=bfs
-SOLVER_ALGORITHM=dfs
+GENERATION_ALGORITHM=dfs
+SOLVER_ALGORITHM=ucs
 DISPLAY_MODE=minilibx
 WALL_COLOR=magenta
 # FLAG_COLOR=green
 # WALL_COLOR=blue
 # This line is to be ignored
 # we can handle more optional keys: seed, algorithm, display mode, etc..
-PATH_COLOR=cyan
-FLAG_COLOR=orange
+PATH_COLOR=magenta
+FLAG_COLOR=blue

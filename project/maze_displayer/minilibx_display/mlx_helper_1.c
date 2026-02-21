@@ -13,6 +13,7 @@
 #include <mlx_helper.h>
 
 // display error messages and exit
+/* Execute error. */
 void	error(const char *s)
 {
 	printf("%s\n", s);

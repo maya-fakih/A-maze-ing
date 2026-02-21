@@ -12,6 +12,7 @@
 
 #include <mlx_helper.h>
 
+/* Execute validate_non_white_colors. */
 static void	validate_non_white_colors(t_config *settings)
 {
 	if (color_from_name(settings->wall_color, -1) == WHITE_BG)
@@ -20,6 +21,7 @@ static void	validate_non_white_colors(t_config *settings)
 		error("Error: FLAG_COLOR cannot be white in MiniLibX display.");
 }
 
+/* Execute set_default_config. */
 static void	set_default_config(t_config *settings)
 {
 	settings->width = 20;
@@ -34,6 +36,7 @@ static void	set_default_config(t_config *settings)
 	settings->animation_speed = 20;
 }
 
+/* Execute set_setting_value. */
 static void	set_setting_value(t_config *settings, char *line)
 {
 	char	*value;
