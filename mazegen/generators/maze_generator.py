@@ -138,6 +138,7 @@ class MazeGenerator(ABC):
         solver_class = solver_map.get(self.solver_algorithm, BFSolver)
         solver = solver_class(self)
         self.solution = solver.solve()
+        print(f"solution path: {self.solution}")
 
         self.path = []
         for cell in self.visited:

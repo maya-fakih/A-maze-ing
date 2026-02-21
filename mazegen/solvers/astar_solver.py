@@ -12,8 +12,8 @@ class AStarSolver(MazeSolver):
     def solve(self) -> list:
         start = self.maze.entry
         goal = self.maze.exit
-        self.path = []
-        self.path.append((start, True))
+        self.animation_path = []
+        self.animation_path.append((start, True))
 
         visited = set()
         fringe = [(0, (start, [start], []))]
@@ -24,10 +24,11 @@ class AStarSolver(MazeSolver):
                 continue
 
             visited.add(current_cell)
-            self.path.append((current_cell, False))
+            self.animation_path.append((current_cell, False))
 
             if current_cell == goal:
                 self.solution_cells = path
+<<<<<<< HEAD
                 updated_path = []
                 for cell, sol in self.path:
                     if cell in self.solution_cells:
@@ -35,6 +36,12 @@ class AStarSolver(MazeSolver):
                     else:
                         updated_path.append((cell, False))
                 self.path = updated_path
+=======
+                for i in range(len(self.animation_path)):
+                    cell, _ = self.animation_path[i]
+                    if cell in self.solution_cells:
+                        self.animation_path[i] = (cell, True)
+>>>>>>> 900e994780fbab17d50e15bd6194167980821dd1
                 return dir
 
             for nx, ny, d in self.reachable_neighbors(current_cell):
