@@ -59,7 +59,7 @@ t_app	*init_app(FILE *config_file, FILE *path_file, FILE *output_file,
 	app->maze = *maze;
 	free(maze);
 	copy_runtime_paths(app, argv);
-	app->phase = 0;
+	app->phase = 2;
 	app->anim_index = 0;
 	app->frame = 0;
 	app->show_path = true;

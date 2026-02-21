@@ -5,12 +5,12 @@ EXIT=29,16
 OUTPUT_FILE=maze.txt
 PERFECT=True
 SHAPE=square
-GENERATION_ALGORITHM=huntkill
+GENERATION_ALGORITHM=prim
 SOLVER_ALGORITHM=dfs
 DISPLAY_MODE=minilibx
-WALL_COLOR=grey
-FLAG_COLOR=cyan
+WALL_COLOR=green
+FLAG_COLOR=orange
 # WALL_COLOR=blue
 # This line is to be ignored
 # we can handle more optional keys: seed, algorithm, display mode, etc..
-PATH_COLOR=light_cyan
+PATH_COLOR=orange

@@ -179,6 +179,31 @@ static const char	*next_distinct_color(const char *current, const char **options
 	return (options[idx]);
 }
 
+static void	set_config_color(char **field, const char *value)
+{
+	char	*copy;
+
+	if (!field || !value)
+		return ;
+	copy = strdup(value);
+	if (!copy)
+		return ;
+	free(*field);
+	*field = copy;
+}
+
+static int	safe_flag_color(t_app *app, int wall_color)
+{
+	int	flag_color;
+
+	flag_color = color_from_name(app->config.flag_color, ENTRY_EXIT_FALLBACK);
+	if (flag_color != wall_color)
+		return (flag_color);
+	if (wall_color == color_from_name("yellow", -1))
+		return (color_from_name("blue", ENTRY_EXIT_FALLBACK));
+	return (color_from_name("yellow", ENTRY_EXIT_FALLBACK));
+}
+
 void	put_pixel(t_img *img, int x, int y, int color)
 {
 	char	*dst;
@@ -272,7 +297,7 @@ void	draw_static_maze(t_app *app)
 	int	ly;
 
 	wall_color = color_from_name(app->config.wall_color, 0x2B2B2B);
-	flag_color = color_from_name(app->config.flag_color, ENTRY_EXIT_FALLBACK);
+	flag_color = safe_flag_color(app, wall_color);
 	fill_rect(app, 0, 0, app->window_width, app->window_height, WHITE_BG);
 	y = 0;
 	while (y < app->maze.height)
@@ -395,13 +420,6 @@ int	update(void *param)
 	t_app	*app;
 
 	app = (t_app *)param;
-	app->frame++;
-	if (app->frame % app->config.animation_speed != 0)
-		return (0);
-	if (app->phase == 0)
-		animate_generation(app);
-	else if (app->phase == 1)
-		animate_solution(app);
 	mlx_put_image_to_window(app->mlx, app->win, app->img.img, 0, 0);
 	draw_button_panel(app);
 	return (0);
@@ -543,7 +561,7 @@ static void	regenerate_maze(t_app *app)
 	if (ret != 0)
 		return ;
 	reload_from_files(app);
-	app->phase = 0;
+	app->phase = 2;
 	app->anim_index = 0;
 	app->frame = 0;
 	redraw_base_scene(app);
@@ -627,20 +645,23 @@ static void	on_button_click(t_app *app, int btn_index)
 		next = next_distinct_color(app->config.wall_color, g_wall_colors, 11,
 				app->config.flag_color);
 		update_config_value(app->config_file, "WALL_COLOR", next);
-		regenerate_maze(app);
+		set_config_color(&app->config.wall_color, next);
+		redraw_base_scene(app);
 	}
 	else if (btn_index == 3)
 	{
 		next = next_distinct_color(app->config.flag_color, g_flag_colors, 10,
 				app->config.wall_color);
 		update_config_value(app->config_file, "FLAG_COLOR", next);
-		regenerate_maze(app);
+		set_config_color(&app->config.flag_color, next);
+		redraw_base_scene(app);
 	}
 	else if (btn_index == 4)
 	{
 		next = next_value(app->config.path_color, g_path_colors, 10);
 		update_config_value(app->config_file, "PATH_COLOR", next);
-		regenerate_maze(app);
+		set_config_color(&app->config.path_color, next);
+		redraw_base_scene(app);
 	}
 	else if (btn_index == 5)
 	{
