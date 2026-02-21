@@ -67,9 +67,10 @@ if __name__ == "__main__":
         maze_generator.write_path("configuration/gen_path.txt")
         if maze_generator.display_mode == "minilibx":
             maze_generator.write_logo_cells("configuration/logo.txt")
-        # display options function
-        if os.environ.get("AMAZE_NO_DISPLAY") != "1":
-            display_maze(maze_generator)
+        display_maze(maze_generator)
+        # # display options function
+        # if os.environ.get("AMAZE_NO_DISPLAY") != "1":
+        #     display_maze(maze_generator)
     except helper.ParsingError as e:
         print(e)
     except FileNotFoundError:
