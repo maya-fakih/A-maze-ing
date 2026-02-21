@@ -33,7 +33,7 @@ static void	set_default_config(t_config *settings)
 	settings->generation_algorithm = strdup("dfs");
 	settings->solver_algorithm = strdup("bfs");
 	settings->cell_size = 30;
-	settings->animation_speed = 20;
+	settings->animation_speed = 5;
 }
 
 /* Execute set_setting_value. */
