@@ -28,20 +28,10 @@ class AStarSolver(MazeSolver):
 
             if current_cell == goal:
                 self.solution_cells = path
-<<<<<<< HEAD
-                updated_path = []
-                for cell, sol in self.path:
-                    if cell in self.solution_cells:
-                        updated_path.append((cell, True))
-                    else:
-                        updated_path.append((cell, False))
-                self.path = updated_path
-=======
                 for i in range(len(self.animation_path)):
                     cell, _ = self.animation_path[i]
                     if cell in self.solution_cells:
                         self.animation_path[i] = (cell, True)
->>>>>>> 900e994780fbab17d50e15bd6194167980821dd1
                 return dir
 
             for nx, ny, d in self.reachable_neighbors(current_cell):

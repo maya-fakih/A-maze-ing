@@ -67,8 +67,6 @@ if __name__ == "__main__":
     except FileNotFoundError:
         print("Config file not found!\n"
               "Remember to add config.txt file for maze generation settings.")
-    except ValueError:
-    except InitializationError as e:
     except InitializationError as e:
         print(e)
  

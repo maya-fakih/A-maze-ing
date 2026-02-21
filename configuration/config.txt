@@ -8,9 +8,9 @@ SHAPE=square
 GENERATION_ALGORITHM=prim
 SOLVER_ALGORITHM=a*
 DISPLAY_MODE=ascii
-WALL_COLOR=red
+WALL_COLOR=magenta
 FLAG_COLOR=blue
 # WALL_COLOR=blue
 # This line is to be ignored
 # we can handle more optional keys: seed, algorithm, display mode, etc..
-PATH_COLOR=white
+PATH_COLOR=grey

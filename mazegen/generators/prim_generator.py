@@ -40,7 +40,6 @@ class PrimGenerator(MazeGenerator):
                 if (nnx, nny) not in self.visited:
                     fringe.append((nnx, nny, new_direction, (nx, ny)))
 
-        print("Maze generated using Prim's algorithm.")
         self.find_solution_path()
 
         if self.perfect is False:
