@@ -235,6 +235,35 @@ void	draw_square(t_app *app, int gx, int gy, int color)
 	}
 }
 
+/* Draw a small star-shaped marker centered in the cell. This draws directly
+   into the image buffer so it persists when the image is blitted to the
+   window. The marker scales with cell_size. */
+static void	draw_star_marker(t_app *app, int gx, int gy, int color)
+{
+	int	cx;
+	int	cy;
+	int	size;
+	int	i;
+
+	size = app->config.cell_size;
+	cx = gx * size + size / 2;
+	cy = gy * size + size / 2;
+
+	/* simple 5-point star like marker using lines */
+	put_pixel(&app->img, cx, cy, color);
+	for (i = 1; i <= (size / 6 + 1); i++)
+	{
+		put_pixel(&app->img, cx + i, cy, color);
+		put_pixel(&app->img, cx - i, cy, color);
+		put_pixel(&app->img, cx, cy + i, color);
+		put_pixel(&app->img, cx, cy - i, color);
+		put_pixel(&app->img, cx + i, cy + i, color);
+		put_pixel(&app->img, cx - i, cy - i, color);
+		put_pixel(&app->img, cx + i, cy - i, color);
+		put_pixel(&app->img, cx - i, cy + i, color);
+	}
+}
+
 static int	wall_thickness(t_app *app)
 {
 	int	thickness;
@@ -348,7 +377,8 @@ static void	draw_solution_until(t_app *app, int steps)
 	i = 0;
 	while (i < steps && i < app->maze.solution_len)
 	{
-		draw_square(app, x, y, path_color);
+		/* draw a small star marker instead of filling whole cell */
+		draw_star_marker(app, x, y, path_color);
 		if (app->maze.solution[i] == 'N')
 			y--;
 		else if (app->maze.solution[i] == 'S')
@@ -359,7 +389,8 @@ static void	draw_solution_until(t_app *app, int steps)
 			x--;
 		i++;
 	}
-	draw_square(app, x, y, path_color);
+	/* draw marker for final cell */
+	draw_star_marker(app, x, y, path_color);
 }
 
 void	redraw_base_scene(t_app *app)
@@ -533,10 +564,10 @@ static const char	*cfg_basename(const char *path)
 static void	regenerate_maze(t_app *app)
 {
 	char	command[512];
-	int		ret;
+	int	ret;
 
 	snprintf(command, sizeof(command),
-		"AMAZE_NO_DISPLAY=1 python3 a_maze_ing.py %s",
+		"AMAZE_NO_DISPLAY=1 DISPLAY= python3 a_maze_ing.py %s >/dev/null 2>&1",
 		cfg_basename(app->config_file));
 	ret = system(command);
 	if (ret != 0)
@@ -774,4 +805,6 @@ void	init_graphics(t_app *app)
 	app->img.addr = mlx_get_data_addr(app->img.img, &app->img.bpp,
 			&app->img.line_len, &app->img.endian);
 	center_window(app);
+	/* Register a handler so clicking the window close button (X) will exit */
+	mlx_hook(app->win, 17, 0, (int (*)(void *))close_window, app);
 }
