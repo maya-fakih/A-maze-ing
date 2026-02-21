@@ -29,8 +29,8 @@ ascii_extra_colors = {
     "light_magenta", "light_cyan", "light_white",
 }
 
-#   Validate color name and ensure it is not black
-
+#  Validate color name and ensure it is not black
+# without ue of webcolors
 
 def validate_color_name(name: str) -> bool:
     if name in ascii_extra_colors:

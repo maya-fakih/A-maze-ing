@@ -4,12 +4,12 @@ ENTRY=6,10
 EXIT=29,16
 OUTPUT_FILE=maze.txt
 PERFECT=True
-SHAPE=square
-GENERATION_ALGORITHM=prim
+SHAPE=star
+GENERATION_ALGORITHM=huntkill
 SOLVER_ALGORITHM=a*
-DISPLAY_MODE=ascii
-WALL_COLOR=magenta
-FLAG_COLOR=blue
+DISPLAY_MODE=minilibx
+WALL_COLOR=blue
+# FLAG_COLOR=green
 # WALL_COLOR=blue
 # This line is to be ignored
 # we can handle more optional keys: seed, algorithm, display mode, etc..
