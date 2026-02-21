@@ -19,6 +19,20 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
+# include <strings.h>
+
+# define APP_TITLE "A-MAZE-ING"
+# define WHITE_BG 0xFFFFFF
+# define PANEL_BG 0xF2F2F2
+# define MAZE_PATH_COLOR 0x00A870
+# define ENTRY_EXIT_FALLBACK 0x1E88E5
+# define GEN_STEP_COLOR 0x41B6E6
+# define BTN_COUNT 8
+# define BTN_HEIGHT 52
+# define BTN_GAP 12
+# define PANEL_MARGIN 16
+# define BTN_LABEL_XPAD 12
+# define BTN_LABEL_YPAD 32
 
 // we need this for the coordinates
 typedef struct s_point
@@ -54,6 +68,9 @@ typedef struct s_config
 	char		*shape;
 	char		*wall_color;
 	char		*flag_color;
+	char		*path_color;
+	char		*generation_algorithm;
+	char		*solver_algorithm;
 	int			cell_size;
 	int			animation_speed;
 }				t_config;
@@ -67,6 +84,8 @@ typedef struct s_maze
 	char		**grid;
 	int			width;
 	int			height;
+	t_point		*logo_cells;
+	int			logo_count;
 	t_point		entry;
 	t_point		exit;
 	char		*solution;
@@ -85,10 +104,29 @@ typedef struct s_app
 	t_img		img;
 	int			window_width;
 	int			window_height;
+	int			maze_px_w;
+	int			maze_px_h;
+	int			panel_x;
+	int			panel_width;
 	int			phase;
 	int			anim_index;
 	int			frame;
+	bool		show_path;
+	char		config_file[256];
+	char		path_file[256];
+	char		output_file[256];
+	char		logo_file[256];
 }				t_app;
+
+typedef struct s_button
+{
+	int			x;
+	int			y;
+	int			w;
+	int			h;
+	int			color;
+	const char	*label;
+}				t_button;
 
 void			error(const char *s);
 void			print_config(t_config *config);
@@ -101,6 +139,7 @@ char			*find_value(char *line);
 t_config		*parse_settings(FILE *f);
 void			parse_line(t_cell *path, char *line);
 t_cell			*parse_path(FILE *f, int *count);
+t_point			*parse_logo_cells(FILE *f, int *count);
 char			**fill_grid(FILE *f, int w, int h);
 t_point			parse_coordinates(const char *line);
 t_maze			*parse_output(FILE *f, t_cell *path, int steps, int width,
@@ -112,8 +151,15 @@ void			animate_generation(t_app *app);
 void			animate_solution(t_app *app);
 int				update(void *param);
 int				close_window(t_app *app);
+int				mouse_hook(int button, int x, int y, void *param);
 void			init_graphics(t_app *app);
 t_app			*init_app(FILE *config_file, FILE *path_file,
-					FILE *output_file);
+					FILE *output_file, FILE *logo_file, char **argv);
 void			draw_maze(t_app *app);
+int				color_from_name(const char *name, int fallback);
+void			draw_button_panel(t_app *app);
+void			redraw_base_scene(t_app *app);
+void			reload_from_files(t_app *app);
+int				update_config_value(const char *config_path, const char *key,
+					const char *value);
 #endif

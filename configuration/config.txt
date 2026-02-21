@@ -1,13 +1,16 @@
-WIDTH=20
-HEIGHT=20
-ENTRY=7,7
-EXIT=12,11
+WIDTH=35
+HEIGHT=35
+ENTRY=6,10
+EXIT=29,16
 OUTPUT_FILE=maze.txt
 PERFECT=True
-SHAPE=heart
-GENERATION_ALGORITHM=bfs
-SOLVER_ALGORITHM=bfs
-DISPLAY_MODE=minilibx
-# WALL_COLOR=red
+SHAPE=square
+GENERATION_ALGORITHM=prim
+SOLVER_ALGORITHM=a*
+DISPLAY_MODE=ascii
+WALL_COLOR=red
+FLAG_COLOR=blue
+# WALL_COLOR=blue
 # This line is to be ignored
 # we can handle more optional keys: seed, algorithm, display mode, etc..
+PATH_COLOR=white

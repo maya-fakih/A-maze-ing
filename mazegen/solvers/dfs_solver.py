@@ -23,11 +23,13 @@ class DFSolver(MazeSolver):
 
             if current_cell == goal:
                 self.solution_cells = path
+                updated_path = []
                 for cell, sol in self.path:
                     if cell in self.solution_cells:
-                        self.path.append((cell, True))
+                        updated_path.append((cell, True))
                     else:
-                        self.path.append((cell, False))
+                        updated_path.append((cell, False))
+                self.path = updated_path
                 return dir
 
             for nx, ny, d in self.reachable_neighbors(current_cell):
