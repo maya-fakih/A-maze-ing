@@ -406,6 +406,42 @@ static void	draw_solution_until(t_app *app, int steps)
 	draw_star_marker(app, x, y, path_color);
 }
 
+/* Execute draw_generation_base. */
+static void	draw_generation_base(t_app *app)
+{
+	int	x;
+	int	y;
+	int	wall_color;
+	int	flag_color;
+	int	i;
+	int	lx;
+	int	ly;
+
+	wall_color = color_from_name(app->config.wall_color, 0x2B2B2B);
+	flag_color = safe_flag_color(app, wall_color);
+	fill_rect(app, 0, 0, app->window_width, app->window_height, WHITE_BG);
+	y = 0;
+	while (y < app->maze.height)
+	{
+		x = 0;
+		while (x < app->maze.width)
+		{
+			draw_cell_by_bits(app, x, y, 0xF, wall_color);
+			x++;
+		}
+		y++;
+	}
+	i = 0;
+	while (i < app->maze.logo_count)
+	{
+		lx = app->maze.logo_cells[i].x;
+		ly = app->maze.logo_cells[i].y;
+		if (lx >= 0 && ly >= 0 && lx < app->maze.width && ly < app->maze.height)
+			draw_square(app, lx, ly, flag_color);
+		i++;
+	}
+}
+
 /* Execute redraw_base_scene. */
 void	redraw_base_scene(t_app *app)
 {
@@ -418,15 +454,21 @@ void	redraw_base_scene(t_app *app)
 void	animate_generation(t_app *app)
 {
 	t_cell	cell;
+	int		wall_color;
 
+	if (app->anim_index == 0)
+		draw_generation_base(app);
 	if (app->anim_index >= app->maze.gen_total_steps)
 	{
-		app->phase = 1;
+		app->phase = 2;
 		app->anim_index = 0;
+		redraw_base_scene(app);
 		return ;
 	}
 	cell = app->maze.gen_path[app->anim_index];
-	draw_square(app, cell.point.x, cell.point.y, GEN_STEP_COLOR);
+	wall_color = color_from_name(app->config.wall_color, 0x2B2B2B);
+	draw_cell_by_bits(app, cell.point.x, cell.point.y, cell.value, wall_color);
+	draw_star_marker(app, cell.point.x, cell.point.y, wall_color);
 	app->anim_index++;
 }
 
@@ -447,8 +489,15 @@ void	animate_solution(t_app *app)
 int	update(void *param)
 {
 	t_app	*app;
+	int		interval;
 
 	app = (t_app *)param;
+	interval = app->config.animation_speed;
+	if (interval < 1)
+		interval = 1;
+	app->frame++;
+	if (app->phase == 0 && (app->frame % interval) == 0)
+		animate_generation(app);
 	mlx_put_image_to_window(app->mlx, app->win, app->img.img, 0, 0);
 	draw_button_panel(app);
 	return (0);
@@ -593,10 +642,10 @@ static void	regenerate_maze(t_app *app)
 	if (ret != 0)
 		return ;
 	reload_from_files(app);
-	app->phase = 2;
+	app->phase = 0;
 	app->anim_index = 0;
 	app->frame = 0;
-	redraw_base_scene(app);
+	animate_generation(app);
 }
 
 int	update_config_value(const char *config_path, const char *key,

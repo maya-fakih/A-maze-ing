@@ -37,7 +37,6 @@ class PrimGenerator(MazeGenerator):
 
             self.remove_wall(current, direction)
             self.visited.add((nx, ny))
-            self.generation_path.append(((nx, ny), self.maze[nx][ny], False))
 
             for nnx, nny, new_direction in self.get_neighbors((nx, ny)):
                 if (nnx, nny) not in self.visited:

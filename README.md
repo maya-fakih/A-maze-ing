@@ -215,7 +215,7 @@ Main reusable components in this repo:
 Output contracts:
 
 - Maze output file in `output/*.txt`
-- Generation path file in `configuration/gen_path.txt`
+- Generation path file in `configuration/maze_gen.txt`
 
 # Roles
 
@@ -227,4 +227,3 @@ Team collaboration covered:
 - ASCII interaction design
 - MiniLibX graphical interface and animation
 - testing, debugging, and integration
-

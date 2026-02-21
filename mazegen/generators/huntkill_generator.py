@@ -62,7 +62,6 @@ class HuntKillGenerator(MazeGenerator):
 
             self.remove_wall(current, direction)
             self.visited.add((nx, ny))
-            self.generation_path.append(((nx, ny), self.maze[nx][ny], False))
 
             neighbors = self.get_neighbors((nx, ny))
             random.shuffle(neighbors)

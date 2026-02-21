@@ -243,6 +243,9 @@ class MazeGenerator(ABC):
 
         self.maze[x][y] &= ~mask
         self.maze[nx][ny] &= ~opposite_mask
+        self.generation_path.append((((x, y)), self.maze[x][y], False))
+        self.generation_path.append(((nx, ny), self.maze[nx][ny], False))
+
 
     def get_neighbors(self, cell: Tuple) -> List[Tuple]:
         """Return neighbors."""
