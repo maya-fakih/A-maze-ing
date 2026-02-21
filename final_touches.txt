@@ -1,0 +1,3 @@
+changes to minilibx program display:
+. Make all the buttons have a color of purple with white text (make sure it is readable)
+. Make sure that the maze generation animation is done based in the gen_path text file

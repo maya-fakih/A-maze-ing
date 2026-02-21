@@ -13,14 +13,10 @@ class DFSGenerator(MazeGenerator):
         start = self.entry
         fringe = []
 
-        for cell in self.logo_cells:
-            x, y = cell
-            self.path.append((cell, self.maze[x][y], False))
-            self.visited.add(cell)
-
         self.initialize_maze()
 
         self.visited.add(start)
+        self.generation_path.append((start, self.maze[start[0]][start[1]], False))
 
         possible = []
         for nx, ny, direction in self.get_neighbors(start):
@@ -37,6 +33,7 @@ class DFSGenerator(MazeGenerator):
 
             self.remove_wall(current, direction)
             self.visited.add((nx, ny))
+            self.generation_path.append(((nx, ny), self.maze[nx][ny], False))
 
             neighbors = self.get_neighbors((nx, ny))
             random.shuffle(neighbors)

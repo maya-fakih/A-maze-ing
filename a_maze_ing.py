@@ -1,19 +1,19 @@
-from project.parsing import parsing as helper
-from mazegen.errors import InitializationError
 import sys
 import os
+import subprocess
+from project.parsing import parsing as helper
+from mazegen.errors import InitializationError
 from mazegen.generators.maze_generator import MazeGenerator
 from project.maze_displayer.ascii_display.ascii_display import display_terminal
-import subprocess
 
 
 def parse_input(argv: list[str]) -> dict:
-    # validate number of arguments: only script name and config text file
-    if (len(argv) != 2):
+    # validate number of arguments: script + config file
+    if len(argv) != 2:
         raise helper.ParsingError("Invalid arguments "
                                   "given to program!\n"
                                   "Usage: python3 a_maze_ing.py"
-                                  "config.txt")
+                                  " config.txt")
     # make sure file name provided is a text file
     if not argv[1].endswith(".txt"):
         raise helper.ParsingError("Invalid file type given to program!\n"
@@ -39,13 +39,16 @@ def display_maze(maze_gen: MazeGenerator) -> None:
             # Run compiled C MiniLibX program
             # give it the config and output file
             try:
-                maze_gen.write_path("configuration/gen_path.txt")
-                subprocess.run(["project/maze_displayer/main.exe",
+                subprocess.run(["project/maze_displayer/minilibx_display/main.exe",
                                 f"{sys.argv[1]}",
                                 "gen_path.txt",
-                                f"{maze_gen.output_file}"])
+                                f"{maze_gen.output_file}",
+                                "logo.txt"],
+                               check=True)
             except FileNotFoundError:
                 print("Error! Minilibx program not found.")
+            except subprocess.CalledProcessError:
+                print("Error! Minilibx program execution failed.")
 
 
 if __name__ == "__main__":
@@ -61,8 +64,12 @@ if __name__ == "__main__":
         maze_generator.generate()
         # solve the maze
         maze_generator.output_to_file()
+        maze_generator.write_path("configuration/gen_path.txt")
+        if maze_generator.display_mode == "minilibx":
+            maze_generator.write_logo_cells("configuration/logo.txt")
         # display options function
-        display_maze(maze_generator)
+        if os.environ.get("AMAZE_NO_DISPLAY") != "1":
+            display_maze(maze_generator)
     except helper.ParsingError as e:
         print(e)
     except FileNotFoundError:

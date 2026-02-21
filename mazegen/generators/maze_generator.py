@@ -4,6 +4,7 @@ from typing import Any, List, Tuple
 from abc import ABC, abstractmethod
 import sys
 import random
+import os
 
 
 class MazeGenerator(ABC):
@@ -52,10 +53,12 @@ class MazeGenerator(ABC):
         self.height = settings_dict.get("height")
         self.entry = settings_dict.get("entry")
         self.exit = settings_dict.get("exit")
-        self.output_file = settings_dict.get("output_file", "output_maze.txt")
+        self.output_file = settings_dict.get("output_file",
+                                             "output/output_maze.txt")
         self.perfect = settings_dict.get("perfect", False)
         self.wall_color = settings_dict.get("wall_color", "white")
         self.flag_color = settings_dict.get("flag_color", "blue")
+        self.path_color = settings_dict.get("path_color")
         self.generation_algorithm = settings_dict.get(
             "generation_algorithm", "dfs")
         self.solver_algorithm = settings_dict.get(
@@ -74,6 +77,7 @@ class MazeGenerator(ABC):
         self.solution = []
         self.visited = set()
         self.path = []
+        self.generation_path = []
 
     @abstractmethod
     def generate(self) -> Any:
@@ -84,8 +88,9 @@ class MazeGenerator(ABC):
             raise InitializationError("Entry point cannot be on the logo.")
         if self.exit in self.logo_cells:
             raise InitializationError("Exit point cannot be on the logo.")
-        self.flood_fill_shape(self.entry)
-        self.flood_fill_shape(self.exit)
+        if self.shape != "square":
+            self.flood_fill_shape(self.entry)
+            self.flood_fill_shape(self.exit)
 
     def flood_fill_shape(self, start: Tuple) -> None:
         h = self.height
@@ -108,6 +113,7 @@ class MazeGenerator(ABC):
 
     def initialize_maze(self) -> None:
         self.path.clear()
+        self.generation_path.clear()
         self.visited.clear()
         self.solution.clear()
         for x in range(self.width):
@@ -119,10 +125,21 @@ class MazeGenerator(ABC):
             self.remove_walls_outside_shape()
 
     def find_solution_path(self) -> None:
-        from ..solvers import BFSolver
-        solver = BFSolver(self)
+        from ..solvers.astar_solver import AStarSolver
+        from ..solvers.bfs_solver import BFSolver
+        # from ..solvers.dfs_solver import DFSolver
+        from ..solvers.ucs_solver import UCSolver
+
+        solver_map = {
+            "bfs": BFSolver,
+            "a*": AStarSolver,
+            "ucs": UCSolver,
+        }
+        solver_class = solver_map.get(self.solver_algorithm, BFSolver)
+        solver = solver_class(self)
         self.solution = solver.solve()
 
+        self.path = []
         for cell in self.visited:
             x, y = cell
             if cell == self.entry:
@@ -284,30 +301,37 @@ class MazeGenerator(ABC):
         return (shape.generate())
 
     def output_to_file(self) -> None:
-        f = open(f"{self.output_file}", "w")
-        # self.maze -> write each value in hexadecimal,
-        # each row followed by a newline
-        # self.entry
-        # self.exit
-        for r in range(self.height):
-            for c in range(self.width):
-                f.write(f"{format(self.maze[c][r], "X")}")
+        output_dir = os.path.dirname(self.output_file)
+        if output_dir:
+            os.makedirs(output_dir, exist_ok=True)
+        with open(self.output_file, "w", encoding="utf-8") as f:
+            for r in range(self.height):
+                for c in range(self.width):
+                    f.write(f"{format(self.maze[c][r], "X")}")
+                f.write("\n")
             f.write("\n")
-        f.write("\n")
-        f.write(f"{self.entry[0]},{self.entry[1]}")
-        f.write("\n")
-        f.write(f"{self.exit[0]},{self.exit[1]}")
-        f.write("\n")
-        f.write(f"{"".join(self.solution)}")
-        f.close()
+            f.write(f"{self.entry[0]},{self.entry[1]}")
+            f.write("\n")
+            f.write(f"{self.exit[0]},{self.exit[1]}")
+            f.write("\n")
+            f.write(f"{"".join(self.solution)}")
 
     def write_path(self, path: str) -> None:
-        # write self.path in a structured way, to be given
-        # to the minilibx program
-        f = open(path, "w")
-        for cell in self.path:
-            for x in cell[0]:
-                f.write(f"{x} ")
-            f.write(f"{cell[1]} ")
-            f.write(f"{cell[2]}\n")
-        f.close()
+        # write ordered generation steps for minilibx animation
+        path_dir = os.path.dirname(path)
+        if path_dir:
+            os.makedirs(path_dir, exist_ok=True)
+        with open(path, "w", encoding="utf-8") as f:
+            for cell in self.generation_path:
+                for x in cell[0]:
+                    f.write(f"{x} ")
+                f.write(f"{cell[1]} ")
+                f.write(f"{cell[2]}\n")
+
+    def write_logo_cells(self, path: str) -> None:
+        logo_dir = os.path.dirname(path)
+        if logo_dir:
+            os.makedirs(logo_dir, exist_ok=True)
+        with open(path, "w", encoding="utf-8") as f:
+            for x, y in sorted(self.logo_cells):
+                f.write(f"{x} {y}\n")
