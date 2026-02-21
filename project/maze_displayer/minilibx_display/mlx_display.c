@@ -66,25 +66,6 @@ static const char	*next_value(const char *current, const char **options, int cou
 	return (options[(idx + 1) % count]);
 }
 
-// static const char	*next_distinct_value(const char *current, const char **options,
-// 	int count, const char *forbidden)
-// {
-// 	int		i;
-// 	int		idx;
-// 	int		next;
-
-// 	idx = index_of_value(current, options, count);
-// 	i = 1;
-// 	while (i <= count)
-// 	{
-// 		next = (idx + i) % count;
-// 		if (!forbidden || strcasecmp(options[next], forbidden) != 0)
-// 			return (options[next]);
-// 		i++;
-// 	}
-// 	return (options[idx]);
-// }
-
 static void	build_buttons(t_app *app, t_button *btns)
 {
 	int	i;

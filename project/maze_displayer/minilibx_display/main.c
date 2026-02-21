@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: aabi-mou <aabi-mou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/18 18:07:08 by aabi-mou          #+#    #+#             */
-/*   Updated: 2026/02/20 23:49:00 by codex             ###   ########.fr       */
+/*   Created: 2026/02/21 13:45:59 by aabi-mou          #+#    #+#             */
+/*   Updated: 2026/02/21 13:59:55 by aabi-mou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,17 @@
 
 static void	copy_runtime_paths(t_app *app, char **argv)
 {
-	snprintf(app->config_file, sizeof(app->config_file),
-		"configuration/%s", argv[1]);
-	snprintf(app->path_file, sizeof(app->path_file),
-		"configuration/%s", argv[2]);
+	snprintf(app->config_file, sizeof(app->config_file), "configuration/%s",
+		argv[1]);
+	snprintf(app->path_file, sizeof(app->path_file), "configuration/%s",
+		argv[2]);
 	snprintf(app->output_file, sizeof(app->output_file), "%s", argv[3]);
-	snprintf(app->logo_file, sizeof(app->logo_file),
-		"configuration/%s", argv[4]);
+	snprintf(app->logo_file, sizeof(app->logo_file), "configuration/%s",
+		argv[4]);
 }
 
 t_app	*init_app(FILE *config_file, FILE *path_file, FILE *output_file,
-	FILE *logo_file,
-	char **argv)
+		FILE *logo_file, char **argv)
 {
 	t_app		*app;
 	t_cell		*gen_path;
@@ -48,8 +47,8 @@ t_app	*init_app(FILE *config_file, FILE *path_file, FILE *output_file,
 	logo_cells = parse_logo_cells(logo_file, &logo_count);
 	if (!logo_cells)
 		error("Error parsing logo file.");
-	maze = parse_output(output_file, gen_path, gen_path_count,
-			cfg->width, cfg->height);
+	maze = parse_output(output_file, gen_path, gen_path_count, cfg->width,
+			cfg->height);
 	if (!maze)
 		error("Error while parsing display files.");
 	maze->logo_cells = logo_cells;
@@ -89,7 +88,7 @@ int	main(int argc, char **argv)
 
 	if (argc != 5)
 		error("Error! Provide config, path, output and logo files.\n");
-	snprintf(path, sizeof(path), "configuration/%s", argv[1]);
+	+snprintf(path, sizeof(path), "configuration/%s", argv[1]);
 	config_file = fopen(path, "r");
 	if (config_file == NULL)
 		error("Error opening config file.\n");

@@ -53,14 +53,8 @@ def display_maze(maze_gen: MazeGenerator) -> None:
 
 if __name__ == "__main__":
     try:
-        # parse configuration file, error message / dict
-        # contaning key=settings and values
         settings = parse_input(sys.argv)
-        # print(settings)
-        # create the correct instance of the maze
-        # generator class
         maze_generator = MazeGenerator.create_generator(settings)
-        # generate the maze
         maze_generator.generate()
         # solve the maze
         maze_generator.output_to_file()
@@ -74,8 +68,7 @@ if __name__ == "__main__":
         print("Config file not found!\n"
               "Remember to add config.txt file for maze generation settings.")
     except ValueError:
-        print("Error in settings value type!\n"
-              "Make sure value of your settings are valid.")
+    except InitializationError as e:
     except InitializationError as e:
         print(e)
  

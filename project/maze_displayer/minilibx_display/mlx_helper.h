@@ -6,7 +6,7 @@
 /*   By: aabi-mou <aabi-mou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 18:12:47 by aabi-mou          #+#    #+#             */
-/*   Updated: 2026/02/18 18:41:21 by aabi-mou         ###   ########.fr       */
+/*   Updated: 2026/02/21 13:45:21 by aabi-mou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,8 +153,8 @@ int				update(void *param);
 int				close_window(t_app *app);
 int				mouse_hook(int button, int x, int y, void *param);
 void			init_graphics(t_app *app);
-t_app			*init_app(FILE *config_file, FILE *path_file,
-					FILE *output_file, FILE *logo_file, char **argv);
+t_app			*init_app(FILE *config_file, FILE *path_file, FILE *output_file,
+					FILE *logo_file, char **argv);
 void			draw_maze(t_app *app);
 int				color_from_name(const char *name, int fallback);
 void			draw_button_panel(t_app *app);
