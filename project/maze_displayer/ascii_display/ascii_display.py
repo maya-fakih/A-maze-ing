@@ -287,7 +287,7 @@ def show_options(maze_gen: MazeGenerator, path: bool, s: list) -> None:
                 animate_generation(maze_gen, path, s)
                 display_terminal(maze_gen, path)
             case 10:
-                #animate_solver()
+                # animate_solver()
                 pass
             case 11:
                 sys.exit()
@@ -298,7 +298,8 @@ def show_options(maze_gen: MazeGenerator, path: bool, s: list) -> None:
         print("Error! Invalid choice.")
         show_options(maze_gen, path, s)
 
-def draw_maze(maze_gen: MazeGenerator, path: bool, s: list, fill: bool) -> None:
+
+def draw_maze(maze_gen: MazeGenerator, path: bool, s: list, f: bool) -> None:
     """Display maze."""
     H = maze_gen.height
     W = maze_gen.width
@@ -340,9 +341,10 @@ def draw_maze(maze_gen: MazeGenerator, path: bool, s: list, fill: bool) -> None:
                 _print_cell_interior(
                     r, c, logo_cells, s,
                     path, flag_code, reset_code, path_code,
-                    entry, exit, fill, wall_code, visited
+                    entry, exit, f, wall_code, visited
                 )
         print()
+
 
 def animate_generation(m: MazeGenerator, path: bool, s: list) -> None:
     animation = m.generation_path
@@ -356,15 +358,18 @@ def animate_generation(m: MazeGenerator, path: bool, s: list) -> None:
         draw_maze(m, path, s, fill)
         time.sleep(0.1)
         clear_terminal()
+
     fill = False
+
 
 def animate_solver(m: MazeGenerator, path: bool, s: list) -> None:
     pass
 
+
 def display_terminal(maze_gen: MazeGenerator, path: bool) -> None:
     """Display maze."""
     solution_cells = {
-        cell for cell, _, is_solution in maze_gen.generation_path if is_solution
+        cell for cell, _, sol in maze_gen.generation_path if sol
     }
     draw_maze(maze_gen, path, solution_cells, False)
     show_options(maze_gen, path, solution_cells)
