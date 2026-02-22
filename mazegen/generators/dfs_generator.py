@@ -6,10 +6,12 @@ import random
 class DFSGenerator(MazeGenerator):
     """Depth First algorithm"""
 
-    def __init__(self, settings_dict):
+    def __init__(self, settings_dict: dict[str, Any]) -> None:
+        """Initialize a DFSGenerator instance."""
         super().__init__(settings_dict)
 
     def generate(self) -> Any:
+        """Generate the value."""
         start = self.entry
         fringe = []
 
@@ -34,7 +36,6 @@ class DFSGenerator(MazeGenerator):
 
             self.remove_wall(current, direction)
             self.visited.add((nx, ny))
-            self.generation_path.append(((nx, ny), self.maze[nx][ny], False))
 
             neighbors = self.get_neighbors((nx, ny))
             random.shuffle(neighbors)

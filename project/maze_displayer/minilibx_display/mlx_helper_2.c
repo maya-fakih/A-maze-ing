@@ -13,6 +13,7 @@
 #include <mlx_helper.h>
 
 // check if the current line is a comment
+/* Execute is_comment_line. */
 bool	is_comment_line(const char *line)
 {
 	if (!line)
@@ -57,6 +58,7 @@ char	*find_value(char *line)
 	return (trimmed_val);
 }
 
+/* Execute parse_line. */
 void	parse_line(t_cell *path, char *line)
 {
 	int		x;
@@ -126,6 +128,7 @@ char	**fill_grid(FILE *f, int w, int h)
 	return (grid);
 }
 
+/* Execute parse_coordinates. */
 t_point	parse_coordinates(const char *line)
 {
 	t_point	point;

@@ -12,6 +12,7 @@
 
 #include <mlx_helper.h>
 
+/* Execute copy_runtime_paths. */
 static void	copy_runtime_paths(t_app *app, char **argv)
 {
 	snprintf(app->config_file, sizeof(app->config_file), "configuration/%s",
@@ -58,17 +59,18 @@ t_app	*init_app(FILE *config_file, FILE *path_file, FILE *output_file,
 	app->maze = *maze;
 	free(maze);
 	copy_runtime_paths(app, argv);
-	app->phase = 2;
+	app->phase = 0;
 	app->anim_index = 0;
 	app->frame = 0;
 	app->show_path = true;
 	return (app);
 }
 
+/* Execute draw_maze. */
 void	draw_maze(t_app *app)
 {
 	init_graphics(app);
-	redraw_base_scene(app);
+	animate_generation(app);
 	mlx_put_image_to_window(app->mlx, app->win, app->img.img, 0, 0);
 	draw_button_panel(app);
 	mlx_loop_hook(app->mlx, update, app);
@@ -77,6 +79,7 @@ void	draw_maze(t_app *app)
 	mlx_loop(app->mlx);
 }
 
+/* Execute main. */
 int	main(int argc, char **argv)
 {
 	FILE	*config_file;
@@ -88,7 +91,7 @@ int	main(int argc, char **argv)
 
 	if (argc != 5)
 		error("Error! Provide config, path, output and logo files.\n");
-	+snprintf(path, sizeof(path), "configuration/%s", argv[1]);
+	snprintf(path, sizeof(path), "configuration/%s", argv[1]);
 	config_file = fopen(path, "r");
 	if (config_file == NULL)
 		error("Error opening config file.\n");

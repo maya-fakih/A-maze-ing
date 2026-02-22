@@ -1,4 +1,0 @@
-Minilibx rendering modification
-. hook so when x is clicked the program ends
-. generating a new maz should not create a new window
-. The path should not render as a closed block but as a star emoji inside the cell, with color path_color

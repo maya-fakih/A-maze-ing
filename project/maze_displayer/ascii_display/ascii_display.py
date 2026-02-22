@@ -33,16 +33,19 @@ color_map = {
 
 
 def clear_terminal() -> None:
+    """Handle clear terminal."""
     os.system('cls' if os.name == 'nt' else 'clear')
 
 
 def _config_path() -> str:
+    """Handle config path."""
     if len(sys.argv) > 1 and sys.argv[1].endswith(".txt"):
         return f"configuration/{sys.argv[1]}"
     return "configuration/config.txt"
 
 
 def update_config_value(file_path: str, key: str, new_value: str) -> None:
+    """Update config value."""
     normalized_key = key.lower()
     found = False
     lines = []
@@ -70,6 +73,7 @@ def update_config_value(file_path: str, key: str, new_value: str) -> None:
 
 
 def _prompt_choice(prompt: str, options: list[str]) -> str:
+    """Handle prompt choice."""
     valid = {value.lower() for value in options}
     while True:
         value = input(prompt).strip().lower()
@@ -79,6 +83,7 @@ def _prompt_choice(prompt: str, options: list[str]) -> str:
 
 
 def _prompt_color(prompt: str, forbidden: str | None = None) -> str:
+    """Handle prompt color."""
     while True:
         color = input(prompt).strip().lower()
         if color not in color_map:
@@ -92,12 +97,14 @@ def _prompt_color(prompt: str, forbidden: str | None = None) -> str:
 
 def _write_runtime_setting(maze_gen: MazeGenerator, key: str,
                            value: str) -> None:
+    """Write runtime setting."""
     maze_gen.settings[key] = value
     setattr(maze_gen, key, value)
     update_config_value(_config_path(), key, value)
 
 
 def _regenerate(maze_gen: MazeGenerator) -> None:
+    """Handle regenerate."""
     maze_gen.generate()
     maze_gen.output_to_file()
     maze_gen.write_path("configuration/gen_path.txt")
@@ -105,6 +112,7 @@ def _regenerate(maze_gen: MazeGenerator) -> None:
 
 def _rebuild_generator(maze_gen: MazeGenerator,
                        updates: dict[str, str]) -> MazeGenerator:
+    """Handle rebuild generator."""
     settings = dict(maze_gen.settings)
     settings.update(updates)
     new_generator = MazeGenerator.create_generator(settings)
@@ -116,7 +124,8 @@ def _rebuild_generator(maze_gen: MazeGenerator,
     return new_generator
 
 
-def _print_corner(wall_code: str, reset_code: str):
+def _print_corner(wall_code: str, reset_code: str) -> None:
+    """Print corner."""
     print(wall_code + "█" + reset_code, end="")
 
 
@@ -129,7 +138,8 @@ def _print_horizontal_wall(
     wall_code: str,
     reset_code: str,
     SOUTH: int,
-):
+) -> None:
+    """Print horizontal wall."""
     if r == 0 or r == 2 * H:
         print(wall_code + "███" + reset_code, end="")
     else:
@@ -149,7 +159,8 @@ def _print_vertical_wall(
     wall_code: str,
     reset_code: str,
     EAST: int,
-):
+) -> None:
+    """Print vertical wall."""
     if c == 0 or c == 2 * W:
         print(wall_code + "█" + reset_code, end="")
     else:
@@ -172,7 +183,8 @@ def _print_cell_interior(
     path_code: str,
     entry: tuple,
     exit: tuple,
-):
+) -> None:
+    """Print cell interior."""
     cell_row = r // 2
     cell_col = c // 2
     if (path is True) and ((cell_col, cell_row) in solution_cells):
@@ -188,6 +200,7 @@ def _print_cell_interior(
 
 
 def show_options(maze_gen: MazeGenerator, path: bool) -> None:
+    """Handle show options."""
     try:
         print("\n=== A-MAZE-ING ===")
         print("1. Re-generate a new maze")
@@ -272,7 +285,8 @@ def show_options(maze_gen: MazeGenerator, path: bool) -> None:
         show_options(maze_gen, path)
 
 
-def display_terminal(maze_gen: MazeGenerator, path: bool):
+def display_terminal(maze_gen: MazeGenerator, path: bool) -> None:
+    """Display terminal."""
     H = maze_gen.height
     W = maze_gen.width
     EAST = 2

@@ -29,7 +29,7 @@ Core features:
 ## 2. Project setup
 
 ```bash
-git clone git@vogsphere.42beirut.com:vogsphere/intra-uuid-a96ca7bd-39f8-463b-b5ac-20628b80fe8c-7216753-aabi-mou
+git clone https://github.com/maya-fakih/A-maze-ing.git
 cd A-maze-ing
 ```
 
@@ -215,7 +215,7 @@ Main reusable components in this repo:
 Output contracts:
 
 - Maze output file in `output/*.txt`
-- Generation path file in `configuration/gen_path.txt`
+- Generation path file in `configuration/maze_gen.txt`
 
 # Roles
 
@@ -227,4 +227,3 @@ Team collaboration covered:
 - ASCII interaction design
 - MiniLibX graphical interface and animation
 - testing, debugging, and integration
-

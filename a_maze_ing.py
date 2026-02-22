@@ -7,6 +7,7 @@ from project.maze_displayer.ascii_display.ascii_display import display_terminal
 
 
 def parse_input(argv: list[str]) -> dict:
+    """Parse input."""
     if len(argv) != 2:
         raise helper.ParsingError("Invalid arguments "
                                   "given to program!\n"
@@ -23,6 +24,7 @@ def parse_input(argv: list[str]) -> dict:
 
 
 def display_maze(maze_gen: MazeGenerator) -> None:
+    """Display maze."""
     match maze_gen.display_mode:
         case "ascii":
             print("=== A-MAZE-ING ===\n")
@@ -32,7 +34,7 @@ def display_maze(maze_gen: MazeGenerator) -> None:
                 subprocess.run(["project/maze_displayer"
                                 "/minilibx_display/main.exe",
                                 f"{sys.argv[1]}",
-                                "gen_path.txt",
+                                "maze_gen.txt",
                                 f"{maze_gen.output_file}",
                                 "logo.txt"],
                                check=True)
@@ -49,7 +51,7 @@ if __name__ == "__main__":
         maze_generator.generate()
         maze_generator.output_to_file()
         if maze_generator.display_mode == "minilibx":
-            maze_generator.write_path("configuration/gen_path.txt")
+            maze_generator.write_path("configuration/maze_gen.txt")
             maze_generator.write_logo_cells("configuration/logo.txt")
         display_maze(maze_generator)
     except helper.ParsingError as e:

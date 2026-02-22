@@ -3,11 +3,13 @@ import math
 
 
 class Star(Shape):
-    def __init__(self, width: int, height: int, points: int = 5):
+    def __init__(self, width: int, height: int, points: int = 5) -> None:
+        """Initialize a Star instance."""
         super().__init__(width, height)
         self.points = points
 
     def generate(self) -> list:
+        """Generate the value."""
         coords = set()
         vertices = []
 
@@ -24,7 +26,8 @@ class Star(Shape):
 
             vertices.append((x, y))
 
-        def draw_line(x1, y1, x2, y2):
+        def draw_line(x1: int, y1: int, x2: int, y2: int) -> None:
+            """Draw line."""
             dx = abs(x2 - x1)
             dy = abs(y2 - y1)
             sx = 1 if x1 < x2 else -1
