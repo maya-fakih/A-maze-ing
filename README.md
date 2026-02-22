@@ -29,7 +29,7 @@ Core features:
 ## 2. Project setup
 
 ```bash
-git clone git@vogsphere.42beirut.com:vogsphere/intra-uuid-a96ca7bd-39f8-463b-b5ac-20628b80fe8c-7216753-aabi-mou
+git clone https://github.com/maya-fakih/A-maze-ing.git
 cd A-maze-ing
 ```
 
