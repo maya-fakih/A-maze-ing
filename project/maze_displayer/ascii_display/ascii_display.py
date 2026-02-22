@@ -2,6 +2,7 @@ from mazegen.generators.maze_generator import MazeGenerator
 from project.parsing import parsing as helper
 import sys
 import os
+import time
 
 color_map = {
     "black": 30,
@@ -183,11 +184,16 @@ def _print_cell_interior(
     path_code: str,
     entry: tuple,
     exit: tuple,
+    fill: bool,
+    wall_code: str,
+    visited: any
 ) -> None:
     """Print cell interior."""
     cell_row = r // 2
     cell_col = c // 2
-    if (path is True) and ((cell_col, cell_row) in solution_cells):
+    if fill is True and not (cell_col, cell_row) in visited:
+        print(wall_code + "███" + reset_code, end="")
+    elif (path is True) and ((cell_col, cell_row) in solution_cells):
         print(path_code + " ★ " + reset_code, end="")
     elif (cell_col, cell_row) in logo_cells:
         print(flag_code + "███" + reset_code, end="")
@@ -199,7 +205,7 @@ def _print_cell_interior(
         print("   ", end="")
 
 
-def show_options(maze_gen: MazeGenerator, path: bool) -> None:
+def show_options(maze_gen: MazeGenerator, path: bool, s: list) -> None:
     """Handle show options."""
     try:
         print("\n=== A-MAZE-ING ===")
@@ -211,8 +217,10 @@ def show_options(maze_gen: MazeGenerator, path: bool) -> None:
         print("6. Change shape")
         print("7. Change generation algorithm")
         print("8. Change solver algorithm")
-        print("9. Quit")
-        choice = int(input("Choice? (1-9): "))
+        print("9. Animate generation algorithm")
+        print("10. Animate solver algorithm")
+        print("11. Quit")
+        choice = int(input("Choice? (1-11): "))
         match choice:
             case 1:
                 _regenerate(maze_gen)
@@ -276,17 +284,22 @@ def show_options(maze_gen: MazeGenerator, path: bool) -> None:
                 clear_terminal()
                 display_terminal(maze_gen, path)
             case 9:
+                animate_generation(maze_gen, path, s)
+                display_terminal(maze_gen, path)
+            case 10:
+                #animate_solver()
+                pass
+            case 11:
                 sys.exit()
             case _:
                 print("Error! Invalid choice.")
                 show_options(maze_gen, path)
     except ValueError:
         print("Error! Invalid choice.")
-        show_options(maze_gen, path)
+        show_options(maze_gen, path, s)
 
-
-def display_terminal(maze_gen: MazeGenerator, path: bool) -> None:
-    """Display terminal."""
+def draw_maze(maze_gen: MazeGenerator, path: bool, s: list, fill: bool) -> None:
+    """Display maze."""
     H = maze_gen.height
     W = maze_gen.width
     EAST = 2
@@ -295,10 +308,7 @@ def display_terminal(maze_gen: MazeGenerator, path: bool) -> None:
     logo_cells = maze_gen.logo_cells
     entry = maze_gen.entry
     exit = maze_gen.exit
-
-    solution_cells = {
-        cell for cell, _, is_solution in maze_gen.path if is_solution
-    }
+    visited = maze_gen.visited
 
     wall_value = color_map.get(maze_gen.wall_color, 37)
     explicit_path_color = getattr(maze_gen, "path_color", None)
@@ -328,10 +338,33 @@ def display_terminal(maze_gen: MazeGenerator, path: bool) -> None:
                 )
             else:
                 _print_cell_interior(
-                    r, c, logo_cells, solution_cells,
+                    r, c, logo_cells, s,
                     path, flag_code, reset_code, path_code,
-                    entry, exit
+                    entry, exit, fill, wall_code, visited
                 )
-
         print()
-    show_options(maze_gen, path)
+
+def animate_generation(m: MazeGenerator, path: bool, s: list) -> None:
+    animation = m.generation_path
+    m.reset_maze()
+    m.visited = set()
+    fill = True
+    for cell, value, _ in animation:
+        x, y = cell
+        m.maze[x][y] = value
+        m.visited.add((x, y))
+        draw_maze(m, path, s, fill)
+        time.sleep(0.1)
+        clear_terminal()
+    fill = False
+
+def animate_solver(m: MazeGenerator, path: bool, s: list) -> None:
+    pass
+
+def display_terminal(maze_gen: MazeGenerator, path: bool) -> None:
+    """Display maze."""
+    solution_cells = {
+        cell for cell, _, is_solution in maze_gen.path if is_solution
+    }
+    draw_maze(maze_gen, path, solution_cells, False)
+    show_options(maze_gen, path, solution_cells)

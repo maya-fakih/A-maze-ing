@@ -114,12 +114,7 @@ class MazeGenerator(ABC):
                     processed.add(neighbor)
                     to_process.append(neighbor)
 
-    def initialize_maze(self) -> None:
-        """Handle initialize maze."""
-        self.path.clear()
-        self.generation_path.clear()
-        self.visited.clear()
-        self.solution.clear()
+    def reset_maze(self) -> None:
         for x in range(self.width):
             for y in range(self.height):
                 if (x, y) not in self.logo_cells:
@@ -127,6 +122,14 @@ class MazeGenerator(ABC):
 
         if self.shape != "square":
             self.remove_walls_outside_shape()
+
+    def initialize_maze(self) -> None:
+        """Handle initialize maze."""
+        self.path.clear()
+        self.generation_path.clear()
+        self.visited.clear()
+        self.solution.clear()
+        self.reset_maze()
 
     def find_solution_path(self) -> None:
         """Find solution path."""
