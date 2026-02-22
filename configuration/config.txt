@@ -7,7 +7,7 @@ PERFECT=True
 SHAPE=square
 WALL_COLOR=grey
 FLAG_COLOR=magenta
-GENERATION_ALGORITHM=prim
+GENERATION_ALGORITHM=huntkill
 SOLVER_ALGORITHM=a*
 # This line is to be ignored
 # we can handle more optional keys: seed, algorithm, dispay mode, etc..1
