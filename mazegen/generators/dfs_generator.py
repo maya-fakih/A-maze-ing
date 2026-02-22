@@ -6,21 +6,20 @@ import random
 class DFSGenerator(MazeGenerator):
     """Depth First algorithm"""
 
-    def __init__(self, settings_dict):
+    def __init__(self, settings_dict: dict[str, Any]) -> None:
+        """Initialize a DFSGenerator instance."""
         super().__init__(settings_dict)
 
     def generate(self) -> Any:
+        """Generate the value."""
         start = self.entry
         fringe = []
-
-        for cell in self.logo_cells:
-            x, y = cell
-            self.path.append((cell, self.maze[x][y], False))
-            self.visited.add(cell)
 
         self.initialize_maze()
 
         self.visited.add(start)
+        self.generation_path.append((start,
+                                     self.maze[start[0]][start[1]], False))
 
         possible = []
         for nx, ny, direction in self.get_neighbors(start):

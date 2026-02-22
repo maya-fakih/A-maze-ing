@@ -6,12 +6,13 @@ class MazeSolver(ABC):
     """Abstract base class for maze solvers"""
 
     def __init__(self, maze: MazeGenerator) -> None:
+        """Initialize a MazeSolver instance."""
         self.maze = maze
         self.solution_cells = []
         self.animation_path = []
 
     def reachable_neighbors(self, cell: tuple) -> list:
-        """Returns a list from the neighbors of a cell"""
+        """Handle reachable neighbors."""
         nx, ny = cell
         reachable = []
         for nx, ny, direction in self.maze.get_neighbors(cell):
@@ -21,11 +22,11 @@ class MazeSolver(ABC):
 
     @abstractmethod
     def solve(self) -> list:
-        """Abstract method to solve the maze and return the solution path"""
+        """Solve the value."""
         pass
 
     def huristic(self, cell: tuple) -> int:
-        """Heuristic function for A* solver (Manhattan distance)"""
+        """Handle huristic."""
         x1, y1 = cell
         x2, y2 = self.maze.exit
         return abs(x1 - x2) + abs(y1 - y2)

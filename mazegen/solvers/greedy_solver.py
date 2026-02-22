@@ -6,10 +6,11 @@ class GreedySolver(MazeSolver):
     """Greedy Search Agent"""
 
     def priority(self, cell: tuple) -> int:
-        """Priority function for Greedy Search (heuristic only)"""
+        """Handle priority."""
         return self.huristic(cell)
 
     def solve(self) -> list:
+        """Solve the value."""
         start = self.maze.entry
         goal = self.maze.exit
         self.animation_path = []

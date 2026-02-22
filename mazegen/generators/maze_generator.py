@@ -4,6 +4,7 @@ from typing import Any, List, Tuple
 from abc import ABC, abstractmethod
 import sys
 import random
+import os
 
 
 class MazeGenerator(ABC):
@@ -28,10 +29,9 @@ class MazeGenerator(ABC):
         WEST: EAST
     }
 
-    # instantiate correct subclass based on settings -> factory method
-
     @classmethod
-    def create_generator(cls, settings: dict):
+    def create_generator(cls, settings: dict[str, Any]) -> "MazeGenerator":
+        """Create generator."""
         from .prim_generator import PrimGenerator
         from .dfs_generator import DFSGenerator
         from .bfs_generator import BFSGenerator
@@ -46,20 +46,26 @@ class MazeGenerator(ABC):
             case "huntkill":
                 return HuntKillGenerator(settings)
 
-    def __init__(self, settings_dict: dict):
+    def __init__(self, settings_dict: dict[str, Any]) -> None:
+        """Initialize a MazeGenerator instance."""
         self.settings = settings_dict
         self.width = settings_dict.get("width")
         self.height = settings_dict.get("height")
         self.entry = settings_dict.get("entry")
         self.exit = settings_dict.get("exit")
-        self.output_file = settings_dict.get("output_file", "output_maze.txt")
+        self.output_file = settings_dict.get("output_file",
+                                             "output/output_maze.txt")
         self.perfect = settings_dict.get("perfect", False)
         self.wall_color = settings_dict.get("wall_color", "white")
         self.flag_color = settings_dict.get("flag_color", "blue")
+        self.path_color = settings_dict.get("path_color")
         self.generation_algorithm = settings_dict.get(
             "generation_algorithm", "dfs")
         self.solver_algorithm = settings_dict.get(
             "solver_algorithm", "dfs"
+        )
+        self.display_mode = settings_dict.get(
+            "display_mode", "ascii"
         )
         self.shape = settings_dict.get("shape", "square")
         self.maze = (
@@ -68,15 +74,18 @@ class MazeGenerator(ABC):
         self.logo_cells = set()
         self._add_42_logo()
         self.validate_entry_exit()
-        self.solution = []  # this is what we need to have in the output file
+        self.solution = []
         self.visited = set()
         self.path = []
+        self.generation_path = []
 
     @abstractmethod
     def generate(self) -> Any:
+        """Generate the value."""
         pass
 
     def validate_entry_exit(self) -> None:
+        """Validate entry exit."""
         if self.entry in self.logo_cells:
             raise InitializationError("Entry point cannot be on the logo.")
         if self.exit in self.logo_cells:
@@ -86,6 +95,7 @@ class MazeGenerator(ABC):
             self.flood_fill_shape(self.exit)
 
     def flood_fill_shape(self, start: Tuple) -> None:
+        """Handle flood fill shape."""
         h = self.height
         w = self.width
         to_process = [start]
@@ -105,7 +115,9 @@ class MazeGenerator(ABC):
                     to_process.append(neighbor)
 
     def initialize_maze(self) -> None:
+        """Handle initialize maze."""
         self.path.clear()
+        self.generation_path.clear()
         self.visited.clear()
         self.solution.clear()
         for x in range(self.width):
@@ -117,11 +129,21 @@ class MazeGenerator(ABC):
             self.remove_walls_outside_shape()
 
     def find_solution_path(self) -> None:
-        from ..solvers import BFSolver
-        solver = BFSolver(self)
-        self.solution = solver.solve()
-        print(f"solution path: {self.solution}")
+        """Find solution path."""
+        from ..solvers.astar_solver import AStarSolver
+        from ..solvers.bfs_solver import BFSolver
+        from ..solvers.ucs_solver import UCSolver
 
+        solver_map = {
+            "bfs": BFSolver,
+            "a*": AStarSolver,
+            "ucs": UCSolver,
+        }
+        solver_class = solver_map.get(self.solver_algorithm, BFSolver)
+        solver = solver_class(self)
+        self.solution = solver.solve()
+
+        self.path = []
         for cell in self.visited:
             x, y = cell
             if cell == self.entry:
@@ -132,6 +154,7 @@ class MazeGenerator(ABC):
                 self.path.append((cell, self.maze[x][y], False))
 
     def remove_walls_outside_shape(self) -> None:
+        """Remove walls outside shape."""
         start = (0, 0)
         end = (self.width - 1, self.height - 1)
         corner = (self.width - 1, 0)
@@ -151,6 +174,7 @@ class MazeGenerator(ABC):
                     to_process.append(neighbor)
 
     def create_loops(self) -> None:
+        """Create loops."""
         path_base = {c for c, _, s in self.path}
 
         path = list(path_base)
@@ -173,6 +197,7 @@ class MazeGenerator(ABC):
                     break
 
     def has_wall(self, location: Tuple, direction: str) -> bool:
+        """Check whether the object has wall."""
         x, y = location
 
         if direction == 'W' and x == 0:
@@ -201,6 +226,7 @@ class MazeGenerator(ABC):
         return (cell_value & mask) != 0
 
     def remove_wall(self, cell: Tuple, direction: str) -> None:
+        """Remove wall."""
         x, y = cell
 
         if direction == 'N':
@@ -217,8 +243,12 @@ class MazeGenerator(ABC):
 
         self.maze[x][y] &= ~mask
         self.maze[nx][ny] &= ~opposite_mask
+        self.generation_path.append((((x, y)), self.maze[x][y], False))
+        self.generation_path.append(((nx, ny), self.maze[nx][ny], False))
+
 
     def get_neighbors(self, cell: Tuple) -> List[Tuple]:
+        """Return neighbors."""
         x, y = cell
         possible = [
             (x+1, y, 'E'),
@@ -233,8 +263,8 @@ class MazeGenerator(ABC):
                     neighbors.append((nx, ny, direction))
         return neighbors
 
-    def _add_42_logo(self):
-        """Create 42 logo pattern in the maze if dimensions allow it."""
+    def _add_42_logo(self) -> None:
+        """Add 42 logo."""
         if self.width < 10 or self.height < 10:
             sys.stderr.write("Could not draw 42 logo. (dimentions too small)")
             return
@@ -274,6 +304,7 @@ class MazeGenerator(ABC):
                 self.maze[x][y] = 15
 
     def add_shape_border(self) -> list:
+        """Add shape border."""
         if self.shape == "star":
             shape = Star(self.width, self.height)
         elif self.shape == "heart":
@@ -283,16 +314,40 @@ class MazeGenerator(ABC):
         return (shape.generate())
 
     def output_to_file(self) -> None:
-        f = open(f"{self.output_file}", "w")
-        # self.maze -> write each value in hexadecimal,
-        # each row followed by a newline
-        # self.entry
-        # self.exit
-        for r in range(self.height):
-            for c in range(self.width):
-                f.write(f"{format(self.maze[c][r], "X")}")
+        """Handle output to file."""
+        output_dir = os.path.dirname(self.output_file)
+        if output_dir:
+            os.makedirs(output_dir, exist_ok=True)
+        with open(self.output_file, "w", encoding="utf-8") as f:
+            for r in range(self.height):
+                for c in range(self.width):
+                    f.write(f"{format(self.maze[c][r], 'X')}")
+                f.write("\n")
             f.write("\n")
-        f.write("\n")
-        f.write(f"{self.entry[0]},{self.entry[1]}")
-        f.write("\n")
-        f.write(f"{self.exit[0]},{self.exit[1]}")
+            f.write(f"{self.entry[0]},{self.entry[1]}")
+            f.write("\n")
+            f.write(f"{self.exit[0]},{self.exit[1]}")
+            f.write("\n")
+            f.write(f"{''.join(self.solution)}")
+
+    def write_path(self, path: str) -> None:
+
+        """Write path."""
+        path_dir = os.path.dirname(path)
+        if path_dir:
+            os.makedirs(path_dir, exist_ok=True)
+        with open(path, "w", encoding="utf-8") as f:
+            for cell in self.generation_path:
+                for x in cell[0]:
+                    f.write(f"{x} ")
+                f.write(f"{cell[1]} ")
+                f.write(f"{cell[2]}\n")
+
+    def write_logo_cells(self, path: str) -> None:
+        """Write logo cells."""
+        logo_dir = os.path.dirname(path)
+        if logo_dir:
+            os.makedirs(logo_dir, exist_ok=True)
+        with open(path, "w", encoding="utf-8") as f:
+            for x, y in sorted(self.logo_cells):
+                f.write(f"{x} {y}\n")
