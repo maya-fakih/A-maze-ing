@@ -1,30 +1,42 @@
 import webcolors
 import io
+import os
 
 
-# customized exception class for parsing errors
 class ParsingError(Exception):
-    def __init__(self, msg: str):
+    def __init__(self, msg: str) -> None:
+        """Initialize a ParsingError instance."""
         self.msg = msg
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Return a string representation of the instance."""
         return self.msg
 
 
 mandatory_keys = ["width", "height", "entry", "exit"]
 optional_keys = ["output_file", "perfect",
                  "wall_color", "flag_color", "solver_algorithm",
-                 "shape", "generation_algorithm"]
+                 "shape", "generation_algorithm", "display_mode",
+                 "path_color"]
 generation_algorithms = ["prim", "dfs", "bfs", "huntkill"]
 solver_algorithms = ["dfs", "bfs", "a*", "ucs"]
 shapes = ["flower", "star", "heart", "square"]
-
-#   Validate color name and ensure it is not black
+display_modes = ["ascii", "minilibx"]
+ascii_extra_colors = {
+    "grey", "gray",
+    "bright_black", "bright_red", "bright_green", "bright_yellow",
+    "bright_blue", "bright_magenta", "bright_cyan", "bright_white",
+    "light_red", "light_green", "light_yellow", "light_blue",
+    "light_magenta", "light_cyan", "light_white",
+}
 
 
 def validate_color_name(name: str) -> bool:
+    """Validate color name."""
+    if name in ascii_extra_colors:
+        return True
     try:
-        # Normalizes input and checks against CSS3 defined names
+
         webcolors.name_to_hex(name.lower())
         if (name == "black"):
             return False
@@ -32,11 +44,10 @@ def validate_color_name(name: str) -> bool:
     except ValueError:
         return False
 
-# checks that all mandatory flags are present
 
+def mandatory_flags_check(input_settings: dict) -> None:
 
-def mandatory_flags_check(input_settings: dict):
-    # determine which required keys are missing from the parsed settings
+    """Handle mandatory flags check."""
     missing = [k for k in mandatory_keys if k not in input_settings]
     if missing:
         valid = ", ".join(mandatory_keys)
@@ -48,17 +59,16 @@ def mandatory_flags_check(input_settings: dict):
             f"Optional settings: {extra}."
         )
 
-# validate values and convert to needed type
-
 
 def validate_types(input_settings: dict) -> dict:
+    """Validate types."""
     for key, value in input_settings.items():
         if key == "height" or key == "width":
             d = {key: int(value)}
             input_settings.update(d)
         elif key == "perfect":
             if value == "true" or value == "false":
-                d = {key: bool(value.capitalize())}
+                d = {key: value == "true"}
                 input_settings.update(d)
             else:
                 raise ParsingError("Invalid value for perfect setting\n"
@@ -79,15 +89,22 @@ def validate_types(input_settings: dict) -> dict:
                 valid = ", ".join(shapes)
                 raise ParsingError(f"Invalid shape!\n"
                                    f"Suuported shapes: {valid}.")
-        elif key == "wall_color" or key == "flag_color":
+        elif key in {"wall_color", "flag_color", "path_color"}:
             if (not validate_color_name(value)):
                 raise ParsingError("Invalid color name!\n"
                                    "Enter an existing color name.")
+        elif key == "display_mode":
+            if value not in display_modes:
+                raise ParsingError("Error! No such display mode!\n"
+                                   "Available modes: ascii, minilibx")
         elif key == "output_file":
             if not value.endswith(".txt"):
                 raise ParsingError("Error in output file format!\n"
                                    "Make sure your output file has a "
                                    ".txt extension.")
+            normalized = os.path.basename(value.replace("\\", "/"))
+            d = {key: f"output/{normalized}"}
+            input_settings.update(d)
         elif key == "entry" or key == "exit":
             array = value.strip().split(",", 1)
             if len(array) != 2:
@@ -102,8 +119,8 @@ def validate_types(input_settings: dict) -> dict:
     return (input_settings)
 
 
-# check that all keys are valid
 def parse_settings(file: io.TextIOWrapper) -> dict:
+    """Parse settings."""
     input_settings: dict = {}
     for line in file:
         line = line.strip().lower()
@@ -124,9 +141,19 @@ def parse_settings(file: io.TextIOWrapper) -> dict:
                 "No such configuration option.\n"
                 f"Valid settings: {valid}."
             )
+        if key in input_settings:
+            raise ParsingError(
+                "Error in file settings!\n"
+                f"Duplicate setting found: {key}."
+            )
         d = {key: val}
         input_settings.update(d)
-    # check that all madatory keys exists in input_settings keys
+
     mandatory_flags_check(input_settings)
     settings_dict = validate_types(input_settings)
+    wall_color = settings_dict.get("wall_color")
+    flag_color = settings_dict.get("flag_color")
+    if wall_color and flag_color and wall_color == flag_color:
+        raise ParsingError("Invalid colors!\n"
+                           "wall_color and flag_color must be different.")
     return (settings_dict)

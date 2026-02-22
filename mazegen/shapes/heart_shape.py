@@ -5,6 +5,7 @@ import math
 class Heart(Shape):
     def generate(self) -> list:
 
+        """Generate the value."""
         coords = set()
         vertices = []
 
@@ -28,7 +29,8 @@ class Heart(Shape):
 
             vertices.append((px, py))
 
-        def draw_line(x1, y1, x2, y2):
+        def draw_line(x1: int, y1: int, x2: int, y2: int) -> None:
+            """Draw line."""
             dx = abs(x2 - x1)
             dy = abs(y2 - y1)
             sx = 1 if x1 < x2 else -1

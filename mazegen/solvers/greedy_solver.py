@@ -2,12 +2,12 @@ from .maze_solver import MazeSolver
 import heapq
 
 
-class UCSolver(MazeSolver):
-    """Uniform Cost Search Agent"""
+class GreedySolver(MazeSolver):
+    """Greedy Search Agent"""
 
-    def priority(self, path: list) -> int:
+    def priority(self, cell: tuple) -> int:
         """Handle priority."""
-        return len(path)
+        return self.huristic(cell)
 
     def solve(self) -> list:
         """Solve the value."""
@@ -38,7 +38,6 @@ class UCSolver(MazeSolver):
             for nx, ny, d in self.reachable_neighbors(current_cell):
                 n = (nx, ny)
                 if n not in visited:
-                    p = dir + [d]
-                    item = (self.priority(p), (n, path + [n], p))
+                    item = (self.priority(n), (n, path + [n], dir + [d]))
                     heapq.heappush(fringe, item)
         return []

@@ -1,13 +1,17 @@
-WIDTH=25
-HEIGHT=25
-ENTRY=7,7
-EXIT=9, 9
+WIDTH=35
+HEIGHT=35
+ENTRY=6,10
+EXIT=29,16
 OUTPUT_FILE=maze.txt
 PERFECT=True
-SHAPE=flower
-WALL_COLOR=grey
-FLAG_COLOR=magenta
+SHAPE=heart
 GENERATION_ALGORITHM=dfs
-SOLVER_ALGORITHM=a*
+SOLVER_ALGORITHM=ucs
+DISPLAY_MODE=minilibx
+WALL_COLOR=grey
+# FLAG_COLOR=green
+# WALL_COLOR=blue
 # This line is to be ignored
-# we can handle more optional keys: seed, algorithm, dispay mode, etc..1
+# we can handle more optional keys: seed, algorithm, display mode, etc..
+PATH_COLOR=magenta
+FLAG_COLOR=blue

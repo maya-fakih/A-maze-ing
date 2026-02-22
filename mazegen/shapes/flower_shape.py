@@ -3,11 +3,13 @@ import math
 
 
 class Flower(Shape):
-    def __init__(self, width: int, height: int, points: int = 5):
+    def __init__(self, width: int, height: int, points: int = 5) -> None:
+        """Initialize a Flower instance."""
         super().__init__(width, height)
         self.points = points
 
     def generate(self) -> list:
+        """Generate the value."""
         coords = set()
         steps = max(self.width, self.height) * 8
 

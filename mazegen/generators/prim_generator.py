@@ -6,10 +6,12 @@ import random
 class PrimGenerator(MazeGenerator):
     """Prim's algorithm"""
 
-    def __init__(self, settings_dict):
+    def __init__(self, settings_dict: dict[str, Any]) -> None:
+        """Initialize a PrimGenerator instance."""
         super().__init__(settings_dict)
 
     def generate(self) -> Any:
+        """Generate the value."""
         start = self.entry
         fringe = []
 
@@ -21,7 +23,6 @@ class PrimGenerator(MazeGenerator):
         self.initialize_maze()
 
         self.visited.add(start)
-        self.solution[start] = None
 
         for nx, ny, direction in self.get_neighbors(start):
             if (nx, ny) not in self.visited:
@@ -36,7 +37,6 @@ class PrimGenerator(MazeGenerator):
 
             self.remove_wall(current, direction)
             self.visited.add((nx, ny))
-            self.solution[(nx, ny)] = current
 
             for nnx, nny, new_direction in self.get_neighbors((nx, ny)):
                 if (nnx, nny) not in self.visited:
