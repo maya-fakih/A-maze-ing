@@ -14,14 +14,7 @@ class PrimGenerator(MazeGenerator):
         """Generate the value."""
         start = self.entry
         fringe = []
-
-        for cell in self.logo_cells:
-            x, y = cell
-            self.path.append((cell, self.maze[x][y], False))
-            self.visited.add(cell)
-
         self.initialize_maze()
-
         self.visited.add(start)
 
         for nx, ny, direction in self.get_neighbors(start):

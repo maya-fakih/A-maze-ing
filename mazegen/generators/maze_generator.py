@@ -76,7 +76,6 @@ class MazeGenerator(ABC):
         self.validate_entry_exit()
         self.solution = []
         self.visited = set()
-        self.path = []
         self.generation_path = []
 
     @abstractmethod
@@ -125,11 +124,14 @@ class MazeGenerator(ABC):
 
     def initialize_maze(self) -> None:
         """Handle initialize maze."""
-        self.path.clear()
         self.generation_path.clear()
-        self.visited.clear()
+        self.visited = set(self.logo_cells)
         self.solution.clear()
         self.reset_maze()
+        for cell in self.logo_cells:
+            x, y = cell
+            self.generation_path.append((cell, self.maze[x][y], False))
+            self.visited.add(cell)
 
     def find_solution_path(self) -> None:
         """Find solution path."""
@@ -146,15 +148,15 @@ class MazeGenerator(ABC):
         solver = solver_class(self)
         self.solution = solver.solve()
 
-        self.path = []
+        self.generation_path = []
         for cell in self.visited:
             x, y = cell
             if cell == self.entry:
-                self.path.append((cell, self.maze[x][y], True))
+                self.generation_path.append((cell, self.maze[x][y], True))
             elif cell in solver.solution_cells:
-                self.path.append((cell, self.maze[x][y], True))
+                self.generation_path.append((cell, self.maze[x][y], True))
             else:
-                self.path.append((cell, self.maze[x][y], False))
+                self.generation_path.append((cell, self.maze[x][y], False))
 
     def remove_walls_outside_shape(self) -> None:
         """Remove walls outside shape."""
@@ -178,7 +180,7 @@ class MazeGenerator(ABC):
 
     def create_loops(self) -> None:
         """Create loops."""
-        path_base = {c for c, _, s in self.path}
+        path_base = {c for c, _, s in self.generation_path}
 
         path = list(path_base)
         random.shuffle(path)

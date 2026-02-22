@@ -293,7 +293,7 @@ def show_options(maze_gen: MazeGenerator, path: bool, s: list) -> None:
                 sys.exit()
             case _:
                 print("Error! Invalid choice.")
-                show_options(maze_gen, path)
+                show_options(maze_gen, path, s)
     except ValueError:
         print("Error! Invalid choice.")
         show_options(maze_gen, path, s)
@@ -364,7 +364,7 @@ def animate_solver(m: MazeGenerator, path: bool, s: list) -> None:
 def display_terminal(maze_gen: MazeGenerator, path: bool) -> None:
     """Display maze."""
     solution_cells = {
-        cell for cell, _, is_solution in maze_gen.path if is_solution
+        cell for cell, _, is_solution in maze_gen.generation_path if is_solution
     }
     draw_maze(maze_gen, path, solution_cells, False)
     show_options(maze_gen, path, solution_cells)

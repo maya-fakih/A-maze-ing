@@ -31,14 +31,7 @@ class HuntKillGenerator(MazeGenerator):
         start = self.entry
         fringe = []
         hunt = False
-
-        for cell in self.logo_cells:
-            x, y = cell
-            self.path.append((cell, self.maze[x][y], False))
-            self.visited.add(cell)
-
         self.initialize_maze()
-
         self.visited.add(start)
 
         possible = []
