@@ -148,15 +148,15 @@ class MazeGenerator(ABC):
         solver = solver_class(self)
         self.solution = solver.solve()
 
-        self.generation_path = []
-        for cell in self.visited:
+        for i in range(len(self.generation_path)):
+            cell, _, _ = self.generation_path[i]
             x, y = cell
             if cell == self.entry:
-                self.generation_path.append((cell, self.maze[x][y], True))
+                self.generation_path[i] = ((cell, self.maze[x][y], True))
             elif cell in solver.solution_cells:
-                self.generation_path.append((cell, self.maze[x][y], True))
+                self.generation_path[i] = ((cell, self.maze[x][y], True))
             else:
-                self.generation_path.append((cell, self.maze[x][y], False))
+                self.generation_path[i] = ((cell, self.maze[x][y], False))
 
     def remove_walls_outside_shape(self) -> None:
         """Remove walls outside shape."""
