@@ -14,12 +14,8 @@ class DFSGenerator(MazeGenerator):
         """Generate the value."""
         start = self.entry
         fringe = []
-
         self.initialize_maze()
-
         self.visited.add(start)
-        self.generation_path.append((start,
-                                     self.maze[start[0]][start[1]], False))
 
         possible = []
         for nx, ny, direction in self.get_neighbors(start):
@@ -34,7 +30,7 @@ class DFSGenerator(MazeGenerator):
             if (nx, ny) in self.visited:
                 continue
 
-            self.remove_wall(current, direction)
+            self.remove_wall(current, direction, True)
             self.visited.add((nx, ny))
 
             neighbors = self.get_neighbors((nx, ny))

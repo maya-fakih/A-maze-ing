@@ -27,7 +27,6 @@ def display_maze(maze_gen: MazeGenerator) -> None:
     """Display maze."""
     match maze_gen.display_mode:
         case "ascii":
-            print("=== A-MAZE-ING ===\n")
             display_terminal(maze_gen, False)
         case "minilibx":
             try:

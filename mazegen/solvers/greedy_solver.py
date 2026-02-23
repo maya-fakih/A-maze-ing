@@ -1,5 +1,9 @@
 from .maze_solver import MazeSolver
+from typing import List, Tuple, TypeAlias
 import heapq
+
+
+FringeItem: TypeAlias = Tuple[int, Tuple[Tuple, List, List[str]]]
 
 
 class GreedySolver(MazeSolver):
@@ -9,7 +13,7 @@ class GreedySolver(MazeSolver):
         """Handle priority."""
         return self.huristic(cell)
 
-    def solve(self) -> list:
+    def solve(self) -> List[str]:
         """Solve the value."""
         start = self.maze.entry
         goal = self.maze.exit
@@ -17,7 +21,7 @@ class GreedySolver(MazeSolver):
         self.animation_path.append((start, True))
 
         visited = set()
-        fringe = [(0, (start, [start], []))]
+        fringe: List[FringeItem] = [(0, (start, [start], []))]
         while fringe:
             _, (current_cell, path, dir) = heapq.heappop(fringe)
 

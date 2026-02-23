@@ -1,35 +1,10 @@
+from typing import Any
 from mazegen.generators.maze_generator import MazeGenerator
 from project.parsing import parsing as helper
+from project.colors import Colors
 import sys
 import os
-
-color_map = {
-    "black": 30,
-    "red": 31,
-    "green": 32,
-    "yellow": 33,
-    "blue": 34,
-    "magenta": 35,
-    "cyan": 36,
-    "white": 37,
-    "bright_black": 90,
-    "bright_red": 91,
-    "bright_green": 92,
-    "bright_yellow": 93,
-    "bright_blue": 94,
-    "bright_magenta": 95,
-    "bright_cyan": 96,
-    "bright_white": 97,
-    "grey": 90,
-    "gray": 90,
-    "light_red": 91,
-    "light_green": 92,
-    "light_yellow": 93,
-    "light_blue": 94,
-    "light_magenta": 95,
-    "light_cyan": 96,
-    "light_white": 97,
-}
+import time
 
 
 def clear_terminal() -> None:
@@ -86,8 +61,9 @@ def _prompt_color(prompt: str, forbidden: str | None = None) -> str:
     """Handle prompt color."""
     while True:
         color = input(prompt).strip().lower()
-        if color not in color_map:
-            print(f"Invalid color. Available: {', '.join(color_map.keys())}")
+        available_colors = Colors.get_available_colors()
+        if color not in available_colors:
+            print(f"Invalid color. Available: {', '.join(available_colors)}")
             continue
         if forbidden is not None and color == forbidden:
             print("Wall and flag color must be different.")
@@ -136,8 +112,10 @@ def _print_horizontal_wall(
     W: int,
     grid: list[list],
     wall_code: str,
+    flag_code: str,
     reset_code: str,
     SOUTH: int,
+    logo_cells: set,
 ) -> None:
     """Print horizontal wall."""
     if r == 0 or r == 2 * H:
@@ -145,7 +123,12 @@ def _print_horizontal_wall(
     else:
         cell_row = r // 2 - 1
         cell_col = c // 2
-        if grid[cell_col][cell_row] & SOUTH:
+        cell_above = (cell_col, cell_row)
+        cell_below = (cell_col, cell_row + 1)
+
+        if cell_above in logo_cells and cell_below in logo_cells:
+            print(flag_code + "███" + reset_code, end="")
+        elif grid[cell_col][cell_row] & SOUTH:
             print(wall_code + "███" + reset_code, end="")
         else:
             print("   ", end="")
@@ -157,8 +140,10 @@ def _print_vertical_wall(
     W: int,
     grid: list[list],
     wall_code: str,
+    flag_code: str,
     reset_code: str,
     EAST: int,
+    logo_cells: set,
 ) -> None:
     """Print vertical wall."""
     if c == 0 or c == 2 * W:
@@ -166,7 +151,12 @@ def _print_vertical_wall(
     else:
         cell_row = r // 2
         cell_col = c // 2 - 1
-        if grid[cell_col][cell_row] & EAST:
+        cell_left = (cell_col, cell_row)
+        cell_right = (cell_col + 1, cell_row)
+
+        if cell_left in logo_cells and cell_right in logo_cells:
+            print(flag_code + "█" + reset_code, end="")
+        elif grid[cell_col][cell_row] & EAST:
             print(wall_code + "█" + reset_code, end="")
         else:
             print(" ", end="")
@@ -183,11 +173,16 @@ def _print_cell_interior(
     path_code: str,
     entry: tuple,
     exit: tuple,
+    fill: bool,
+    wall_code: str,
+    visited: Any
 ) -> None:
     """Print cell interior."""
     cell_row = r // 2
     cell_col = c // 2
-    if (path is True) and ((cell_col, cell_row) in solution_cells):
+    if fill is True and not (cell_col, cell_row) in visited:
+        print(wall_code + "███" + reset_code, end="")
+    elif (path is True) and ((cell_col, cell_row) in solution_cells):
         print(path_code + " ★ " + reset_code, end="")
     elif (cell_col, cell_row) in logo_cells:
         print(flag_code + "███" + reset_code, end="")
@@ -199,7 +194,7 @@ def _print_cell_interior(
         print("   ", end="")
 
 
-def show_options(maze_gen: MazeGenerator, path: bool) -> None:
+def show_options(maze_gen: MazeGenerator, path: bool, s: list) -> None:
     """Handle show options."""
     try:
         print("\n=== A-MAZE-ING ===")
@@ -211,8 +206,9 @@ def show_options(maze_gen: MazeGenerator, path: bool) -> None:
         print("6. Change shape")
         print("7. Change generation algorithm")
         print("8. Change solver algorithm")
-        print("9. Quit")
-        choice = int(input("Choice? (1-9): "))
+        print("9. Animate generation algorithm")
+        print("10. Quit")
+        choice = int(input("Choice? (1-10): "))
         match choice:
             case 1:
                 _regenerate(maze_gen)
@@ -247,21 +243,18 @@ def show_options(maze_gen: MazeGenerator, path: bool) -> None:
                     f"Enter a shape ({', '.join(helper.shapes)}): ",
                     helper.shapes,
                 )
-                maze_gen = _rebuild_generator(maze_gen, {"shape": shape})
-                clear_terminal()
-                display_terminal(maze_gen, path)
+                maze_gen = _safe_rebuild(maze_gen, {"shape": shape}, path, s)
             case 7:
                 generation_algorithm = _prompt_choice(
                     "Enter a generation algorithm "
                     f"({', '.join(helper.generation_algorithms)}): ",
                     helper.generation_algorithms,
                 )
-                maze_gen = _rebuild_generator(
+                maze_gen = _safe_rebuild(
                     maze_gen,
-                    {"generation_algorithm": generation_algorithm}
+                    {"generation_algorithm": generation_algorithm},
+                    path, s
                 )
-                clear_terminal()
-                display_terminal(maze_gen, path)
             case 8:
                 solver_algorithm = _prompt_choice(
                     "Enter a solver algorithm "
@@ -276,17 +269,36 @@ def show_options(maze_gen: MazeGenerator, path: bool) -> None:
                 clear_terminal()
                 display_terminal(maze_gen, path)
             case 9:
+                animate_generation(maze_gen, path, s)
+                display_terminal(maze_gen, path)
+            case 10:
                 sys.exit()
             case _:
                 print("Error! Invalid choice.")
-                show_options(maze_gen, path)
+                show_options(maze_gen, path, s)
     except ValueError:
         print("Error! Invalid choice.")
-        show_options(maze_gen, path)
+        show_options(maze_gen, path, s)
 
 
-def display_terminal(maze_gen: MazeGenerator, path: bool) -> None:
-    """Display terminal."""
+def _safe_rebuild(maze_gen: MazeGenerator, updates: dict[str, str],
+                  path: bool, s: list) -> MazeGenerator:
+    """Safely rebuild generator and handle any errors."""
+    try:
+        new_generator = _rebuild_generator(maze_gen, updates)
+        clear_terminal()
+        display_terminal(new_generator, path)
+        return new_generator
+    except Exception as e:
+        print(f"\nError: {e}")
+        input("Press Enter to continue...")
+        clear_terminal()
+        display_terminal(maze_gen, path)
+        return maze_gen
+
+
+def draw_maze(maze_gen: MazeGenerator, path: bool, s: list, f: bool) -> None:
+    """Display maze."""
     H = maze_gen.height
     W = maze_gen.width
     EAST = 2
@@ -295,24 +307,18 @@ def display_terminal(maze_gen: MazeGenerator, path: bool) -> None:
     logo_cells = maze_gen.logo_cells
     entry = maze_gen.entry
     exit = maze_gen.exit
+    visited = maze_gen.visited
+    solution_set = set(s) if s else set()
 
-    solution_cells = {
-        cell for cell, _, is_solution in maze_gen.path if is_solution
-    }
+    wall_code = Colors.get_ansi_escape(maze_gen.wall_color)
+    flag_code = Colors.get_ansi_escape(maze_gen.flag_color)
+    reset_code = Colors.get_reset_escape()
 
-    wall_value = color_map.get(maze_gen.wall_color, 37)
     explicit_path_color = getattr(maze_gen, "path_color", None)
-    if explicit_path_color and explicit_path_color in color_map:
-        path_value = color_map[explicit_path_color]
+    if explicit_path_color and Colors.is_valid_color(explicit_path_color):
+        path_code = Colors.get_ansi_escape(explicit_path_color)
     else:
-        base_index = wall_value % 10
-        opposite_index = (base_index + 4) % 8
-        path_value = (90 if wall_value >= 90 else 30) + opposite_index
-
-    wall_code = f"\033[{wall_value}m"
-    path_code = f"\033[{path_value}m"
-    flag_code = f"\033[{color_map.get(maze_gen.flag_color, 34)}m"
-    reset_code = "\033[0m"
+        path_code = Colors.get_complementary_escape(maze_gen.wall_color)
 
     for r in range(2 * H + 1):
         for c in range(2 * W + 1):
@@ -320,18 +326,46 @@ def display_terminal(maze_gen: MazeGenerator, path: bool) -> None:
                 _print_corner(wall_code, reset_code)
             elif r % 2 == 0 and c % 2 == 1:
                 _print_horizontal_wall(
-                    r, c, H, W, grid, wall_code, reset_code, SOUTH
+                    r, c, H, W, grid, wall_code, flag_code, reset_code, SOUTH,
+                    logo_cells
                 )
             elif r % 2 == 1 and c % 2 == 0:
                 _print_vertical_wall(
-                    r, c, W, grid, wall_code, reset_code, EAST
+                    r, c, W, grid, wall_code, flag_code, reset_code,
+                    EAST, logo_cells
                 )
             else:
                 _print_cell_interior(
-                    r, c, logo_cells, solution_cells,
+                    r, c, logo_cells, solution_set,
                     path, flag_code, reset_code, path_code,
-                    entry, exit
+                    entry, exit, f, wall_code, visited
                 )
-
         print()
-    show_options(maze_gen, path)
+
+
+def animate_generation(m: MazeGenerator, path: bool, s: list) -> None:
+    animation = m.generation_path
+    m.visited.clear()
+    m.reset_maze()
+    fill = True
+    for cell, value, _ in animation:
+        x, y = cell
+        m.maze[x][y] = value
+        m.visited.add((x, y))
+        draw_maze(m, path, s, fill)
+        time.sleep(0.02)
+        clear_terminal()
+    fill = False
+
+
+def animate_solver(m: MazeGenerator, path: bool, s: list) -> None:
+    pass
+
+
+def display_terminal(maze_gen: MazeGenerator, path: bool) -> None:
+    """Display maze."""
+    solution_cells = [
+        cell for cell, _, sol in maze_gen.generation_path if sol
+    ]
+    draw_maze(maze_gen, path, solution_cells, False)
+    show_options(maze_gen, path, solution_cells)
