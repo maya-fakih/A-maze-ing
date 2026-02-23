@@ -1,36 +1,10 @@
 from mazegen.generators.maze_generator import MazeGenerator
+from mazegen.errors import InitializationError
 from project.parsing import parsing as helper
+from project.colors import Colors
 import sys
 import os
 import time
-
-color_map = {
-    "black": 30,
-    "red": 31,
-    "green": 32,
-    "yellow": 33,
-    "blue": 34,
-    "magenta": 35,
-    "cyan": 36,
-    "white": 37,
-    "bright_black": 90,
-    "bright_red": 91,
-    "bright_green": 92,
-    "bright_yellow": 93,
-    "bright_blue": 94,
-    "bright_magenta": 95,
-    "bright_cyan": 96,
-    "bright_white": 97,
-    "grey": 90,
-    "gray": 90,
-    "light_red": 91,
-    "light_green": 92,
-    "light_yellow": 93,
-    "light_blue": 94,
-    "light_magenta": 95,
-    "light_cyan": 96,
-    "light_white": 97,
-}
 
 
 def clear_terminal() -> None:
@@ -87,8 +61,9 @@ def _prompt_color(prompt: str, forbidden: str | None = None) -> str:
     """Handle prompt color."""
     while True:
         color = input(prompt).strip().lower()
-        if color not in color_map:
-            print(f"Invalid color. Available: {', '.join(color_map.keys())}")
+        available_colors = Colors.get_available_colors()
+        if color not in available_colors:
+            print(f"Invalid color. Available: {', '.join(available_colors)}")
             continue
         if forbidden is not None and color == forbidden:
             print("Wall and flag color must be different.")
@@ -255,21 +230,18 @@ def show_options(maze_gen: MazeGenerator, path: bool, s: list) -> None:
                     f"Enter a shape ({', '.join(helper.shapes)}): ",
                     helper.shapes,
                 )
-                maze_gen = _rebuild_generator(maze_gen, {"shape": shape})
-                clear_terminal()
-                display_terminal(maze_gen, path)
+                maze_gen = _safe_rebuild(maze_gen, {"shape": shape}, path, s)
             case 7:
                 generation_algorithm = _prompt_choice(
                     "Enter a generation algorithm "
                     f"({', '.join(helper.generation_algorithms)}): ",
                     helper.generation_algorithms,
                 )
-                maze_gen = _rebuild_generator(
+                maze_gen = _safe_rebuild(
                     maze_gen,
-                    {"generation_algorithm": generation_algorithm}
+                    {"generation_algorithm": generation_algorithm},
+                    path, s
                 )
-                clear_terminal()
-                display_terminal(maze_gen, path)
             case 8:
                 solver_algorithm = _prompt_choice(
                     "Enter a solver algorithm "
@@ -299,6 +271,22 @@ def show_options(maze_gen: MazeGenerator, path: bool, s: list) -> None:
         show_options(maze_gen, path, s)
 
 
+def _safe_rebuild(maze_gen: MazeGenerator, updates: dict[str, str], 
+                  path: bool, s: list) -> MazeGenerator:
+    """Safely rebuild generator and handle any errors."""
+    try:
+        new_generator = _rebuild_generator(maze_gen, updates)
+        clear_terminal()
+        display_terminal(new_generator, path)
+        return new_generator
+    except Exception as e:
+        print(f"\nError: {e}")
+        input("Press Enter to continue...")
+        clear_terminal()
+        display_terminal(maze_gen, path)
+        return maze_gen
+
+
 def draw_maze(maze_gen: MazeGenerator, path: bool, s: list, f: bool) -> None:
     """Display maze."""
     H = maze_gen.height
@@ -311,19 +299,15 @@ def draw_maze(maze_gen: MazeGenerator, path: bool, s: list, f: bool) -> None:
     exit = maze_gen.exit
     visited = maze_gen.visited
 
-    wall_value = color_map.get(maze_gen.wall_color, 37)
+    wall_code = Colors.get_ansi_escape(maze_gen.wall_color)
+    flag_code = Colors.get_ansi_escape(maze_gen.flag_color)
+    reset_code = Colors.get_reset_escape()
+    
     explicit_path_color = getattr(maze_gen, "path_color", None)
-    if explicit_path_color and explicit_path_color in color_map:
-        path_value = color_map[explicit_path_color]
+    if explicit_path_color and Colors.is_valid_color(explicit_path_color):
+        path_code = Colors.get_ansi_escape(explicit_path_color)
     else:
-        base_index = wall_value % 10
-        opposite_index = (base_index + 4) % 8
-        path_value = (90 if wall_value >= 90 else 30) + opposite_index
-
-    wall_code = f"\033[{wall_value}m"
-    path_code = f"\033[{path_value}m"
-    flag_code = f"\033[{color_map.get(maze_gen.flag_color, 34)}m"
-    reset_code = "\033[0m"
+        path_code = Colors.get_complementary_escape(maze_gen.wall_color)
 
     for r in range(2 * H + 1):
         for c in range(2 * W + 1):
@@ -345,20 +329,18 @@ def draw_maze(maze_gen: MazeGenerator, path: bool, s: list, f: bool) -> None:
                 )
         print()
 
-
 def animate_generation(m: MazeGenerator, path: bool, s: list) -> None:
     animation = m.generation_path
-    m.reset_maze()
-    m.visited = set()
+    m.visited.clear()
+    m.reset_maze()    
     fill = True
     for cell, value, _ in animation:
         x, y = cell
         m.maze[x][y] = value
         m.visited.add((x, y))
         draw_maze(m, path, s, fill)
-        time.sleep(0.1)
+        time.sleep(0.02)
         clear_terminal()
-
     fill = False
 
 

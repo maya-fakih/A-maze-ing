@@ -30,7 +30,7 @@ class DFSGenerator(MazeGenerator):
             if (nx, ny) in self.visited:
                 continue
 
-            self.remove_wall(current, direction)
+            self.remove_wall(current, direction, True)
             self.visited.add((nx, ny))
 
             neighbors = self.get_neighbors((nx, ny))

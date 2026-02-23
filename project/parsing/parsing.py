@@ -1,4 +1,4 @@
-import webcolors
+from project.colors import Colors
 import io
 import os
 
@@ -22,27 +22,11 @@ generation_algorithms = ["prim", "dfs", "bfs", "huntkill"]
 solver_algorithms = ["dfs", "bfs", "a*", "ucs"]
 shapes = ["flower", "star", "heart", "square"]
 display_modes = ["ascii", "minilibx"]
-ascii_extra_colors = {
-    "grey", "gray",
-    "bright_black", "bright_red", "bright_green", "bright_yellow",
-    "bright_blue", "bright_magenta", "bright_cyan", "bright_white",
-    "light_red", "light_green", "light_yellow", "light_blue",
-    "light_magenta", "light_cyan", "light_white",
-}
 
 
 def validate_color_name(name: str) -> bool:
     """Validate color name."""
-    if name in ascii_extra_colors:
-        return True
-    try:
-
-        webcolors.name_to_hex(name.lower())
-        if (name == "black"):
-            return False
-        return True
-    except ValueError:
-        return False
+    return Colors.is_valid_color(name)
 
 
 def mandatory_flags_check(input_settings: dict) -> None:

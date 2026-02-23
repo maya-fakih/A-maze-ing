@@ -68,11 +68,16 @@ class MazeGenerator(ABC):
             "display_mode", "ascii"
         )
         self.shape = settings_dict.get("shape", "square")
+        if self.shape != "square" and (self.width < 20 or self.height < 20):
+            raise InitializationError(
+                f"Maze dimensions too small for shape '{self.shape}'.\n"
+                f"Minimum dimensions required: 20x20. Current: {self.width}x{self.height}"
+            )
         self.maze = (
             [[0 for _ in range(self.height)] for _ in range(self.width)]
         )
         self.logo_cells = set()
-        self._add_42_logo()
+        self.add_42_logo()
         self.validate_entry_exit()
         self.solution = []
         self.visited = set()
@@ -118,20 +123,19 @@ class MazeGenerator(ABC):
             for y in range(self.height):
                 if (x, y) not in self.logo_cells:
                     self.maze[x][y] = 15
-
         if self.shape != "square":
             self.remove_walls_outside_shape()
+        for cell in self.logo_cells:
+            x, y = cell
+            self.generation_path.append((cell, self.maze[x][y], False))
 
     def initialize_maze(self) -> None:
         """Handle initialize maze."""
         self.generation_path.clear()
         self.visited = set(self.logo_cells)
         self.solution.clear()
-        self.reset_maze()
-        for cell in self.logo_cells:
-            x, y = cell
-            self.generation_path.append((cell, self.maze[x][y], False))
-            self.visited.add(cell)
+        self.reset_maze()        
+        
 
     def find_solution_path(self) -> None:
         """Find solution path."""
@@ -173,7 +177,8 @@ class MazeGenerator(ABC):
 
             for nx, ny, direction in neighbors:
                 neighbor = (nx, ny)
-                self.remove_wall((current_x, current_y), direction)
+                self.remove_wall((current_x, current_y), direction, False)
+                self.visited.add(neighbor)
                 if neighbor not in processed:
                     processed.add(neighbor)
                     to_process.append(neighbor)
@@ -198,7 +203,7 @@ class MazeGenerator(ABC):
                 if (nx, ny) in self.logo_cells:
                     continue
                 else:
-                    self.remove_wall(current, direction)
+                    self.remove_wall(current, direction, True)
                     break
 
     def has_wall(self, location: Tuple, direction: str) -> bool:
@@ -230,26 +235,27 @@ class MazeGenerator(ABC):
         mask = self.MASK[direction]
         return (cell_value & mask) != 0
 
-    def remove_wall(self, cell: Tuple, direction: str) -> None:
+    def remove_wall(self, cell: Tuple, dir: str, animate: bool) -> None:
         """Remove wall."""
         x, y = cell
 
-        if direction == 'N':
+        if dir == 'N':
             nx, ny = x, y-1
-        elif direction == 'S':
+        elif dir == 'S':
             nx, ny = x, y+1
-        elif direction == 'E':
+        elif dir == 'E':
             nx, ny = x+1, y
-        elif direction == 'W':
+        elif dir == 'W':
             nx, ny = x-1, y
 
-        mask = self.MASK[direction]
+        mask = self.MASK[dir]
         opposite_mask = self.OPPOSITE[mask]
 
         self.maze[x][y] &= ~mask
         self.maze[nx][ny] &= ~opposite_mask
-        self.generation_path.append((((x, y)), self.maze[x][y], False))
-        self.generation_path.append(((nx, ny), self.maze[nx][ny], False))
+        if animate is True:
+            self.generation_path.append((((x, y)), self.maze[x][y], False))
+            self.generation_path.append(((nx, ny), self.maze[nx][ny], False))
 
     def get_neighbors(self, cell: Tuple) -> List[Tuple]:
         """Return neighbors."""
@@ -267,7 +273,7 @@ class MazeGenerator(ABC):
                     neighbors.append((nx, ny, direction))
         return neighbors
 
-    def _add_42_logo(self) -> None:
+    def add_42_logo(self) -> None:
         """Add 42 logo."""
         if self.width < 10 or self.height < 10:
             sys.stderr.write("Could not draw 42 logo. (dimentions too small)")
