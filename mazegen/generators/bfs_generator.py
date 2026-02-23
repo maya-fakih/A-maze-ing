@@ -12,19 +12,9 @@ class BFSGenerator(MazeGenerator):
 
     def generate(self) -> Any:
         """Generate the value."""
-        self.visited = set(self.logo_cells)
-        self.solution.clear()
-        self.path.clear()
-
         start = self.entry
         fringe = []
-
-        for cell in self.logo_cells:
-            x, y = cell
-            self.path.append((cell, self.maze[x][y], False))
-
         self.initialize_maze()
-
         self.visited.add(start)
 
         possible = []
@@ -40,7 +30,7 @@ class BFSGenerator(MazeGenerator):
             if (nx, ny) in self.visited:
                 continue
 
-            self.remove_wall(current, direction)
+            self.remove_wall(current, direction, True)
             self.visited.add((nx, ny))
             neighbors = self.get_neighbors((nx, ny))
             random.shuffle(neighbors)

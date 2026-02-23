@@ -1,10 +1,11 @@
 from .maze_solver import MazeSolver
+from typing import List, Tuple
 
 
 class DFSolver(MazeSolver):
     """Depth-First Search Agent"""
 
-    def solve(self) -> list:
+    def solve(self) -> List[str]:
         """Solve the value."""
         start = self.maze.entry
         goal = self.maze.exit
@@ -12,7 +13,7 @@ class DFSolver(MazeSolver):
         self.animation_path.append((start, True))
 
         visited = set()
-        fringe = [(start, [start], [])]
+        fringe: List[Tuple[Tuple, List, List[str]]] = [(start, [start], [])]
         while fringe:
             current_cell, path, dir = fringe.pop()
 
