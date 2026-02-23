@@ -207,9 +207,8 @@ def show_options(maze_gen: MazeGenerator, path: bool, s: list) -> None:
         print("7. Change generation algorithm")
         print("8. Change solver algorithm")
         print("9. Animate generation algorithm")
-        print("10. Animate solver algorithm")
-        print("11. Quit")
-        choice = int(input("Choice? (1-11): "))
+        print("10. Quit")
+        choice = int(input("Choice? (1-10): "))
         match choice:
             case 1:
                 _regenerate(maze_gen)
@@ -273,9 +272,6 @@ def show_options(maze_gen: MazeGenerator, path: bool, s: list) -> None:
                 animate_generation(maze_gen, path, s)
                 display_terminal(maze_gen, path)
             case 10:
-                # animate_solver()
-                pass
-            case 11:
                 sys.exit()
             case _:
                 print("Error! Invalid choice.")
