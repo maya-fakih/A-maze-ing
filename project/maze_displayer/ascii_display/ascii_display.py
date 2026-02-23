@@ -1,5 +1,4 @@
 from mazegen.generators.maze_generator import MazeGenerator
-from mazegen.errors import InitializationError
 from project.parsing import parsing as helper
 from project.colors import Colors
 import sys
@@ -112,8 +111,10 @@ def _print_horizontal_wall(
     W: int,
     grid: list[list],
     wall_code: str,
+    flag_code: str,
     reset_code: str,
     SOUTH: int,
+    logo_cells: set,
 ) -> None:
     """Print horizontal wall."""
     if r == 0 or r == 2 * H:
@@ -121,7 +122,12 @@ def _print_horizontal_wall(
     else:
         cell_row = r // 2 - 1
         cell_col = c // 2
-        if grid[cell_col][cell_row] & SOUTH:
+        cell_above = (cell_col, cell_row)
+        cell_below = (cell_col, cell_row + 1)
+
+        if cell_above in logo_cells and cell_below in logo_cells:
+            print(flag_code + "███" + reset_code, end="")
+        elif grid[cell_col][cell_row] & SOUTH:
             print(wall_code + "███" + reset_code, end="")
         else:
             print("   ", end="")
@@ -133,8 +139,10 @@ def _print_vertical_wall(
     W: int,
     grid: list[list],
     wall_code: str,
+    flag_code: str,
     reset_code: str,
     EAST: int,
+    logo_cells: set,
 ) -> None:
     """Print vertical wall."""
     if c == 0 or c == 2 * W:
@@ -142,7 +150,12 @@ def _print_vertical_wall(
     else:
         cell_row = r // 2
         cell_col = c // 2 - 1
-        if grid[cell_col][cell_row] & EAST:
+        cell_left = (cell_col, cell_row)
+        cell_right = (cell_col + 1, cell_row)
+
+        if cell_left in logo_cells and cell_right in logo_cells:
+            print(flag_code + "█" + reset_code, end="")
+        elif grid[cell_col][cell_row] & EAST:
             print(wall_code + "█" + reset_code, end="")
         else:
             print(" ", end="")
@@ -271,7 +284,7 @@ def show_options(maze_gen: MazeGenerator, path: bool, s: list) -> None:
         show_options(maze_gen, path, s)
 
 
-def _safe_rebuild(maze_gen: MazeGenerator, updates: dict[str, str], 
+def _safe_rebuild(maze_gen: MazeGenerator, updates: dict[str, str],
                   path: bool, s: list) -> MazeGenerator:
     """Safely rebuild generator and handle any errors."""
     try:
@@ -302,7 +315,7 @@ def draw_maze(maze_gen: MazeGenerator, path: bool, s: list, f: bool) -> None:
     wall_code = Colors.get_ansi_escape(maze_gen.wall_color)
     flag_code = Colors.get_ansi_escape(maze_gen.flag_color)
     reset_code = Colors.get_reset_escape()
-    
+
     explicit_path_color = getattr(maze_gen, "path_color", None)
     if explicit_path_color and Colors.is_valid_color(explicit_path_color):
         path_code = Colors.get_ansi_escape(explicit_path_color)
@@ -315,11 +328,13 @@ def draw_maze(maze_gen: MazeGenerator, path: bool, s: list, f: bool) -> None:
                 _print_corner(wall_code, reset_code)
             elif r % 2 == 0 and c % 2 == 1:
                 _print_horizontal_wall(
-                    r, c, H, W, grid, wall_code, reset_code, SOUTH
+                    r, c, H, W, grid, wall_code, flag_code, reset_code, SOUTH,
+                    logo_cells
                 )
             elif r % 2 == 1 and c % 2 == 0:
                 _print_vertical_wall(
-                    r, c, W, grid, wall_code, reset_code, EAST
+                    r, c, W, grid, wall_code, flag_code, reset_code,
+                    EAST, logo_cells
                 )
             else:
                 _print_cell_interior(
@@ -329,10 +344,11 @@ def draw_maze(maze_gen: MazeGenerator, path: bool, s: list, f: bool) -> None:
                 )
         print()
 
+
 def animate_generation(m: MazeGenerator, path: bool, s: list) -> None:
     animation = m.generation_path
-    m.visited.clear()
-    m.reset_maze()    
+    m.visited.clear
+    m.reset_maze()
     fill = True
     for cell, value, _ in animation:
         x, y = cell

@@ -69,9 +69,10 @@ class MazeGenerator(ABC):
         )
         self.shape = settings_dict.get("shape", "square")
         if self.shape != "square" and (self.width < 20 or self.height < 20):
+            s = "Minimum dimensions required: 20x20."
             raise InitializationError(
                 f"Maze dimensions too small for shape '{self.shape}'.\n"
-                f"Minimum dimensions required: 20x20. Current: {self.width}x{self.height}"
+                f"{s} Current: {self.width}x{self.height}"
             )
         self.maze = (
             [[0 for _ in range(self.height)] for _ in range(self.width)]
@@ -134,8 +135,7 @@ class MazeGenerator(ABC):
         self.generation_path.clear()
         self.visited = set(self.logo_cells)
         self.solution.clear()
-        self.reset_maze()        
-        
+        self.reset_maze()
 
     def find_solution_path(self) -> None:
         """Find solution path."""
