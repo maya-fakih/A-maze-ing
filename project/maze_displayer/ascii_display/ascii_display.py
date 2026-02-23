@@ -1,3 +1,4 @@
+from typing import Any
 from mazegen.generators.maze_generator import MazeGenerator
 from project.parsing import parsing as helper
 from project.colors import Colors
@@ -174,7 +175,7 @@ def _print_cell_interior(
     exit: tuple,
     fill: bool,
     wall_code: str,
-    visited: any
+    visited: Any
 ) -> None:
     """Print cell interior."""
     cell_row = r // 2
@@ -311,6 +312,7 @@ def draw_maze(maze_gen: MazeGenerator, path: bool, s: list, f: bool) -> None:
     entry = maze_gen.entry
     exit = maze_gen.exit
     visited = maze_gen.visited
+    solution_set = set(s) if s else set()
 
     wall_code = Colors.get_ansi_escape(maze_gen.wall_color)
     flag_code = Colors.get_ansi_escape(maze_gen.flag_color)
@@ -338,7 +340,7 @@ def draw_maze(maze_gen: MazeGenerator, path: bool, s: list, f: bool) -> None:
                 )
             else:
                 _print_cell_interior(
-                    r, c, logo_cells, s,
+                    r, c, logo_cells, solution_set,
                     path, flag_code, reset_code, path_code,
                     entry, exit, f, wall_code, visited
                 )
@@ -347,7 +349,7 @@ def draw_maze(maze_gen: MazeGenerator, path: bool, s: list, f: bool) -> None:
 
 def animate_generation(m: MazeGenerator, path: bool, s: list) -> None:
     animation = m.generation_path
-    m.visited.clear
+    m.visited.clear()
     m.reset_maze()
     fill = True
     for cell, value, _ in animation:
@@ -366,8 +368,8 @@ def animate_solver(m: MazeGenerator, path: bool, s: list) -> None:
 
 def display_terminal(maze_gen: MazeGenerator, path: bool) -> None:
     """Display maze."""
-    solution_cells = {
+    solution_cells = [
         cell for cell, _, sol in maze_gen.generation_path if sol
-    }
+    ]
     draw_maze(maze_gen, path, solution_cells, False)
     show_options(maze_gen, path, solution_cells)

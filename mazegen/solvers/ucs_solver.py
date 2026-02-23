@@ -1,5 +1,9 @@
 from .maze_solver import MazeSolver
+from typing import List, Tuple, TypeAlias
 import heapq
+
+
+FringeItem: TypeAlias = Tuple[int, Tuple[Tuple, List, List[str]]]
 
 
 class UCSolver(MazeSolver):
@@ -17,7 +21,7 @@ class UCSolver(MazeSolver):
         self.animation_path.append((start, True))
 
         visited = set()
-        fringe = [(0, (start, [start], []))]
+        fringe: List[FringeItem] = [(0, (start, [start], []))]
         while fringe:
             _, (current_cell, path, dir) = heapq.heappop(fringe)
 

@@ -22,7 +22,7 @@ class HuntKillGenerator(MazeGenerator):
             nx, ny, distance, parent = item
             dist = abs(nx - start_x) + abs(ny - start_y)
             if dist < min_dist:
-                min_dist = min
+                min_dist = dist
                 hunt_cell = item
         return hunt_cell
 
@@ -44,8 +44,11 @@ class HuntKillGenerator(MazeGenerator):
         while fringe:
             if hunt is True:
                 target = self.hunt(fringe)
-                fringe.remove(target)
-                nx, ny, direction, current = target
+                if target is not None:
+                    fringe.remove(target)
+                    nx, ny, direction, current = target
+                else:
+                    continue
             else:
                 nx, ny, direction, current = fringe.pop()
                 hunt = False

@@ -48,8 +48,7 @@ def validate_types(input_settings: dict) -> dict:
     """Validate types."""
     for key, value in input_settings.items():
         if key == "height" or key == "width":
-            d = {key: int(value)}
-            input_settings.update(d)
+            input_settings[key] = int(value)
         elif key == "perfect":
             if value == "true" or value == "false":
                 d = {key: value == "true"}
@@ -98,8 +97,8 @@ def validate_types(input_settings: dict) -> dict:
                 )
             array[0] = int(array[0])
             array[1] = int(array[1])
-            d = {key: tuple(array)}
-            input_settings.update(d)
+            input_settings[key] = tuple(array)
+
     return (input_settings)
 
 
