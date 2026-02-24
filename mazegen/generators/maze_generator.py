@@ -89,6 +89,10 @@ class MazeGenerator(ABC):
 
         if self.shape != "square" and (self.width < 20 or self.height < 20):
             s = "Minimum dimensions required: 20x20."
+            if self.display_mode == "minilibx":
+                print(f"Maze dimensions too small for shape '{self.shape}'.\n")
+                print(f"{s} Current: {self.width}x{self.height}")
+
             raise InitializationError(
                 f"Maze dimensions too small for shape '{self.shape}'.\n"
                 f"{s} Current: {self.width}x{self.height}"
@@ -118,8 +122,12 @@ class MazeGenerator(ABC):
             generator instance. Returns: None.
         """
         if self.entry in self.logo_cells:
+            if self.display_mode == "minilibx":
+                print("Entry point cannot be on the logo.")
             raise InitializationError("Entry point cannot be on the logo.")
         if self.exit in self.logo_cells:
+            if self.display_mode == "minilibx":
+                print("Exit point cannot be on the logo.")
             raise InitializationError("Exit point cannot be on the logo.")
         if self.shape != "square":
             self.flood_fill_shape(self.entry)
@@ -142,6 +150,8 @@ class MazeGenerator(ABC):
             for nx, ny, _ in neighbors:
                 if nx == 0 or nx == w - 1 or ny == 0 or ny == h - 1:
                     s = "Shape border cannot be on the edge of the maze."
+                    if self.display_mode == "minilibx":
+                        print(s)
                     raise InitializationError(s)
                 neighbor = (nx, ny)
                 if neighbor not in processed:
