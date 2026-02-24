@@ -6,7 +6,7 @@
 /*   By: aabi-mou <aabi-mou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 04:25:00 by aabi-mou          #+#    #+#             */
-/*   Updated: 2026/02/24 03:04:55 by aabi-mou         ###   ########.fr       */
+/*   Updated: 2026/02/24 22:37:07 by aabi-mou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,22 @@ void	draw_square(t_app *app, int gx, int gy, int color)
 	}
 }
 
+static bool	is_logo_cell(t_app *app, int gx, int gy)
+{
+	int		i;
+
+	if (!app || !app->maze.logo_cells || app->maze.logo_count <= 0)
+		return (false);
+	i = 0;
+	while (i < app->maze.logo_count)
+	{
+		if (app->maze.logo_cells[i].x == gx && app->maze.logo_cells[i].y == gy)
+			return (true);
+		i++;
+	}
+	return (false);
+}
+
 void	draw_star_marker(t_app *app, int gx, int gy, int color)
 {
 	int	cx;
@@ -103,6 +119,32 @@ void	draw_star_marker(t_app *app, int gx, int gy, int color)
 	size = app->config.cell_size;
 	cx = gx * size + size / 2;
 	cy = gy * size + size / 2;
+	if (is_logo_cell(app, gx, gy))
+	{
+		int		flag_col;
+		int		half;
+		int		sx;
+		int		sy;
+		int		x;
+		int		y;
+
+		flag_col = color_from_name(app->config.flag_color, ENTRY_EXIT_FALLBACK);
+		half = size / 3;
+		sx = cx - half;
+		sy = cy - half;
+		y = sy;
+		while (y < sy + (half * 2))
+		{
+			x = sx;
+			while (x < sx + (half * 2))
+			{
+				put_pixel(&app->img, x, y, flag_col);
+				x++;
+			}
+			y++;
+		}
+		return ;
+	}
 	put_pixel(&app->img, cx, cy, color);
 	i = 1;
 	while (i <= (size / 6 + 1))
