@@ -1,17 +1,73 @@
-You must provide a short documentation describing how to:
-- Instantiate and use your generator, with at least a basic example.
-- Pass custom parameters (e.g., size, seed).
-- Access the generated structure, and access at least a solution
+# mazegen
 
+Reusable Python package for generating and solving mazes.
 
-NOTE FOR TEAM:
-to test this version which only for now supports the basic_generator...
-cd mazegen
-python3 testing.py
+## Requirements
 
-note that you can change maze conditions as you want to test
+- Python 3.10+
+- No external runtime dependencies (`dependencies = []` in `pyproject.toml`)
 
-the mazes are randomly creating branches yet the perfect is not working in all cases so we need to update it...
-its probably not in the part of the random walk rather the issue is from the rest of the maze where we are randomly filling it using prims alg...
+## Install
 
-this will either be patched in the next update or we will have a seperate generator tthat generates perfect that will be a simple wilsons spanning trees so that we can have references online....
+From the repository root:
+
+```bash
+pip install -e ./mazegen
+```
+
+## Basic usage
+
+```python
+from mazegen.generators.maze_generator import MazeGenerator
+
+settings = {
+    "width": 35,
+    "height": 35,
+    "entry": (1, 1),
+    "exit": (33, 33),
+    "generation_algorithm": "dfs",   # dfs | bfs | prim | huntkill
+    "solver_algorithm": "a*",        # bfs | a* | ucs
+    "shape": "square",               # square | heart | flower | star
+    "perfect": True,
+}
+
+generator = MazeGenerator.create_generator(settings)
+generator.generate()
+```
+
+## Custom parameters
+
+You can pass behavior through the `settings` dictionary.
+
+Required:
+
+- `width`
+- `height`
+- `entry` as `(x, y)`
+- `exit` as `(x, y)`
+
+Common optional parameters:
+
+- `generation_algorithm`: `dfs`, `bfs`, `prim`, `huntkill`
+- `solver_algorithm`: `bfs`, `a*`, `ucs`
+- `shape`: `square`, `heart`, `flower`, `star`
+- `perfect`: `True`/`False`
+- `output_file`, `display_mode`, `wall_color`, `flag_color`, `path_color`
+
+Note: seed-based deterministic generation is not currently exposed as a package setting.
+
+## Access generated maze and solution
+
+After `generator.generate()`:
+
+- `generator.maze` -> maze grid (`list[list[int]]`, bitmask walls per cell)
+- `generator.solution` -> solution directions (`list[str]`, e.g. `['E', 'E', 'S', ...]`)
+- `generator.entry` / `generator.exit` -> start and goal coordinates
+- `generator.generation_path` -> step-by-step generation/animation data
+
+Example:
+
+```python
+print(f"maze size: {len(generator.maze)} x {len(generator.maze[0])}")
+print("first 10 solution moves:", generator.solution[:10])
+```
