@@ -6,7 +6,7 @@ OUTPUT_FILE=output/output_maze.txt
 PERFECT=True
 GENERATION_ALGORITHM=prim
 SOLVER_ALGORITHM=bfs
-DISPLAY_MODE=ascii
+DISPLAY_MODE=minilibx
 
 WALL_COLOR=magenta
 
@@ -14,4 +14,4 @@ FLAG_COLOR=cyan
 
 PATH_COLOR=light_green
 
-SHAPE=heart
+SHAPE=square
