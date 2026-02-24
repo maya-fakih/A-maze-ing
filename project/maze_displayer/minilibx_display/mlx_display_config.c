@@ -6,7 +6,7 @@
 /*   By: aabi-mou <aabi-mou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 04:25:00 by aabi-mou          #+#    #+#             */
-/*   Updated: 2026/02/24 03:04:52 by aabi-mou         ###   ########.fr       */
+/*   Updated: 2026/02/24 15:18:06 by aabi-mou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static int	rewrite_config(FILE *in, FILE *out, const char *key,
 			fputs(line, out);
 	}
 	if (!found)
-		fprintf(out, "%s=%s\n", key, value);
+		fprintf(out, "\n%s=%s", key, value);
 	return (0);
 }
 

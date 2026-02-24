@@ -3,7 +3,25 @@
 MLX_DIR = minilibx-linux
 MLX_LIB = $(MLX_DIR)/libmlx.a
 
-C_SRCS = $(wildcard project/maze_displayer/minilibx_display/*.c)
+C_SRCS = project/maze_displayer/minilibx_display/main.c \
+	project/maze_displayer/minilibx_display/mlx_helper_1.c \
+	project/maze_displayer/minilibx_display/mlx_helper_2.c \
+	project/maze_displayer/minilibx_display/mlx_helper_3.c \
+	project/maze_displayer/minilibx_display/mlx_helper_4.c \
+	project/maze_displayer/minilibx_display/mlx_parser_1.c \
+	project/maze_displayer/minilibx_display/mlx_parser_2.c \
+	project/maze_displayer/minilibx_display/mlx_parser_3.c \
+	project/maze_displayer/minilibx_display/mlx_display_core.c \
+	project/maze_displayer/minilibx_display/mlx_display_graphics.c \
+	project/maze_displayer/minilibx_display/mlx_display_scene.c \
+	project/maze_displayer/minilibx_display/mlx_display_anim.c \
+	project/maze_displayer/minilibx_display/mlx_display_buttons.c \
+	project/maze_displayer/minilibx_display/mlx_display_config.c \
+	project/maze_displayer/minilibx_display/mlx_display_reload.c \
+	project/maze_displayer/minilibx_display/mlx_display_mouse_1.c \
+	project/maze_displayer/minilibx_display/mlx_display_mouse_2.c \
+	project/maze_displayer/minilibx_display/mlx_display_mouse_3.c
+
 C_OBJS = $(C_SRCS:.c=.o)
 
 CC = gcc

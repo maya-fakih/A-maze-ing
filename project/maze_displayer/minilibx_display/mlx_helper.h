@@ -6,7 +6,7 @@
 /*   By: aabi-mou <aabi-mou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 18:12:47 by aabi-mou          #+#    #+#             */
-/*   Updated: 2026/02/24 13:45:37 by aabi-mou         ###   ########.fr       */
+/*   Updated: 2026/02/24 15:38:17 by aabi-mou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,6 +183,11 @@ void			animate_solution(t_app *app);
 int				update(void *param);
 int				close_window(t_app *app);
 int				mouse_hook(int button, int x, int y, void *param);
+const char		*next_option(const char *current, const char **options,
+					int count, const char *forbidden);
+void			apply_color_update(t_app *app, int idx);
+void			apply_shape_change(t_app *app);
+void			apply_click(t_app *app, int idx);
 void			init_graphics(t_app *app);
 t_app			*init_app_options(t_config *cfg, t_cell *gen_path,
 					t_point *logo_cells, t_maze *maze);
