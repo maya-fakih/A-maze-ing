@@ -12,7 +12,7 @@ The workflow is straightforward: read configuration, generate a maze, solve it, 
 Core features:
 
 - Multiple generation algorithms (`dfs`, `bfs`, `prim`, `huntkill`)
-- Multiple solver algorithms (`dfs`, `bfs`, `a*`, `ucs`)
+- Multiple solver algorithms (`dfs`, `bfs`, `a*`, `ucs`, `greedy`)
 - Shape support (`square`, `heart`, `flower`, `star`)
 - Perfect or non-perfect maze generation
 - Color customization for walls, flags, and solution path
