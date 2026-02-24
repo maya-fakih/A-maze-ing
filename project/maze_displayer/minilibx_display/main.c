@@ -6,7 +6,7 @@
 /*   By: aabi-mou <aabi-mou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/21 13:45:59 by aabi-mou          #+#    #+#             */
-/*   Updated: 2026/02/24 03:01:29 by aabi-mou         ###   ########.fr       */
+/*   Updated: 2026/02/24 14:24:26 by aabi-mou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,8 @@ int	main(int argc, char **argv)
 
 	if (argc != 5)
 		error("Error! Provide config, path, output and logo files.\n");
-	if (!open_file(&config_file, argv[1]) || !open_file(&output_file, argv[2])
-		|| !open_file(&path_file, argv[3]) || !open_file(&logo_file, argv[4]))
+	if (!open_file(&config_file, argv[1]) || !open_file(&path_file, argv[2])
+		|| !open_file(&output_file, argv[3]) || !open_file(&logo_file, argv[4]))
 		error("Error opening file!\n");
 	app = init_app(config_file, path_file, output_file, logo_file);
 	copy_runtime_paths(app, argv);
@@ -75,5 +75,6 @@ int	main(int argc, char **argv)
 	fclose(path_file);
 	fclose(output_file);
 	fclose(logo_file);
+	free(app);
 	return (0);
 }

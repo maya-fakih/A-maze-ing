@@ -6,7 +6,7 @@
 /*   By: aabi-mou <aabi-mou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 02:31:56 by aabi-mou          #+#    #+#             */
-/*   Updated: 2026/02/24 03:05:17 by aabi-mou         ###   ########.fr       */
+/*   Updated: 2026/02/24 14:32:16 by aabi-mou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ static char	*return_value(char *line, int size, int start)
 		val[i++] = line[start++];
 	val[i] = '\0';
 	trimmed_val = strdup(trim(val));
+	free(val);
 	return (trimmed_val);
 }
 

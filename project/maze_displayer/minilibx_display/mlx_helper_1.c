@@ -6,7 +6,7 @@
 /*   By: aabi-mou <aabi-mou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 18:10:22 by aabi-mou          #+#    #+#             */
-/*   Updated: 2026/02/24 03:05:09 by aabi-mou         ###   ########.fr       */
+/*   Updated: 2026/02/24 13:35:43 by aabi-mou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,8 @@ t_point	parse_coordinates(const char *line)
 
 int	open_file(FILE **f, char *arg)
 {
-	*f = fopen(arg, "r");
+	*f = fopen(arg, "r+");
 	if (*f == NULL)
-		return (1);
-	return (0);
+		return (0);
+	return (1);
 }

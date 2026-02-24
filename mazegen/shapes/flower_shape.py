@@ -4,12 +4,18 @@ import math
 
 class Flower(Shape):
     def __init__(self, width: int, height: int, points: int = 5) -> None:
-        """Initialize flower shape generator. Args: width canvas width, height canvas height, points petal count factor. Returns: None."""
+        """
+            Initialize flower shape generator. Args: width canvas width, height
+            canvas height, points petal count factor. Returns: None.
+        """
         super().__init__(width, height)
         self.points = points
 
     def generate(self) -> list:
-        """Generate flower border coordinates. Args: self flower shape instance. Returns: List of border coordinates."""
+        """
+            Generate flower border coordinates. Args: self flower shape
+            instance. Returns: List of border coordinates.
+        """
         coords = set()
         steps = max(self.width, self.height) * 8
 

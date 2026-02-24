@@ -6,7 +6,10 @@ class BFSolver(MazeSolver):
     """Breadth-First Search Agent"""
 
     def solve(self) -> List[str]:
-        """Solve maze with breadth-first search. Args: self solver instance. Returns: Direction list from entry to exit."""
+        """
+            Solve maze with breadth-first search. Args: self solver instance.
+            Returns: Direction list from entry to exit.
+        """
         start = self.maze.entry
         goal = self.maze.exit
         self.animation_path = []

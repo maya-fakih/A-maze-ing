@@ -7,11 +7,17 @@ class BFSGenerator(MazeGenerator):
     """Breadth First algorithm"""
 
     def __init__(self, settings_dict: dict[str, Any]) -> None:
-        """Initialize BFS maze generator. Args: settings_dict validated settings map. Returns: None."""
+        """
+            Initialize BFS maze generator. Args: settings_dict validated
+            settings map. Returns: None.
+        """
         super().__init__(settings_dict)
 
     def generate(self) -> Any:
-        """Generate maze using breadth-first expansion. Args: self generator instance. Returns: None."""
+        """
+            Generate maze using breadth-first expansion. Args: self generator
+            instance. Returns: None.
+        """
         start = self.entry
         fringe = []
         self.initialize_maze()

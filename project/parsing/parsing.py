@@ -9,7 +9,10 @@ class ParsingError(Exception):
         self.msg = msg
 
     def __str__(self) -> str:
-        """Get printable parsing error. Args: self error instance. Returns: Error message string."""
+        """
+            Get printable parsing error. Args: self error instance. Returns:
+            Error message string.
+        """
         return self.msg
 
 
@@ -25,13 +28,19 @@ display_modes = ["ascii", "minilibx"]
 
 
 def validate_color_name(name: str) -> bool:
-    """Validate configured color token. Args: name color name string. Returns: True when color is supported."""
+    """
+        Validate configured color token. Args: name color name string. Returns:
+        True when color is supported.
+    """
     return Colors.is_valid_color(name)
 
 
 def mandatory_flags_check(input_settings: dict) -> None:
 
-    """Ensure required settings exist. Args: input_settings parsed settings map. Returns: None."""
+    """
+        Ensure required settings exist. Args: input_settings parsed settings
+        map. Returns: None.
+    """
     missing = [k for k in mandatory_keys if k not in input_settings]
     if missing:
         valid = ", ".join(mandatory_keys)
@@ -45,7 +54,10 @@ def mandatory_flags_check(input_settings: dict) -> None:
 
 
 def validate_types(input_settings: dict) -> dict:
-    """Normalize and validate setting values. Args: input_settings raw settings map. Returns: Validated settings map."""
+    """
+        Normalize and validate setting values. Args: input_settings raw
+        settings map. Returns: Validated settings map.
+    """
     for key, value in input_settings.items():
         if key == "height" or key == "width":
             input_settings[key] = int(value)
@@ -103,7 +115,10 @@ def validate_types(input_settings: dict) -> dict:
 
 
 def parse_settings(file: io.TextIOWrapper) -> dict:
-    """Parse configuration file into settings. Args: file opened config file stream. Returns: Validated settings dictionary."""
+    """
+        Parse configuration file into settings. Args: file opened config file
+        stream. Returns: Validated settings dictionary.
+    """
     input_settings: dict = {}
     for line in file:
         line = line.strip().lower()

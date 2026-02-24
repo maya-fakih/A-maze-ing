@@ -6,7 +6,7 @@
 /*   By: aabi-mou <aabi-mou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 01:33:53 by aabi-mou          #+#    #+#             */
-/*   Updated: 2026/02/24 03:05:15 by aabi-mou         ###   ########.fr       */
+/*   Updated: 2026/02/24 13:50:12 by aabi-mou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,10 @@
 
 void	copy_runtime_paths(t_app *app, char **argv)
 {
-	snprintf(app->config_file, sizeof(app->config_file), "configuration/%s",
-		argv[1]);
-	snprintf(app->path_file, sizeof(app->path_file), "configuration/%s",
-		argv[2]);
+	snprintf(app->config_file, sizeof(app->config_file), "%s", argv[1]);
+	snprintf(app->path_file, sizeof(app->path_file), "%s", argv[2]);
 	snprintf(app->output_file, sizeof(app->output_file), "%s", argv[3]);
-	snprintf(app->logo_file, sizeof(app->logo_file), "configuration/%s",
-		argv[4]);
+	snprintf(app->logo_file, sizeof(app->logo_file), "%s", argv[4]);
 }
 
 void	parse_line(t_cell *path, char *line)

@@ -7,11 +7,17 @@ class DFSGenerator(MazeGenerator):
     """Depth First algorithm"""
 
     def __init__(self, settings_dict: dict[str, Any]) -> None:
-        """Initialize DFS maze generator. Args: settings_dict validated settings map. Returns: None."""
+        """
+            Initialize DFS maze generator. Args: settings_dict validated
+            settings map. Returns: None.
+        """
         super().__init__(settings_dict)
 
     def generate(self) -> Any:
-        """Generate maze using depth-first backtracking. Args: self generator instance. Returns: None."""
+        """
+            Generate maze using depth-first backtracking. Args: self generator
+            instance. Returns: None.
+        """
         start = self.entry
         fringe = []
         self.initialize_maze()

@@ -6,7 +6,7 @@
 /*   By: aabi-mou <aabi-mou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 01:18:11 by aabi-mou          #+#    #+#             */
-/*   Updated: 2026/02/24 03:05:23 by aabi-mou         ###   ########.fr       */
+/*   Updated: 2026/02/24 14:29:07 by aabi-mou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ t_config	*parse_settings(FILE *f)
 	char		*trimmed;
 
 	settings = (t_config *)malloc(sizeof(t_config));
-	if (!settings)
+	if (!settings || !f)
 		return (NULL);
 	set_default_config(settings);
 	rewind(f);
