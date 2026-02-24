@@ -91,7 +91,7 @@ class MazeGenerator(ABC):
             s = "Minimum dimensions required: 20x20."
             if self.display_mode == "minilibx":
                 e = "Maze dimensions too small for shape"
-                print(f"{e} '{self.shape}'.\n",file=sys.stderr, flush=True)
+                print(f"{e} '{self.shape}'.\n", file=sys.stderr, flush=True)
             raise InitializationError(
                 f"Maze dimensions too small for shape '{self.shape}'.\n"
                 f"{s} Current: {self.width}x{self.height}"
@@ -129,7 +129,7 @@ class MazeGenerator(ABC):
             if self.display_mode == "minilibx":
                 e = "Exit point cannot be on the logo."
                 print(e, file=sys.stderr, flush=True)
-                sys.stdout.flush() 
+                sys.stdout.flush()
             raise InitializationError("Exit point cannot be on the logo.")
         if self.shape != "square":
             self.flood_fill_shape(self.entry)
@@ -154,7 +154,7 @@ class MazeGenerator(ABC):
                     s = "Shape border cannot be on the edge of the maze."
                     if self.display_mode == "minilibx":
                         print(s, file=sys.stderr, flush=True)
-                        sys.stdout.flush() 
+                        sys.stdout.flush()
                     raise InitializationError(s)
                 neighbor = (nx, ny)
                 if neighbor not in processed:
