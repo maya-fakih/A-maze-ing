@@ -5,7 +5,7 @@ import math
 class Heart(Shape):
     def generate(self) -> list:
 
-        """Generate the value."""
+        """Generate heart border coordinates. Args: self heart shape instance. Returns: List of border coordinates."""
         coords = set()
         vertices = []
 
@@ -30,7 +30,7 @@ class Heart(Shape):
             vertices.append((px, py))
 
         def draw_line(x1: int, y1: int, x2: int, y2: int) -> None:
-            """Draw line."""
+            """Rasterize a line segment into coordinate set. Args: x1 start x, y1 start y, x2 end x, y2 end y. Returns: None."""
             dx = abs(x2 - x1)
             dy = abs(y2 - y1)
             sx = 1 if x1 < x2 else -1

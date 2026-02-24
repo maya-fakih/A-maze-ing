@@ -1,19 +1,10 @@
-.PHONY: all build_mlx clean fclean re run
+.PHONY: all build_mlx clean fclean re run install debug lint
 
 MLX_DIR = minilibx-linux
 MLX_LIB = $(MLX_DIR)/libmlx.a
 
-C_SRCS = project/maze_displayer/minilibx_display/main.c \
-         project/maze_displayer/minilibx_display/mlx_helper_1.c \
-         project/maze_displayer/minilibx_display/mlx_helper_2.c \
-         project/maze_displayer/minilibx_display/mlx_parser.c \
-         project/maze_displayer/minilibx_display/mlx_display.c
-
-C_OBJS = project/maze_displayer/minilibx_display/main.o \
-         project/maze_displayer/minilibx_display/mlx_helper_1.o \
-         project/maze_displayer/minilibx_display/mlx_helper_2.o \
-         project/maze_displayer/minilibx_display/mlx_parser.o \
-         project/maze_displayer/minilibx_display/mlx_display.o
+C_SRCS = $(wildcard project/maze_displayer/minilibx_display/*.c)
+C_OBJS = $(C_SRCS:.c=.o)
 
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -I./$(MLX_DIR) -I./project/maze_displayer/minilibx_display
@@ -34,8 +25,14 @@ $(TARGET): $(MLX_LIB) $(C_OBJS)
 
 build_mlx: $(TARGET)
 
+install:
+	python3 -m pip install mypy
+	python3 -m pip install flake8
+
 clean:
 	rm -f $(C_OBJS)
+	find . -type d -name __pycache__ -exec rm -rf {} +
+	find . -type d -name .mypy_cache -exec rm -rf {} +
 
 fclean: clean
 	rm -f $(TARGET)
@@ -45,3 +42,10 @@ re: fclean all
 
 run: all
 	python3 a_maze_ing.py config.txt
+
+debug: all
+	python3 -m pdb a_maze_ing.py config.txt
+
+lint:
+	flake8 .
+	mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs

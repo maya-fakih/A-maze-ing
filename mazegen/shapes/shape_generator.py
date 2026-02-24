@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 
 class Shape(ABC):
     def __init__(self, width: int, height: int) -> None:
-        """Initialize a Shape instance."""
+        """Store shape canvas dimensions and center. Args: width canvas width, height canvas height. Returns: None."""
         self.width = width
         self.height = height
         self.center_x = (width - 1) // 2
@@ -12,5 +12,5 @@ class Shape(ABC):
 
     @abstractmethod
     def generate(self) -> list:
-        """Generate the value."""
+        """Generate coordinates outlining the shape. Args: self shape instance. Returns: List of border coordinates."""
         pass

@@ -7,14 +7,14 @@ class HuntKillGenerator(MazeGenerator):
     """Hunt and Kill algorithm"""
 
     def __init__(self, settings_dict: dict[str, Any]) -> None:
-        """Initialize a HuntKillGenerator instance."""
+        """Initialize Hunt-and-Kill generator. Args: settings_dict validated settings map. Returns: None."""
         super().__init__(settings_dict)
 
     def hunt(
         self,
         fringe: list[tuple[int, int, str, tuple[int, int]]],
     ) -> tuple[int, int, str, tuple[int, int]] | None:
-        """Handle hunt."""
+        """Select next hunt target near entry. Args: fringe pending frontier candidates. Returns: Chosen candidate tuple or None."""
         hunt_cell = None
         min_dist = float('inf')
         start_x, start_y = self.entry
@@ -27,7 +27,7 @@ class HuntKillGenerator(MazeGenerator):
         return hunt_cell
 
     def generate(self) -> Any:
-        """Generate the value."""
+        """Generate maze using Hunt-and-Kill strategy. Args: self generator instance. Returns: None."""
         start = self.entry
         fringe = []
         hunt = False

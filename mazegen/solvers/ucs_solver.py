@@ -10,11 +10,11 @@ class UCSolver(MazeSolver):
     """Uniform Cost Search Agent"""
 
     def priority(self, path: list) -> int:
-        """Handle priority."""
+        """Compute uniform-cost priority. Args: path directions taken so far. Returns: Path length as traversal cost."""
         return len(path)
 
     def solve(self) -> list:
-        """Solve the value."""
+        """Solve maze with uniform-cost search. Args: self solver instance. Returns: Direction list from entry to exit."""
         start = self.maze.entry
         goal = self.maze.exit
         self.animation_path = []

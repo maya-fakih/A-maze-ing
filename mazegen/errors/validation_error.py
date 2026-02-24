@@ -10,12 +10,12 @@ class ValidationError(GenerationError):
         invalid_cells: list[tuple[int, int]] | None = None,
         error_code: str = "VAL_ERR",
     ) -> None:
-        """Initialize a ValidationError instance."""
+        """Initialize validation-stage error. Args: message error text, invalid_cells optional invalid coordinates, error_code code tag. Returns: None."""
         self.invalid_cells = invalid_cells or []
         super().__init__(message, error_code, stage="validation")
 
     def __str__(self) -> str:
-        """Return a string representation of the instance."""
+        """Format validation error details. Args: self error instance. Returns: Formatted error string."""
         base = super().__str__()
         if self.invalid_cells and len(self.invalid_cells) <= 10:
             cells_str = ", ".join(str(cell) for cell in self.invalid_cells)

@@ -6,7 +6,7 @@ class DFSolver(MazeSolver):
     """Depth-First Search Agent"""
 
     def solve(self) -> List[str]:
-        """Solve the value."""
+        """Solve maze with depth-first search. Args: self solver instance. Returns: Direction list from entry to exit."""
         start = self.maze.entry
         goal = self.maze.exit
         self.animation_path = []

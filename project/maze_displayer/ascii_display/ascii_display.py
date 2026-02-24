@@ -8,19 +8,19 @@ import time
 
 
 def clear_terminal() -> None:
-    """Handle clear terminal."""
+    """Clear the terminal screen. Args: none. Returns: None."""
     os.system('cls' if os.name == 'nt' else 'clear')
 
 
 def _config_path() -> str:
-    """Handle config path."""
+    """Resolve active configuration file path. Args: none. Returns: Config file path string."""
     if len(sys.argv) > 1 and sys.argv[1].endswith(".txt"):
         return f"configuration/{sys.argv[1]}"
     return "configuration/config.txt"
 
 
 def update_config_value(file_path: str, key: str, new_value: str) -> None:
-    """Update config value."""
+    """Set or append a key-value entry in config file. Args: file_path config file path, key setting name, new_value setting value. Returns: None."""
     normalized_key = key.lower()
     found = False
     lines = []
@@ -48,7 +48,7 @@ def update_config_value(file_path: str, key: str, new_value: str) -> None:
 
 
 def _prompt_choice(prompt: str, options: list[str]) -> str:
-    """Handle prompt choice."""
+    """Prompt until a valid option is chosen. Args: prompt input message, options accepted values. Returns: Selected option in lowercase."""
     valid = {value.lower() for value in options}
     while True:
         value = input(prompt).strip().lower()
@@ -58,7 +58,7 @@ def _prompt_choice(prompt: str, options: list[str]) -> str:
 
 
 def _prompt_color(prompt: str, forbidden: str | None = None) -> str:
-    """Handle prompt color."""
+    """Prompt until a valid color is entered. Args: prompt input message, forbidden optional disallowed color. Returns: Selected color name."""
     while True:
         color = input(prompt).strip().lower()
         available_colors = Colors.get_available_colors()
@@ -73,14 +73,14 @@ def _prompt_color(prompt: str, forbidden: str | None = None) -> str:
 
 def _write_runtime_setting(maze_gen: MazeGenerator, key: str,
                            value: str) -> None:
-    """Write runtime setting."""
+    """Apply runtime setting and persist to config. Args: maze_gen active generator, key setting name, value setting value. Returns: None."""
     maze_gen.settings[key] = value
     setattr(maze_gen, key, value)
     update_config_value(_config_path(), key, value)
 
 
 def _regenerate(maze_gen: MazeGenerator) -> None:
-    """Handle regenerate."""
+    """Regenerate maze and refresh output artifacts. Args: maze_gen active generator. Returns: None."""
     maze_gen.generate()
     maze_gen.output_to_file()
     maze_gen.write_path("configuration/gen_path.txt")
@@ -88,7 +88,7 @@ def _regenerate(maze_gen: MazeGenerator) -> None:
 
 def _rebuild_generator(maze_gen: MazeGenerator,
                        updates: dict[str, str]) -> MazeGenerator:
-    """Handle rebuild generator."""
+    """Create a new generator with updated settings. Args: maze_gen current generator, updates setting overrides. Returns: Rebuilt maze generator instance."""
     settings = dict(maze_gen.settings)
     settings.update(updates)
     new_generator = MazeGenerator.create_generator(settings)
@@ -101,7 +101,7 @@ def _rebuild_generator(maze_gen: MazeGenerator,
 
 
 def _print_corner(wall_code: str, reset_code: str) -> None:
-    """Print corner."""
+    """Print one maze corner glyph. Args: wall_code wall ANSI code, reset_code ANSI reset code. Returns: None."""
     print(wall_code + "█" + reset_code, end="")
 
 
@@ -117,7 +117,7 @@ def _print_horizontal_wall(
     SOUTH: int,
     logo_cells: set,
 ) -> None:
-    """Print horizontal wall."""
+    """Print one horizontal wall segment. Args: r render row, c render column, H maze height, W maze width, grid maze cells, wall_code wall ANSI code, flag_code flag ANSI code, reset_code ANSI reset code, SOUTH south-wall bitmask, logo_cells reserved logo cells. Returns: None."""
     if r == 0 or r == 2 * H:
         print(wall_code + "███" + reset_code, end="")
     else:
@@ -145,7 +145,7 @@ def _print_vertical_wall(
     EAST: int,
     logo_cells: set,
 ) -> None:
-    """Print vertical wall."""
+    """Print one vertical wall segment. Args: r render row, c render column, W maze width, grid maze cells, wall_code wall ANSI code, flag_code flag ANSI code, reset_code ANSI reset code, EAST east-wall bitmask, logo_cells reserved logo cells. Returns: None."""
     if c == 0 or c == 2 * W:
         print(wall_code + "█" + reset_code, end="")
     else:
@@ -177,7 +177,7 @@ def _print_cell_interior(
     wall_code: str,
     visited: Any
 ) -> None:
-    """Print cell interior."""
+    """Print one cell interior with markers and colors. Args: r render row, c render column, logo_cells reserved logo cells, solution_cells solved path cells, path show-path flag, flag_code flag ANSI code, reset_code ANSI reset code, path_code path ANSI code, entry entry cell, exit exit cell, fill fill-unknown flag, wall_code wall ANSI code, visited visited cells. Returns: None."""
     cell_row = r // 2
     cell_col = c // 2
     if fill is True and not (cell_col, cell_row) in visited:
@@ -195,7 +195,7 @@ def _print_cell_interior(
 
 
 def show_options(maze_gen: MazeGenerator, path: bool, s: list) -> None:
-    """Handle show options."""
+    """Display interactive menu and handle commands. Args: maze_gen active generator, path whether path is visible, s solved cell list. Returns: None."""
     try:
         print("\n=== A-MAZE-ING ===")
         print("1. Re-generate a new maze")
@@ -283,7 +283,7 @@ def show_options(maze_gen: MazeGenerator, path: bool, s: list) -> None:
 
 def _safe_rebuild(maze_gen: MazeGenerator, updates: dict[str, str],
                   path: bool, s: list) -> MazeGenerator:
-    """Safely rebuild generator and handle any errors."""
+    """Rebuild generator with guarded error handling. Args: maze_gen current generator, updates setting overrides, path current path-visibility flag, s solved cell list. Returns: Generator to continue displaying."""
     try:
         new_generator = _rebuild_generator(maze_gen, updates)
         clear_terminal()
@@ -298,7 +298,7 @@ def _safe_rebuild(maze_gen: MazeGenerator, updates: dict[str, str],
 
 
 def draw_maze(maze_gen: MazeGenerator, path: bool, s: list, f: bool) -> None:
-    """Display maze."""
+    """Render maze grid in terminal. Args: maze_gen generator to render, path show-path flag, s solved cell list, f fill-unvisited flag. Returns: None."""
     H = maze_gen.height
     W = maze_gen.width
     EAST = 2
@@ -344,6 +344,7 @@ def draw_maze(maze_gen: MazeGenerator, path: bool, s: list, f: bool) -> None:
 
 
 def animate_generation(m: MazeGenerator, path: bool, s: list) -> None:
+    """Animate maze generation over recorded steps. Args: m maze generator to animate, path show-path flag, s solved cell list. Returns: None."""
     animation = m.generation_path
     m.visited.clear()
     m.reset_maze()
@@ -359,11 +360,12 @@ def animate_generation(m: MazeGenerator, path: bool, s: list) -> None:
 
 
 def animate_solver(m: MazeGenerator, path: bool, s: list) -> None:
+    """Animate solver progression in terminal view. Args: m maze generator to animate, path show-path flag, s solved cell list. Returns: None."""
     pass
 
 
 def display_terminal(maze_gen: MazeGenerator, path: bool) -> None:
-    """Display maze."""
+    """Render maze grid in terminal. Args: maze_gen generator to render, path show-path flag, s solved cell list, f fill-unvisited flag. Returns: None."""
     solution_cells = [
         cell for cell, _, sol in maze_gen.generation_path if sol
     ]

@@ -10,11 +10,11 @@ class AStarSolver(MazeSolver):
     """A* Search Agent"""
 
     def priority(self, path: list[str], current_cell: tuple[int, int]) -> int:
-        """Handle priority."""
+        """Compute A* priority score. Args: path directions taken so far, current_cell current cell coordinates. Returns: Priority cost integer."""
         return len(path) + self.huristic(current_cell)
 
     def solve(self) -> List[str]:
-        """Solve the value."""
+        """Solve maze with A* search. Args: self solver instance. Returns: Direction list from entry to exit."""
         start = self.maze.entry
         goal = self.maze.exit
         self.animation_path = []

@@ -6,21 +6,27 @@
 /*   By: aabi-mou <aabi-mou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 18:10:22 by aabi-mou          #+#    #+#             */
-/*   Updated: 2026/02/18 18:11:15 by aabi-mou         ###   ########.fr       */
+/*   Updated: 2026/02/24 03:05:09 by aabi-mou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <mlx_helper.h>
 
-// display error messages and exit
-/* Execute error. */
+bool	is_comment_line(const char *line)
+{
+	if (!line)
+		return (false);
+	while (*line && isspace((unsigned char)*line))
+		line++;
+	return (*line == '#');
+}
+
 void	error(const char *s)
 {
 	printf("%s\n", s);
 	exit(1);
 }
 
-// trim leading and trailing whitespaces
 char	*trim(char *str)
 {
 	char	*end;
@@ -34,4 +40,25 @@ char	*trim(char *str)
 		end--;
 	*(end + 1) = '\0';
 	return (str);
+}
+
+t_point	parse_coordinates(const char *line)
+{
+	t_point	point;
+
+	point.x = 0;
+	point.y = 0;
+	if (sscanf(line, "%d,%d", &point.x, &point.y) != 2)
+	{
+		printf("Error parsing coordinates: %s\n", line);
+	}
+	return (point);
+}
+
+int	open_file(FILE **f, char *arg)
+{
+	*f = fopen(arg, "r");
+	if (*f == NULL)
+		return (1);
+	return (0);
 }

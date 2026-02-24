@@ -5,11 +5,11 @@ import os
 
 class ParsingError(Exception):
     def __init__(self, msg: str) -> None:
-        """Initialize a ParsingError instance."""
+        """Store parsing error message. Args: msg error text. Returns: None."""
         self.msg = msg
 
     def __str__(self) -> str:
-        """Return a string representation of the instance."""
+        """Get printable parsing error. Args: self error instance. Returns: Error message string."""
         return self.msg
 
 
@@ -25,13 +25,13 @@ display_modes = ["ascii", "minilibx"]
 
 
 def validate_color_name(name: str) -> bool:
-    """Validate color name."""
+    """Validate configured color token. Args: name color name string. Returns: True when color is supported."""
     return Colors.is_valid_color(name)
 
 
 def mandatory_flags_check(input_settings: dict) -> None:
 
-    """Handle mandatory flags check."""
+    """Ensure required settings exist. Args: input_settings parsed settings map. Returns: None."""
     missing = [k for k in mandatory_keys if k not in input_settings]
     if missing:
         valid = ", ".join(mandatory_keys)
@@ -45,7 +45,7 @@ def mandatory_flags_check(input_settings: dict) -> None:
 
 
 def validate_types(input_settings: dict) -> dict:
-    """Validate types."""
+    """Normalize and validate setting values. Args: input_settings raw settings map. Returns: Validated settings map."""
     for key, value in input_settings.items():
         if key == "height" or key == "width":
             input_settings[key] = int(value)
@@ -103,7 +103,7 @@ def validate_types(input_settings: dict) -> dict:
 
 
 def parse_settings(file: io.TextIOWrapper) -> dict:
-    """Parse settings."""
+    """Parse configuration file into settings. Args: file opened config file stream. Returns: Validated settings dictionary."""
     input_settings: dict = {}
     for line in file:
         line = line.strip().lower()
@@ -139,4 +139,6 @@ def parse_settings(file: io.TextIOWrapper) -> dict:
     if wall_color and flag_color and wall_color == flag_color:
         raise ParsingError("Invalid colors!\n"
                            "wall_color and flag_color must be different.")
+    if "generation_algorithm" not in settings_dict.keys():
+        settings_dict["generation_algorithm"] = "dfs"
     return (settings_dict)

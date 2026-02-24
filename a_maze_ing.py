@@ -7,7 +7,7 @@ from project.maze_displayer.ascii_display.ascii_display import display_terminal
 
 
 def parse_input(argv: list[str]) -> dict:
-    """Parse input."""
+    """Parse CLI args into maze settings. Args: argv command-line argument list. Returns: Parsed settings dictionary."""
     if len(argv) != 2:
         raise helper.ParsingError("Invalid arguments "
                                   "given to program!\n"
@@ -24,7 +24,7 @@ def parse_input(argv: list[str]) -> dict:
 
 
 def display_maze(maze_gen: MazeGenerator) -> None:
-    """Display maze."""
+    """Render maze using configured display backend. Args: maze_gen configured maze generator instance. Returns: None."""
     match maze_gen.display_mode:
         case "ascii":
             display_terminal(maze_gen, False)
@@ -32,10 +32,10 @@ def display_maze(maze_gen: MazeGenerator) -> None:
             try:
                 subprocess.run(["project/maze_displayer"
                                 "/minilibx_display/main.exe",
-                                f"{sys.argv[1]}",
-                                "maze_gen.txt",
-                                f"{maze_gen.output_file}",
-                                "logo.txt"],
+                                f"configuration/{sys.argv[1]}",
+                                "configuration/maze_gen.txt",
+                                f"output/{maze_gen.output_file}",
+                                "configuration/logo.txt"],
                                check=True)
             except FileNotFoundError:
                 print("Error! Minilibx program not found.")

@@ -4,12 +4,12 @@ import math
 
 class Star(Shape):
     def __init__(self, width: int, height: int, points: int = 5) -> None:
-        """Initialize a Star instance."""
+        """Initialize star shape generator. Args: width canvas width, height canvas height, points star point count. Returns: None."""
         super().__init__(width, height)
         self.points = points
 
     def generate(self) -> list:
-        """Generate the value."""
+        """Generate star border coordinates. Args: self star shape instance. Returns: List of border coordinates."""
         coords = set()
         vertices = []
 
@@ -27,7 +27,7 @@ class Star(Shape):
             vertices.append((x, y))
 
         def draw_line(x1: int, y1: int, x2: int, y2: int) -> None:
-            """Draw line."""
+            """Rasterize a line segment into coordinate set. Args: x1 start x, y1 start y, x2 end x, y2 end y. Returns: None."""
             dx = abs(x2 - x1)
             dy = abs(y2 - y1)
             sx = 1 if x1 < x2 else -1

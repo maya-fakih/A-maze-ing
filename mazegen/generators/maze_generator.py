@@ -31,7 +31,7 @@ class MazeGenerator(ABC):
 
     @classmethod
     def create_generator(cls, settings: dict[str, Any]) -> "MazeGenerator":
-        """Create generator."""
+        """Instantiate generator matching selected algorithm. Args: cls generator base class, settings validated settings map. Returns: Concrete maze generator instance."""
         from .prim_generator import PrimGenerator
         from .dfs_generator import DFSGenerator
         from .bfs_generator import BFSGenerator
@@ -49,7 +49,7 @@ class MazeGenerator(ABC):
                 return PrimGenerator(settings)
 
     def __init__(self, settings_dict: dict[str, Any]) -> None:
-        """Initialize a MazeGenerator instance."""
+        """Initialize common maze generation state. Args: settings_dict validated configuration values. Returns: None."""
         self.settings = settings_dict
 
         # Validate required fields
@@ -99,11 +99,11 @@ class MazeGenerator(ABC):
 
     @abstractmethod
     def generate(self) -> None:
-        """Generate the value."""
+        """Generate maze structure and solution data. Args: self generator instance. Returns: None."""
         raise NotImplementedError
 
     def validate_entry_exit(self) -> None:
-        """Validate entry exit."""
+        """Validate entry/exit positions against constraints. Args: self generator instance. Returns: None."""
         if self.entry in self.logo_cells:
             raise InitializationError("Entry point cannot be on the logo.")
         if self.exit in self.logo_cells:
@@ -113,7 +113,7 @@ class MazeGenerator(ABC):
             self.flood_fill_shape(self.exit)
 
     def flood_fill_shape(self, start: Tuple[int, int]) -> None:
-        """Handle flood fill shape."""
+        """Flood-fill shape interior from a start cell. Args: start seed coordinate to test connectivity. Returns: None."""
         h = self.height
         w = self.width
         to_process = [start]
@@ -133,6 +133,7 @@ class MazeGenerator(ABC):
                     to_process.append(neighbor)
 
     def reset_maze(self) -> None:
+        """Reset maze grid walls and animation state. Args: self generator instance. Returns: None."""
         for x in range(self.width):
             for y in range(self.height):
                 if (x, y) not in self.logo_cells:
@@ -144,14 +145,14 @@ class MazeGenerator(ABC):
             self.generation_path.append((cell, self.maze[x][y], False))
 
     def initialize_maze(self) -> None:
-        """Handle initialize maze."""
+        """Prepare maze for a fresh generation pass. Args: self generator instance. Returns: None."""
         self.generation_path.clear()
         self.visited = set(self.logo_cells)
         self.solution.clear()
         self.reset_maze()
 
     def find_solution_path(self) -> None:
-        """Find solution path."""
+        """Run configured solver and mark solution cells. Args: self generator instance. Returns: None."""
         from ..solvers.astar_solver import AStarSolver
         from ..solvers.bfs_solver import BFSolver
         from ..solvers.ucs_solver import UCSolver
@@ -176,7 +177,7 @@ class MazeGenerator(ABC):
                 self.generation_path[i] = (cell, self.maze[x][y], False)
 
     def remove_walls_outside_shape(self) -> None:
-        """Remove walls outside shape."""
+        """Open cells outside non-square shape boundary. Args: self generator instance. Returns: None."""
         start = (0, 0)
         end = (self.width - 1, self.height - 1)
         corner = (self.width - 1, 0)
@@ -197,7 +198,7 @@ class MazeGenerator(ABC):
                     to_process.append(neighbor)
 
     def create_loops(self) -> None:
-        """Create loops."""
+        """Add extra openings to make maze imperfect. Args: self generator instance. Returns: None."""
         path_base = {c for c, _, _ in self.generation_path}
 
         path = list(path_base)
@@ -220,7 +221,7 @@ class MazeGenerator(ABC):
                     break
 
     def has_wall(self, location: Tuple[int, int], direction: str) -> bool:
-        """Check whether the object has wall."""
+        """Check if a wall exists in a direction. Args: location source cell, direction wall direction token. Returns: True when wall is present."""
         x, y = location
 
         if direction == 'W' and x == 0:
@@ -249,7 +250,7 @@ class MazeGenerator(ABC):
         return (cell_value & mask) != 0
 
     def remove_wall(self, cell: Tuple[int, int], dir: str, a: bool) -> None:
-        """Remove wall."""
+        """Remove wall between adjacent cells. Args: cell source cell, dir direction to carve, a whether to record animation step. Returns: None."""
         x, y = cell
 
         if dir == 'N':
@@ -271,7 +272,7 @@ class MazeGenerator(ABC):
             self.generation_path.append(((nx, ny), self.maze[nx][ny], False))
 
     def get_neighbors(self, c: Tuple[int, int]) -> List[Tuple[int, int, str]]:
-        """Return neighbors."""
+        """List valid neighboring cells with directions. Args: c origin cell coordinates. Returns: Neighbor tuples of x, y, direction."""
         x, y = c
         possible = [
             (x + 1, y, 'E'),
@@ -287,9 +288,10 @@ class MazeGenerator(ABC):
         return neighbors
 
     def add_42_logo(self) -> None:
-        """Add 42 logo."""
+        """Reserve maze cells forming the 42 logo. Args: self generator instance. Returns: None."""
         if self.width < 10 or self.height < 10:
-            sys.stderr.write("Could not draw 42 logo. (dimentions too small)")
+            sys.stdout.flush()
+            sys.stderr.write("Could not draw 42 logo. (dimentions too small)\n")
             return
 
         start_x = self.width // 2 - 4
@@ -327,7 +329,7 @@ class MazeGenerator(ABC):
                 self.maze[x][y] = 15
 
     def add_shape_border(self) -> List[Tuple[int, int]]:
-        """Add shape border."""
+        """Generate border coordinates for configured shape. Args: self generator instance. Returns: Shape border cell list."""
         if self.shape == "star":
             return Star(self.width, self.height).generate()
         elif self.shape == "heart":
@@ -338,7 +340,7 @@ class MazeGenerator(ABC):
             return []
 
     def output_to_file(self) -> None:
-        """Handle output to file."""
+        """Write maze grid and metadata to output file. Args: self generator instance. Returns: None."""
         output_dir = os.path.dirname(self.output_file)
         if output_dir:
             os.makedirs(output_dir, exist_ok=True)
@@ -355,7 +357,7 @@ class MazeGenerator(ABC):
             f.write(f"{''.join(self.solution)}")
 
     def write_path(self, path: str) -> None:
-        """Write path."""
+        """Write generation animation path to file. Args: path destination file path. Returns: None."""
         path_dir = os.path.dirname(path)
         if path_dir:
             os.makedirs(path_dir, exist_ok=True)
@@ -367,7 +369,7 @@ class MazeGenerator(ABC):
                 f.write(f"{cell[2]}\n")
 
     def write_logo_cells(self, path: str) -> None:
-        """Write logo cells."""
+        """Write reserved logo cell coordinates to file. Args: path destination file path. Returns: None."""
         logo_dir = os.path.dirname(path)
         if logo_dir:
             os.makedirs(logo_dir, exist_ok=True)
