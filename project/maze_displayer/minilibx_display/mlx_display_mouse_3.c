@@ -6,11 +6,15 @@
 /*   By: aabi-mou <aabi-mou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 15:54:30 by aabi-mou          #+#    #+#             */
-/*   Updated: 2026/02/24 15:57:35 by aabi-mou         ###   ########.fr       */
+/*   Updated: 2026/02/24 17:20:22 by aabi-mou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <mlx_helper.h>
+
+// The change needs to go here, restrict options instead f shuffling
+// Two options: program crashes on regeneration: best
+// write to a text file valid shapes and shuffle based on them
 
 void	apply_shape_change(t_app *app)
 {

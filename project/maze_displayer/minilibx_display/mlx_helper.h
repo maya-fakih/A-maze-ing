@@ -6,13 +6,14 @@
 /*   By: aabi-mou <aabi-mou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 18:12:47 by aabi-mou          #+#    #+#             */
-/*   Updated: 2026/02/24 15:38:17 by aabi-mou         ###   ########.fr       */
+/*   Updated: 2026/02/24 17:23:01 by aabi-mou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MLX_HELPER_H
 # define MLX_HELPER_H
 
+# include <X11/Xlib.h>
 # include <ctype.h>
 # include <mlx.h>
 # include <stdbool.h>
@@ -33,6 +34,27 @@
 # define PANEL_MARGIN 16
 # define BTN_LABEL_XPAD 12
 # define BTN_LABEL_YPAD 32
+
+typedef struct s_mlx_win
+{
+	Window		window;
+	void		*gc;
+	void		*next;
+}				t_mlx_win;
+
+typedef struct s_mlx_xvar
+{
+	Display		*display;
+	Window		root;
+}				t_mlx_xvar;
+
+typedef struct s_runtime_files
+{
+	FILE		*config;
+	FILE		*path;
+	FILE		*output;
+	FILE		*logo;
+}				t_runtime_files;
 
 // we need this for the coordinates
 typedef struct s_point

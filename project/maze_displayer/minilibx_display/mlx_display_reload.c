@@ -6,19 +6,11 @@
 /*   By: aabi-mou <aabi-mou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 04:25:00 by aabi-mou          #+#    #+#             */
-/*   Updated: 2026/02/24 15:32:39 by aabi-mou         ###   ########.fr       */
+/*   Updated: 2026/02/24 17:22:56 by aabi-mou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <mlx_helper.h>
-
-typedef struct s_runtime_files
-{
-	FILE			*config;
-	FILE			*path;
-	FILE			*output;
-	FILE			*logo;
-}					t_runtime_files;
 
 static void	free_maze(t_app *app)
 {

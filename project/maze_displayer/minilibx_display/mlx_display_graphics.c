@@ -6,25 +6,11 @@
 /*   By: aabi-mou <aabi-mou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 04:25:00 by aabi-mou          #+#    #+#             */
-/*   Updated: 2026/02/24 03:04:58 by aabi-mou         ###   ########.fr       */
+/*   Updated: 2026/02/24 17:21:45 by aabi-mou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <X11/Xlib.h>
 #include <mlx_helper.h>
-
-typedef struct s_mlx_win
-{
-	Window	window;
-	void	*gc;
-	void	*next;
-}			t_mlx_win;
-
-typedef struct s_mlx_xvar
-{
-	Display	*display;
-	Window	root;
-}			t_mlx_xvar;
 
 int	close_window(t_app *app)
 {
